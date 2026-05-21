@@ -98,11 +98,31 @@ function isStorefrontClientPath(pathname: string): boolean {
 }
 
 async function parseJsonResponse<T>(response: Response): Promise<T> {
-  const payload = await response.json().catch(() => undefined);
+  const text = await response.text().catch(() => "");
+  const payload = parseJson(text);
 
   if (!response.ok) {
-    throw new NexusError(`Nexus request failed with ${response.status}`, response.status, payload);
+    throw new NexusError(errorMessage(response, payload, text), response.status, payload);
   }
 
   return payload as T;
+}
+
+function parseJson(text: string): unknown {
+  if (!text) return undefined;
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    return undefined;
+  }
+}
+
+function errorMessage(response: Response, payload: unknown, text: string): string {
+  const requestId = response.headers.get("x-request-id");
+  const requestIdPart = requestId ? ` (request_id: ${requestId})` : "";
+  const detail =
+    typeof payload !== "undefined" ? JSON.stringify(payload) : text ? text : "empty response body";
+
+  return `Nexus request failed with ${response.status}${requestIdPart}: ${detail}`;
 }

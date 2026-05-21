@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { buildExecuteRequest, buildGetRequest, catalogEndpointCount, searchEndpoints } from "../src/catalog";
+import { normalizeExecuteInput } from "../src/executeInput";
 import { V3_ENDPOINTS } from "../src/generated/v3Catalog";
 import { SCALEV_TOOL_NAMES } from "../src/toolNames";
 
@@ -87,6 +88,34 @@ describe("Scalev MCP tools", () => {
       method: "POST",
       path: "/v3/pages",
       body: { name: "Launch", slug: "launch", page_display: { type: "html_mode" } }
+    });
+  });
+
+  it("treats extra execute fields as the request body when body is omitted", () => {
+    expect(
+      normalizeExecuteInput({
+        operation_id: "createBundle",
+        name: "MCP Test Bundle",
+        public_name: "MCP Test Bundle"
+      })
+    ).toEqual({
+      operation_id: "createBundle",
+      path: undefined,
+      path_params: undefined,
+      query: undefined,
+      body: { name: "MCP Test Bundle", public_name: "MCP Test Bundle" }
+    });
+  });
+
+  it("parses JSON-string execute bodies when clients serialize the body field", () => {
+    expect(
+      normalizeExecuteInput({
+        operation_id: "createBundle",
+        body: "{\"name\":\"MCP Test Bundle\",\"public_name\":\"MCP Test Bundle\"}"
+      })
+    ).toEqual({
+      operation_id: "createBundle",
+      body: { name: "MCP Test Bundle", public_name: "MCP Test Bundle" }
     });
   });
 

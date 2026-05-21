@@ -40,6 +40,8 @@ The Worker exposes exactly four tools:
 
 `search` is local catalog search. It does not call Nexus. Use it to find an `operation_id`, required path parameters, query parameters, request body shape, scopes, and the right `execution_tool` before calling `get` or `execute`.
 
+For `execute`, send request payloads in the `body` field. If an MCP client sends endpoint fields at the top level instead, the Worker treats those extra top-level fields as the JSON request body so `{"operation_id":"createBundle","name":"Example","public_name":"Example"}` and `{"operation_id":"createBundle","body":{"name":"Example","public_name":"Example"}}` both forward `{"name":"Example","public_name":"Example"}` to Nexus.
+
 `get` and `execute` only run operations that exist in the generated catalog. Nexus remains the source of truth for bearer-token validation, business access, scope enforcement, endpoint behavior, payload validation, and persistence.
 
 The catalog is generated from the sibling `../api-openapi/specs/v3/openapi.yaml` contract:

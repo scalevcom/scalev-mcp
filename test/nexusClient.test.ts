@@ -60,6 +60,55 @@ describe("nexusUrl", () => {
     expect(JSON.stringify(headers)).not.toContain("x-scalev-user-id");
   });
 
+  it("forwards JSON bodies for non-GET business-authenticated v3 endpoints", async () => {
+    const fetchMock = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => {
+      return new Response(JSON.stringify({ id: 1 }), {
+        headers: { "content-type": "application/json" }
+      });
+    });
+
+    vi.stubGlobal("fetch", fetchMock);
+
+    await nexusBusinessRequest(
+      env,
+      { token: "raw-oauth-token" },
+      {
+        method: "POST",
+        path: "/v3/bundles",
+        body: { name: "MCP Test Bundle", public_name: "MCP Test Bundle" }
+      }
+    );
+
+    const init = fetchMock.mock.calls[0]?.[1] as RequestInit;
+    const headers = init.headers as Record<string, string>;
+
+    expect(String(fetchMock.mock.calls[0]?.[0])).toBe("https://api.scalev.test/v3/bundles");
+    expect(headers).toMatchObject({
+      authorization: "Bearer raw-oauth-token",
+      "content-type": "application/json"
+    });
+    expect(init.body).toBe(JSON.stringify({ name: "MCP Test Bundle", public_name: "MCP Test Bundle" }));
+  });
+
+  it("surfaces empty Nexus error responses with request ids", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => {
+        return new Response("", {
+          status: 400,
+          headers: { "x-request-id": "req_test" }
+        });
+      })
+    );
+
+    await expect(
+      nexusBusinessRequest(env, { token: "raw-oauth-token" }, { method: "POST", path: "/v3/bundles", body: {} })
+    ).rejects.toMatchObject({
+      status: 400,
+      message: "Nexus request failed with 400 (request_id: req_test): empty response body"
+    });
+  });
+
   it("blocks OAuth flow and storefront client paths from execute transport", () => {
     expect(() =>
       nexusBusinessUrl({ NEXUS_API_BASE_URL: "https://api.scalev.test" }, "/v3/oauth/authorize")

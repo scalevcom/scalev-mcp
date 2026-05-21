@@ -2,6 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { getMcpAuthContext } from "agents/mcp";
 import { z } from "zod";
 import { buildExecuteRequest, buildGetRequest, searchEndpoints } from "./catalog";
+import { normalizeExecuteInput } from "./executeInput";
 import { nexusBusinessRequest } from "./nexusClient";
 import { SCALEV_TOOL_NAMES } from "./toolNames";
 import type { AuthContext, Env } from "./types";
@@ -35,6 +36,15 @@ const catalogOperationSchema = {
       "Query parameters for the API call. Array values are sent as repeated query parameters. Null removes a parameter from a concrete path query string."
     )
 };
+const executeInputSchema = z
+  .object({
+    ...catalogOperationSchema,
+    body: z
+      .unknown()
+      .optional()
+      .describe("JSON request body for non-GET operations when the selected API endpoint accepts one.")
+  })
+  .catchall(z.unknown());
 
 export function createScalevMcpServer(env: Env): McpServer {
   const server = new McpServer({ name: "scalev-v3", version: "0.2.0" });
@@ -121,19 +131,13 @@ export function createScalevMcpServer(env: Env): McpServer {
     {
       title: "Execute Scalev v3 request",
       description:
-        "Run one non-GET operation from the business-authenticated Scalev API v3 search catalog. Use this for create, update, delete, validation, and other action endpoints after confirming the user's intent. Prefer operation_id plus path_params/query/body from a search result. This tool cannot run GET operations. Nexus validates the OAuth bearer token, business access, scopes, request payload, and endpoint authorization.",
-      inputSchema: {
-        ...catalogOperationSchema,
-        body: z
-          .unknown()
-          .optional()
-          .describe("JSON request body for non-GET operations when the selected API endpoint accepts one.")
-      },
+        "Run one non-GET operation from the business-authenticated Scalev API v3 search catalog. Use this for create, update, delete, validation, and other action endpoints after confirming the user's intent. Prefer operation_id plus path_params/query/body from a search result. If body is omitted, extra top-level fields are treated as the JSON request body. This tool cannot run GET operations. Nexus validates the OAuth bearer token, business access, scopes, request payload, and endpoint authorization.",
+      inputSchema: executeInputSchema,
       annotations: { readOnlyHint: false }
     },
     async (input) => {
       const auth = currentAuth();
-      const { endpoint, request } = buildExecuteRequest(input);
+      const { endpoint, request } = buildExecuteRequest(normalizeExecuteInput(input));
       const response = await nexusBusinessRequest(env, auth, request);
 
       return toolResult({

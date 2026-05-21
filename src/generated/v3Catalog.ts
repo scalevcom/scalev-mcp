@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "510a73a73769a51675841f13dd1405bf73e1d04fe17e0cc54939b7d3a724771f";
+export const V3_CATALOG_SOURCE_SHA256 = "c97286e8cfafb34c21b50e44358fe951e0d2567a0f51ab0d63de9663f8cde5d2";
 
 export const V3_ENDPOINTS = [
   {
@@ -117,7 +117,8 @@ export const V3_ENDPOINTS = [
       ],
       "schemaRef": "BundleCreateRequest",
       "requiredFields": [
-        "name"
+        "name",
+        "public_name"
       ],
       "properties": [
         "bundle_price_options",
