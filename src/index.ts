@@ -9,7 +9,7 @@ export default {
     const url = new URL(request.url);
 
     if (url.pathname === "/.well-known/oauth-protected-resource/mcp") {
-      return protectedResourceMetadata(env);
+      return await protectedResourceMetadata(env);
     }
 
     if (url.pathname !== "/mcp") {
@@ -25,7 +25,7 @@ export default {
 
       return handler(request, env, ctx);
     } catch (_error) {
-      return unauthorized(env);
+      return await unauthorized(env);
     }
   }
 };

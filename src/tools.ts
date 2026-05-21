@@ -58,7 +58,8 @@ export function createScalevMcpServer(env: Env): McpServer {
           .string()
           .describe("Absolute Nexus path beginning with /v3/, including query string when needed."),
         body: z.unknown().optional().describe("JSON request body for non-GET requests.")
-      }
+      },
+      annotations: { readOnlyHint: false }
     },
     async ({ method, path, body }) => {
       const auth = currentAuth();

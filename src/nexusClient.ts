@@ -93,6 +93,7 @@ function isOAuthFlowPath(pathname: string): boolean {
     pathname === "/v3/oauth/authorize" ||
     pathname === "/v3/oauth/authorize/approve" ||
     pathname === "/v3/oauth/application" ||
+    pathname === "/v3/oauth/register" ||
     pathname === "/v3/oauth/token" ||
     pathname === "/v3/oauth/revoke" ||
     pathname === "/v3/oauth/introspect" ||
