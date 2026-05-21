@@ -67,6 +67,14 @@ Required GitHub Actions secrets:
 - `CLOUDFLARE_ACCOUNT_ID`
 - `CLOUDFLARE_API_TOKEN`
 
+Required API token permissions:
+
+- `Account: Workers Scripts: Edit`
+
+The `mcp.scalev.com` custom domain is managed manually in the Cloudflare
+dashboard. CI intentionally does not manage Worker routes, so the deploy token
+does not need `Zone: Workers Routes: Edit`.
+
 The production Worker variables are committed in `wrangler.toml`:
 
 ```text
