@@ -56,3 +56,29 @@ Configure these Worker variables in Cloudflare:
 - `MCP_RESOURCE_URI`
 
 The Worker uses the merchant OAuth bearer token for Nexus `/v3` API requests. Nexus remains responsible for scope enforcement and endpoint behavior.
+
+## Deployment
+
+Deployments run from GitHub Actions on pushes to `main`, or manually through the
+`Deploy` workflow.
+
+Required GitHub Actions secrets:
+
+- `CLOUDFLARE_ACCOUNT_ID`
+- `CLOUDFLARE_API_TOKEN`
+
+The production Worker variables are committed in `wrangler.toml`:
+
+```text
+MCP_RESOURCE_URI=https://mcp.scalev.com/mcp
+NEXUS_API_BASE_URL=https://api.scalev.com
+NEXUS_OAUTH_ISSUER=https://api.scalev.com/v3/oauth
+```
+
+Before merging a deployment change, run:
+
+```bash
+npm run typecheck
+npm test
+npx wrangler deploy --dry-run
+```
