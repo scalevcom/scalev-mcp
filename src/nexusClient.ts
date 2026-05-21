@@ -43,7 +43,7 @@ export function nexusBusinessUrl(env: Pick<Env, "NEXUS_API_BASE_URL">, path: str
   }
 
   if (pathname.startsWith("/v3/chatgpt/")) {
-    throw new Error(`Nexus ChatGPT internal routes are not exposed through scalev_v3_request: ${pathname}`);
+    throw new Error(`Nexus legacy /v3/chatgpt routes are not exposed through scalev_v3_request: ${pathname}`);
   }
 
   if (isOAuthFlowPath(pathname)) {

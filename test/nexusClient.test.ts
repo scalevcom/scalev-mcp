@@ -67,7 +67,7 @@ describe("nexusUrl", () => {
 
     expect(() =>
       nexusBusinessUrl({ NEXUS_API_BASE_URL: "https://api.scalev.test" }, "/v3/chatgpt/html-mode/pages")
-    ).toThrow(/ChatGPT internal/);
+    ).toThrow(/legacy \/v3\/chatgpt routes/);
 
     expect(() =>
       nexusBusinessUrl({ NEXUS_API_BASE_URL: "https://api.scalev.test" }, "/v3/oauth/authorize")

@@ -10,7 +10,7 @@ import {
 import { HTML_MODE_FIELD_NAMES, SCALEV_TOOL_NAMES } from "../src/toolNames";
 
 describe("Scalev MCP tools", () => {
-  it("exposes the generic v3 bridge and semantic ChatGPT HTML Mode helpers", () => {
+  it("exposes the generic v3 bridge and semantic HTML Mode helpers", () => {
     expect([...SCALEV_TOOL_NAMES]).toEqual([
       "scalev_get_me",
       "scalev_v3_request",

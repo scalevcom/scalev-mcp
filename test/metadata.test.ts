@@ -65,8 +65,10 @@ describe("metadata", () => {
 
     const response = await unauthorized(env);
     const header = response.headers.get("www-authenticate") || "";
+    const payload = (await response.json()) as { error_description?: string };
 
     expect(response.status).toBe(401);
+    expect(payload.error_description).toBe("Connect Scalev through your MCP client before using this MCP server.");
     expect(header).toContain("https://mcp.scalev.test/.well-known/oauth-protected-resource/mcp");
     expect(header).toContain('scope="page:read page:write"');
   });

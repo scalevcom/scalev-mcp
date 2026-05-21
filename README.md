@@ -21,7 +21,7 @@ MCP_RESOURCE_URI=https://mcp.scalev.test/mcp
 
 ## OAuth
 
-The Worker serves MCP protected-resource metadata and points clients to the Nexus `/v3/oauth` authorization server. ChatGPT obtains a merchant OAuth token from Nexus, then sends it to `/mcp`. The Worker only checks that a bearer token is present and forwards that exact token to normal business-authenticated Nexus `/v3` endpoints.
+The Worker serves MCP protected-resource metadata and points clients to the Nexus `/v3/oauth` authorization server. MCP clients obtain a merchant OAuth token from Nexus, then send it to `/mcp`. The Worker only checks that a bearer token is present and forwards that exact token to normal business-authenticated Nexus `/v3` endpoints.
 
 Tokens must use the MCP resource/audience value for this Worker, for example:
 

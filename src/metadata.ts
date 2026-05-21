@@ -28,7 +28,7 @@ export async function unauthorized(env: Env): Promise<Response> {
   return json(
     {
       error: "unauthorized",
-      error_description: "Connect Scalev to ChatGPT before using this MCP server."
+      error_description: "Connect Scalev through your MCP client before using this MCP server."
     },
     {
       status: 401,
