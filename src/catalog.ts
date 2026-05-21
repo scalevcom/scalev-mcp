@@ -1,0 +1,351 @@
+import { V3_CATALOG_SOURCE_SHA256, V3_ENDPOINTS } from "./generated/v3Catalog";
+import type { BusinessV3Method, BusinessV3Request } from "./nexusClient";
+
+export type CatalogPrimitive = string | number | boolean;
+export type CatalogQueryValue = CatalogPrimitive | CatalogPrimitive[] | null;
+
+export interface V3EndpointParameter {
+  readonly name: string;
+  readonly in: "path" | "query";
+  readonly required: boolean;
+  readonly description?: string;
+  readonly schema?: {
+    readonly type?: string;
+    readonly format?: string;
+    readonly enum?: readonly string[];
+    readonly itemsType?: string;
+  };
+}
+
+export interface V3EndpointRequestBody {
+  readonly required: boolean;
+  readonly description?: string;
+  readonly contentTypes: readonly string[];
+  readonly schemaRef?: string;
+  readonly requiredFields: readonly string[];
+  readonly properties: readonly string[];
+}
+
+export interface V3Endpoint {
+  readonly operationId: string;
+  readonly method: BusinessV3Method;
+  readonly path: string;
+  readonly summary: string;
+  readonly description?: string;
+  readonly tags: readonly string[];
+  readonly scopes: readonly string[];
+  readonly auth: readonly string[];
+  readonly readOnly: boolean;
+  readonly pathParams: readonly V3EndpointParameter[];
+  readonly queryParams: readonly V3EndpointParameter[];
+  readonly requestBody?: V3EndpointRequestBody;
+}
+
+export interface EndpointSearchInput {
+  query?: string;
+  tag?: string;
+  method?: BusinessV3Method;
+  scope?: string;
+  read_only?: boolean;
+  limit?: number;
+}
+
+export interface EndpointSearchResult {
+  operation_id: string;
+  method: BusinessV3Method;
+  path_template: string;
+  summary: string;
+  description?: string;
+  tags: string[];
+  scopes: string[];
+  read_only: boolean;
+  path_params: V3EndpointParameter[];
+  query_params: V3EndpointParameter[];
+  request_body?: V3EndpointRequestBody;
+  execute: {
+    operation_id: string;
+    required_path_params: string[];
+    optional_query_params: string[];
+    body_required: boolean;
+  };
+}
+
+export interface EndpointSearchResponse {
+  data: EndpointSearchResult[];
+  total_matches: number;
+  is_paginated: false;
+  catalog: {
+    source: string;
+    source_sha256: string;
+    endpoint_count: number;
+  };
+}
+
+export interface ExecuteEndpointInput {
+  operation_id?: string;
+  method?: BusinessV3Method;
+  path?: string;
+  path_params?: Record<string, CatalogPrimitive>;
+  query?: Record<string, CatalogQueryValue>;
+  body?: unknown;
+}
+
+export interface ResolvedEndpointRequest {
+  endpoint: V3Endpoint;
+  request: BusinessV3Request;
+}
+
+const CATALOG_SOURCE = "../api-openapi/specs/v3/openapi.yaml";
+const DEFAULT_LIMIT = 20;
+const MAX_LIMIT = 50;
+const ENDPOINTS_BY_OPERATION_ID = new Map<string, V3Endpoint>(
+  V3_ENDPOINTS.map((endpoint) => [endpoint.operationId, endpoint])
+);
+
+export function catalogEndpointCount(): number {
+  return V3_ENDPOINTS.length;
+}
+
+export function searchEndpoints(input: EndpointSearchInput = {}): EndpointSearchResponse {
+  const queryTerms = terms(input.query);
+  const tag = normalize(input.tag);
+  const scope = normalize(input.scope);
+  const limit = clampLimit(input.limit);
+
+  const matches = V3_ENDPOINTS.map((endpoint) => ({ endpoint, score: scoreEndpoint(endpoint, queryTerms) }))
+    .filter(({ endpoint, score }) => {
+      if (queryTerms.length > 0 && score <= 0) return false;
+      if (input.method && endpoint.method !== input.method) return false;
+      if (typeof input.read_only === "boolean" && endpoint.readOnly !== input.read_only) return false;
+      if (tag && !endpoint.tags.some((endpointTag) => normalize(endpointTag) === tag)) return false;
+      if (scope && !endpoint.scopes.some((endpointScope) => normalize(endpointScope) === scope)) return false;
+      return true;
+    })
+    .sort((left, right) => compareScoredEndpoints(left, right));
+
+  return {
+    data: matches.slice(0, limit).map(({ endpoint }) => endpointSearchResult(endpoint)),
+    total_matches: matches.length,
+    is_paginated: false,
+    catalog: {
+      source: CATALOG_SOURCE,
+      source_sha256: V3_CATALOG_SOURCE_SHA256,
+      endpoint_count: V3_ENDPOINTS.length
+    }
+  };
+}
+
+export function buildExecuteRequest(input: ExecuteEndpointInput): ResolvedEndpointRequest {
+  const resolved = resolveEndpoint(input);
+  const body = input.body;
+
+  if (resolved.endpoint.method === "GET" && typeof body !== "undefined") {
+    throw new Error("GET requests must not include a body");
+  }
+
+  const path = withQuery(resolved.path, resolved.queryParams, input.query);
+
+  return {
+    endpoint: resolved.endpoint,
+    request: {
+      method: resolved.endpoint.method,
+      path,
+      body
+    }
+  };
+}
+
+function resolveEndpoint(input: ExecuteEndpointInput): {
+  endpoint: V3Endpoint;
+  path: string;
+  queryParams: URLSearchParams;
+} {
+  if (input.operation_id) {
+    const endpoint = ENDPOINTS_BY_OPERATION_ID.get(input.operation_id);
+    if (!endpoint) throw new Error(`Unknown v3 operation_id: ${input.operation_id}`);
+
+    return {
+      endpoint,
+      path: buildPathFromTemplate(endpoint, input.path_params),
+      queryParams: new URLSearchParams()
+    };
+  }
+
+  if (!input.method || !input.path) {
+    throw new Error("execute requires either operation_id or method and path");
+  }
+
+  const parsed = parseInputPath(input.path);
+  const endpoint = parsed.pathname.includes("{")
+    ? findTemplateEndpoint(input.method, parsed.pathname)
+    : findConcreteEndpoint(input.method, parsed.pathname);
+
+  if (!endpoint) {
+    throw new Error(`No business-authenticated v3 catalog operation matches ${input.method} ${parsed.pathname}`);
+  }
+
+  return {
+    endpoint,
+    path: parsed.pathname.includes("{") ? buildPathFromTemplate(endpoint, input.path_params) : parsed.pathname,
+    queryParams: parsed.searchParams
+  };
+}
+
+function findTemplateEndpoint(method: BusinessV3Method, path: string): V3Endpoint | undefined {
+  return V3_ENDPOINTS.find((endpoint) => endpoint.method === method && endpoint.path === path);
+}
+
+function findConcreteEndpoint(method: BusinessV3Method, path: string): V3Endpoint | undefined {
+  const exact = V3_ENDPOINTS.find((endpoint) => endpoint.method === method && endpoint.path === path);
+  if (exact) return exact;
+
+  return V3_ENDPOINTS.find((endpoint) => endpoint.method === method && pathMatcher(endpoint.path).test(path));
+}
+
+function buildPathFromTemplate(
+  endpoint: V3Endpoint,
+  pathParams: Record<string, CatalogPrimitive> | undefined
+): string {
+  for (const param of endpoint.pathParams) {
+    if (param.required && typeof pathParams?.[param.name] === "undefined") {
+      throw new Error(`Missing required path parameter for ${endpoint.operationId}: ${param.name}`);
+    }
+  }
+
+  return endpoint.path.replace(/\{([^}]+)\}/g, (_match, name: string) => {
+    const value = pathParams?.[name];
+    if (typeof value === "undefined") {
+      throw new Error(`Missing required path parameter for ${endpoint.operationId}: ${name}`);
+    }
+
+    return encodeURIComponent(String(value));
+  });
+}
+
+function withQuery(
+  path: string,
+  queryParams: URLSearchParams,
+  query: Record<string, CatalogQueryValue> | undefined
+): string {
+  const params = new URLSearchParams(queryParams);
+
+  for (const [key, value] of Object.entries(query || {})) {
+    params.delete(key);
+    if (value === null) continue;
+
+    if (Array.isArray(value)) {
+      for (const item of value) params.append(key, String(item));
+    } else {
+      params.set(key, String(value));
+    }
+  }
+
+  const queryString = params.toString();
+  return queryString ? `${path}?${queryString}` : path;
+}
+
+function parseInputPath(path: string): { pathname: string; searchParams: URLSearchParams } {
+  if (!path.startsWith("/v3/")) throw new Error(`execute only supports /v3 paths: ${path}`);
+
+  const url = new URL(path, "https://nexus.local");
+  return { pathname: url.pathname, searchParams: url.searchParams };
+}
+
+function endpointSearchResult(endpoint: V3Endpoint): EndpointSearchResult {
+  return {
+    operation_id: endpoint.operationId,
+    method: endpoint.method,
+    path_template: endpoint.path,
+    summary: endpoint.summary,
+    description: endpoint.description,
+    tags: [...endpoint.tags],
+    scopes: [...endpoint.scopes],
+    read_only: endpoint.readOnly,
+    path_params: [...endpoint.pathParams],
+    query_params: [...endpoint.queryParams],
+    request_body: endpoint.requestBody,
+    execute: {
+      operation_id: endpoint.operationId,
+      required_path_params: endpoint.pathParams.filter((param) => param.required).map((param) => param.name),
+      optional_query_params: endpoint.queryParams.filter((param) => !param.required).map((param) => param.name),
+      body_required: Boolean(endpoint.requestBody?.required)
+    }
+  };
+}
+
+function scoreEndpoint(endpoint: V3Endpoint, queryTerms: string[]): number {
+  if (queryTerms.length === 0) return 1;
+
+  let score = 0;
+  const operationId = normalize(endpoint.operationId);
+  const path = normalize(endpoint.path);
+  const summary = normalize(endpoint.summary);
+  const description = normalize(endpoint.description);
+  const tags = endpoint.tags.map(normalize);
+  const scopes = endpoint.scopes.map(normalize);
+
+  for (const term of queryTerms) {
+    let termScore = 0;
+    if (operationId === term) termScore += 40;
+    if (operationId.includes(term)) termScore += 20;
+    if (path.includes(term)) termScore += 18;
+    if (tags.some((tag) => tag === term || tag.includes(term))) termScore += 14;
+    if (summary.includes(term)) termScore += 10;
+    if (scopes.some((scope) => scope === term || scope.includes(term))) termScore += 8;
+    if (description.includes(term)) termScore += 3;
+    if (termScore === 0) return 0;
+    score += termScore;
+  }
+
+  return score;
+}
+
+function compareScoredEndpoints(
+  left: { endpoint: V3Endpoint; score: number },
+  right: { endpoint: V3Endpoint; score: number }
+): number {
+  if (right.score !== left.score) return right.score - left.score;
+  if (left.endpoint.readOnly !== right.endpoint.readOnly) return left.endpoint.readOnly ? -1 : 1;
+  const tagCompare = (left.endpoint.tags[0] || "").localeCompare(right.endpoint.tags[0] || "");
+  if (tagCompare !== 0) return tagCompare;
+  const pathCompare = left.endpoint.path.localeCompare(right.endpoint.path);
+  if (pathCompare !== 0) return pathCompare;
+  return left.endpoint.method.localeCompare(right.endpoint.method);
+}
+
+function pathMatcher(template: string): RegExp {
+  const params = /\{([^}]+)\}/g;
+  let pattern = "^";
+  let cursor = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = params.exec(template))) {
+    pattern += escapeRegex(template.slice(cursor, match.index));
+    pattern += "[^/]+";
+    cursor = match.index + match[0].length;
+  }
+
+  pattern += escapeRegex(template.slice(cursor));
+  pattern += "$";
+
+  return new RegExp(pattern);
+}
+
+function terms(query: string | undefined): string[] {
+  return normalize(query)
+    .split(/\s+/)
+    .filter(Boolean);
+}
+
+function normalize(value: string | undefined): string {
+  return (value || "").trim().toLowerCase();
+}
+
+function clampLimit(limit: number | undefined): number {
+  if (!limit) return DEFAULT_LIMIT;
+  return Math.max(1, Math.min(MAX_LIMIT, Math.trunc(limit)));
+}
+
+function escapeRegex(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}

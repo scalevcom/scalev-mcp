@@ -7,8 +7,8 @@ Hard boundary: this Worker only calls Nexus `/v3` endpoints. Any configured Nexu
 ## Local Development
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm run dev
 ```
 
 Required local secrets can be placed in `.dev.vars`:
@@ -31,21 +31,24 @@ https://mcp.scalev.com/mcp
 
 ## Tools
 
-The Worker exposes a generic business-authenticated v3 bridge plus semantic HTML Mode helpers:
+The Worker exposes exactly three tools:
 
-- `scalev_get_me`
-- `scalev_v3_request`
-- `scalev_list_pages`
-- `scalev_get_page_context`
-- `scalev_validate_html_mode`
-- `scalev_create_html_mode_draft`
-- `scalev_get_draft_status`
+- `get_me`: calls `GET /v3/me` and returns the Nexus-resolved business/user/OAuth context.
+- `search`: searches the generated business-authenticated `/v3` endpoint catalog.
+- `execute`: executes one catalog-approved `/v3` request and forwards the user's OAuth bearer token unchanged to Nexus.
 
-`scalev_v3_request` forwards the user's OAuth bearer token to normal Nexus `/v3` API endpoints so Nexus remains the source of truth for endpoint behavior and scope enforcement. It does not expose OAuth token-management routes, storefront public/customer browser routes, or legacy internal MCP route names.
+`search` is local catalog search. It does not call Nexus. Use it to find an `operation_id`, required path parameters, query parameters, request body shape, and scopes before calling `execute`.
 
-Draft creation creates unpublished Nexus page display versions only. Publishing stays in the Scalev dashboard.
-HTML Mode write tools use the Nexus payload field names: `html_code`, `css_code`, `js_code`, and `csp_policy`.
-The semantic HTML Mode tools use the normal Nexus `/v3/pages` and `/v3/pages/:page_id/page-displays` API. Nexus does not need a separate `/v3/mcp` or `/v3/chatgpt` controller surface.
+`execute` only runs operations that exist in the generated catalog. Nexus remains the source of truth for bearer-token validation, business access, scope enforcement, endpoint behavior, payload validation, and persistence.
+
+The catalog is generated from the sibling `../api-openapi/specs/v3/openapi.yaml` contract:
+
+```bash
+pnpm run generate:v3-catalog
+pnpm run check:v3-catalog
+```
+
+Run the generator whenever the public business-authenticated `/v3` OpenAPI contract changes, then commit the generated `src/generated/v3Catalog.ts` diff with the Worker change.
 
 ## Cloudflare Variables
 
@@ -86,7 +89,8 @@ NEXUS_OAUTH_ISSUER=https://api.scalev.com/v3/oauth
 Before merging a deployment change, run:
 
 ```bash
-npm run typecheck
-npm test
-npx wrangler deploy --dry-run
+pnpm run check:v3-catalog
+pnpm run typecheck
+pnpm test
+pnpm wrangler deploy --dry-run
 ```

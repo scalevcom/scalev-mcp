@@ -1,92 +1,89 @@
 import { describe, expect, it } from "vitest";
-import {
-  buildHtmlModeDraftPayload,
-  htmlModePagesPath,
-  pageDisplayCreatePath,
-  pageDisplayPath,
-  pageDisplayValidatePath,
-  pagePath
-} from "../src/htmlMode";
-import { HTML_MODE_FIELD_NAMES, SCALEV_TOOL_NAMES } from "../src/toolNames";
+import { buildExecuteRequest, catalogEndpointCount, searchEndpoints } from "../src/catalog";
+import { V3_ENDPOINTS } from "../src/generated/v3Catalog";
+import { SCALEV_TOOL_NAMES } from "../src/toolNames";
 
 describe("Scalev MCP tools", () => {
-  it("exposes the generic v3 bridge and semantic HTML Mode helpers", () => {
-    expect([...SCALEV_TOOL_NAMES]).toEqual([
-      "scalev_get_me",
-      "scalev_v3_request",
-      "scalev_list_pages",
-      "scalev_get_page_context",
-      "scalev_validate_html_mode",
-      "scalev_create_html_mode_draft",
-      "scalev_get_draft_status"
-    ]);
-
-    expect(SCALEV_TOOL_NAMES).not.toContain("create_html_mode_page");
-    expect(SCALEV_TOOL_NAMES).not.toContain("update_html_mode_draft");
+  it("exposes only the three generic tools", () => {
+    expect([...SCALEV_TOOL_NAMES]).toEqual(["get_me", "search", "execute"]);
   });
 
-  it("uses Nexus HTML Mode payload field names", () => {
-    expect([...HTML_MODE_FIELD_NAMES]).toEqual(["html_code", "css_code", "js_code", "csp_policy"]);
-    expect(HTML_MODE_FIELD_NAMES).not.toContain("agent_html");
-    expect(HTML_MODE_FIELD_NAMES).not.toContain("agent_csp_policy");
+  it("generates a broad business-authenticated v3 endpoint catalog", () => {
+    expect(catalogEndpointCount()).toBeGreaterThan(200);
   });
 
-  it("maps semantic page listing inputs to the normal Nexus v3 pages endpoint", () => {
-    expect(htmlModePagesPath({ q: "launch", store_id: 12, limit: 20 })).toBe(
-      "/v3/pages?search=launch&store_id=12&page_size=20"
-    );
+  it("searches business v3 endpoints by keyword, tag, method, and scope", () => {
+    const pages = searchEndpoints({ query: "landing page", method: "GET", limit: 5 });
+    expect(pages.data.map((endpoint) => endpoint.operation_id)).toContain("listLandingPages");
+
+    const orders = searchEndpoints({ tag: "Orders", method: "GET", scope: "order:list", limit: 10 });
+    expect(orders.data.some((endpoint) => endpoint.path_template.startsWith("/v3/orders"))).toBe(true);
+
+    const waba = searchEndpoints({ query: "waba account", scope: "waba_account:read", limit: 10 });
+    expect(waba.data.some((endpoint) => endpoint.scopes.includes("waba_account:read"))).toBe(true);
   });
 
-  it("maps semantic tools to normal Nexus v3 page-display endpoints", () => {
-    expect(pagePath(10)).toBe("/v3/pages/10");
-    expect(pageDisplayValidatePath(10)).toBe("/v3/pages/10/page-displays/validate");
-    expect(pageDisplayCreatePath(10)).toBe("/v3/pages/10/page-displays");
-    expect(pageDisplayPath(10, 99)).toBe("/v3/pages/10/page-displays/99");
+  it("keeps OAuth flow routes and storefront browser routes out of search", () => {
+    const paths = V3_ENDPOINTS.map((endpoint) => endpoint.path);
+
+    expect(paths).not.toContain("/v3/oauth/authorize");
+    expect(paths).not.toContain("/v3/oauth/token");
+    expect(paths).not.toContain("/v3/oauth/register");
+    expect(paths).not.toContain("/v3/stores/{store_id}/public/items");
+    expect(paths).not.toContain("/v3/stores/{store_id}/customers/me");
   });
 
-  it("builds page-display draft payloads for the normal Nexus v3 page-display endpoint", () => {
-    const payload = buildHtmlModeDraftPayload(
-      {
-        id: 10,
-        store_id: 5,
-        render_mode: "html_mode",
-        page_display: {
-          id: 99,
-          render_mode: "html_mode",
-          version: 3,
-          html_code: "<section>Old</section>",
-          css_code: ".old{}",
-          js_code: "console.log('old')",
-          csp_policy: { connect_src: ["https://api.example.test"] },
-          meta: { lang: "id" },
-          form_display: {
-            store: { id: 5 },
-            variants: [{ id: 101 }, { id: 102 }],
-            bundle_price_options: [{ id: 201 }],
-            handler_assignment: "rotator",
-            after_submit_event: "success_page"
-          }
-        }
-      },
-      {
-        html_code: "<section>New</section>"
-      }
-    );
-
-    expect(payload).toMatchObject({
-      render_mode: "html_mode",
-      is_published: false,
-      html_code: "<section>New</section>",
-      css_code: ".old{}",
-      js_code: "console.log('old')",
-      meta: { lang: "id" },
-      form_display: {
-        store_id: 5,
-        variant_ids: [101, 102],
-        bundle_price_option_ids: [201],
-        handler_assignment: "rotator",
-        after_submit_event: "success_page"
-      }
+  it("builds execute requests from operation_id", () => {
+    const { endpoint, request } = buildExecuteRequest({
+      operation_id: "getLandingPage",
+      path_params: { id: 123 },
+      query: { include: ["current_page_display", "store"], preview: true }
     });
+
+    expect(endpoint.operationId).toBe("getLandingPage");
+    expect(request).toEqual({
+      method: "GET",
+      path: "/v3/pages/123?include=current_page_display&include=store&preview=true",
+      body: undefined
+    });
+  });
+
+  it("builds execute requests from catalog-matching concrete paths", () => {
+    const { endpoint, request } = buildExecuteRequest({
+      method: "GET",
+      path: "/v3/pages/123?page_size=10",
+      query: { page_size: 20 }
+    });
+
+    expect(endpoint.operationId).toBe("getLandingPage");
+    expect(request.path).toBe("/v3/pages/123?page_size=20");
+  });
+
+  it("rejects unknown, malformed, or unsafe execute requests", () => {
+    expect(() => buildExecuteRequest({ operation_id: "missingOperation" })).toThrow(/Unknown v3 operation_id/);
+
+    expect(() => buildExecuteRequest({ operation_id: "getLandingPage" })).toThrow(/Missing required path parameter/);
+
+    expect(() =>
+      buildExecuteRequest({
+        operation_id: "getLandingPage",
+        path_params: { id: 123 },
+        body: { not: "allowed" }
+      })
+    ).toThrow(/GET requests must not include a body/);
+
+    expect(() =>
+      buildExecuteRequest({
+        method: "GET",
+        path: "/v3/oauth/authorize"
+      })
+    ).toThrow(/No business-authenticated v3 catalog operation/);
+
+    expect(() =>
+      buildExecuteRequest({
+        method: "GET",
+        path: "/v3/stores/store_123/public/items"
+      })
+    ).toThrow(/No business-authenticated v3 catalog operation/);
   });
 });

@@ -1,41 +1,25 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { getMcpAuthContext } from "agents/mcp";
 import { z } from "zod";
-import {
-  buildHtmlModeDraftPayload,
-  htmlModePagesPath,
-  pageDisplayCreatePath,
-  pageDisplayPath,
-  pageDisplayValidatePath,
-  pagePath,
-  type PageDetail,
-  type PageDisplay,
-  type PageListResponse
-} from "./htmlMode";
+import { buildExecuteRequest, searchEndpoints } from "./catalog";
 import { nexusBusinessRequest } from "./nexusClient";
-import { HTML_MODE_FIELD_NAMES, SCALEV_TOOL_NAMES } from "./toolNames";
+import { SCALEV_TOOL_NAMES } from "./toolNames";
 import type { AuthContext, Env } from "./types";
 
-export { HTML_MODE_FIELD_NAMES, SCALEV_TOOL_NAMES };
+export { SCALEV_TOOL_NAMES };
 
-const htmlFields = {
-  html_code: z
-    .string()
-    .optional()
-    .describe("Body-only HTML. Do not include doctype, html, body, head, meta, link, title, favicon, SEO, crawler, or domain settings."),
-  css_code: z.string().optional(),
-  js_code: z.string().optional().describe("JavaScript for the HTML Mode page."),
-  csp_policy: z.record(z.string(), z.array(z.string())).optional()
-};
+const methodSchema = z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]);
+const primitiveSchema = z.union([z.string(), z.number(), z.boolean()]);
+const queryValueSchema = z.union([primitiveSchema, z.array(primitiveSchema), z.null()]);
 
 export function createScalevMcpServer(env: Env): McpServer {
-  const server = new McpServer({ name: "scalev-html-mode", version: "0.1.0" });
+  const server = new McpServer({ name: "scalev-v3", version: "0.2.0" });
 
   server.registerTool(
-    "scalev_get_me",
+    "get_me",
     {
       title: "Get Scalev identity",
-      description: "Return the authenticated Scalev user and authorized business.",
+      description: "Return the authenticated Scalev business, user, OAuth app, and effective scope context.",
       inputSchema: {},
       annotations: { readOnlyHint: true }
     },
@@ -47,156 +31,72 @@ export function createScalevMcpServer(env: Env): McpServer {
   );
 
   server.registerTool(
-    "scalev_v3_request",
+    "search",
     {
-      title: "Call Scalev v3 API",
+      title: "Search Scalev v3 endpoints",
       description:
-        "Call a business-authenticated Scalev /v3 API endpoint. Nexus enforces the OAuth scopes for the requested endpoint.",
+        "Search business-authenticated Scalev /v3 endpoints available through this MCP server. Use this before execute to find the right operation_id, required path params, query params, request body, and scopes.",
       inputSchema: {
-        method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]),
-        path: z
+        query: z
           .string()
-          .describe("Absolute Nexus path beginning with /v3/, including query string when needed."),
-        body: z.unknown().optional().describe("JSON request body for non-GET requests.")
-      },
-      annotations: { readOnlyHint: false }
-    },
-    async ({ method, path, body }) => {
-      const auth = currentAuth();
-      const result = await nexusBusinessRequest(env, auth, { method, path, body });
-      return toolResult(result);
-    }
-  );
-
-  server.registerTool(
-    "scalev_list_pages",
-    {
-      title: "List Scalev pages",
-      description: "List accessible Scalev landing pages.",
-      inputSchema: {
-        q: z.string().optional(),
-        store_id: z.number().int().optional(),
-        limit: z.number().int().min(1).max(100).optional()
+          .optional()
+          .describe("Free-text search across operation id, path, tags, summary, description, and scopes."),
+        tag: z.string().optional().describe("Filter by OpenAPI tag, for example Orders or Landing Pages."),
+        method: methodSchema.optional(),
+        scope: z.string().optional().describe("Filter by required business scope, for example order:list."),
+        read_only: z.boolean().optional().describe("Filter to GET endpoints when true, or write-capable endpoints when false."),
+        limit: z.number().int().min(1).max(50).optional().describe("Maximum results to return. Defaults to 20.")
       },
       annotations: { readOnlyHint: true }
     },
     async (input) => {
-      const auth = currentAuth();
-
-      const result = await nexusBusinessRequest<PageListResponse>(env, auth, {
-        method: "GET",
-        path: htmlModePagesPath(input)
-      });
-
-      return toolResult(result);
+      return toolResult(searchEndpoints(input));
     }
   );
 
   server.registerTool(
-    "scalev_get_page_context",
+    "execute",
     {
-      title: "Get Scalev page context",
-      description: "Fetch the latest page and page-display context for a Scalev page.",
-      inputSchema: { page_id: z.number().int() },
-      annotations: { readOnlyHint: true }
-    },
-    async ({ page_id }) => {
-      const auth = currentAuth();
-      const page = await nexusBusinessRequest<PageDetail>(env, auth, {
-        method: "GET",
-        path: pagePath(page_id)
-      });
-      return toolResult(page);
-    }
-  );
-
-  server.registerTool(
-    "scalev_validate_html_mode",
-    {
-      title: "Validate Scalev HTML Mode payload",
-      description: "Validate an HTML Mode payload for a Scalev page without saving it.",
+      title: "Execute Scalev v3 request",
+      description:
+        "Execute a business-authenticated Scalev /v3 request selected from the search catalog. Prefer operation_id from search results. Nexus validates the bearer token, business access, scopes, and payload.",
       inputSchema: {
-        page_id: z.number().int(),
-        ...htmlFields
+        operation_id: z
+          .string()
+          .optional()
+          .describe("Preferred operation id from the search tool, for example listLandingPages."),
+        method: methodSchema.optional().describe("HTTP method. Required only when operation_id is not supplied."),
+        path: z
+          .string()
+          .optional()
+          .describe("Catalog path template or concrete /v3 path. Required only when operation_id is not supplied."),
+        path_params: z
+          .record(z.string(), primitiveSchema)
+          .optional()
+          .describe("Path parameters for template paths, keyed by OpenAPI parameter name."),
+        query: z
+          .record(z.string(), queryValueSchema)
+          .optional()
+          .describe("Query parameters. Array values are sent as repeated query parameters. Null removes the parameter."),
+        body: z.unknown().optional().describe("JSON request body for non-GET requests.")
       },
-      annotations: { readOnlyHint: true }
+      annotations: { readOnlyHint: false }
     },
-    async ({ page_id, ...payload }) => {
+    async (input) => {
       const auth = currentAuth();
-      const page = await fetchPage(env, auth, page_id);
-      const result = await nexusBusinessRequest(env, auth, {
-        method: "POST",
-        path: pageDisplayValidatePath(page_id),
-        body: buildHtmlModeDraftPayload(page, payload)
-      });
-      return toolResult(result);
-    }
-  );
-
-  server.registerTool(
-    "scalev_create_html_mode_draft",
-    {
-      title: "Create Scalev HTML Mode draft",
-      description: "Create a new unpublished HTML Mode draft version for a Scalev page.",
-      inputSchema: {
-        page_id: z.number().int(),
-        ...htmlFields
-      }
-    },
-    async ({ page_id, ...payload }) => {
-      const auth = currentAuth();
-      const page = await fetchPage(env, auth, page_id);
-      const draft = await nexusBusinessRequest<PageDisplay>(env, auth, {
-        method: "POST",
-        path: pageDisplayCreatePath(page_id),
-        body: buildHtmlModeDraftPayload(page, payload)
-      });
+      const { endpoint, request } = buildExecuteRequest(input);
+      const response = await nexusBusinessRequest(env, auth, request);
 
       return toolResult({
-        page_id,
-        page_display_id: draft.id,
-        render_mode: draft.render_mode,
-        is_published: draft.is_published,
-        published_at: draft.published_at,
-        draft
-      });
-    }
-  );
-
-  server.registerTool(
-    "scalev_get_draft_status",
-    {
-      title: "Get Scalev HTML Mode draft status",
-      description: "Return a specific HTML Mode draft page-display record.",
-      inputSchema: { page_id: z.number().int(), page_display_id: z.number().int() },
-      annotations: { readOnlyHint: true }
-    },
-    async ({ page_id, page_display_id }) => {
-      const auth = currentAuth();
-      const draft = await nexusBusinessRequest<PageDisplay>(env, auth, {
-        method: "GET",
-        path: pageDisplayPath(page_id, page_display_id)
-      });
-
-      return toolResult({
-        page_id,
-        page_display_id,
-        render_mode: draft.render_mode,
-        is_published: draft.is_published,
-        published_at: draft.published_at,
-        draft
+        operation_id: endpoint.operationId,
+        method: request.method,
+        path: request.path,
+        response: response ?? null
       });
     }
   );
 
   return server;
-}
-
-async function fetchPage(env: Env, auth: AuthContext, pageId: number): Promise<PageDetail> {
-  return nexusBusinessRequest<PageDetail>(env, auth, {
-    method: "GET",
-    path: pagePath(pageId)
-  });
 }
 
 function currentAuth(): AuthContext {
@@ -206,11 +106,14 @@ function currentAuth(): AuthContext {
 }
 
 function toolResult(data: unknown) {
+  const normalizedData = typeof data === "undefined" ? null : data;
   const structuredContent =
-    data && typeof data === "object" && !Array.isArray(data) ? (data as Record<string, unknown>) : { data };
+    normalizedData && typeof normalizedData === "object" && !Array.isArray(normalizedData)
+      ? (normalizedData as Record<string, unknown>)
+      : { data: normalizedData };
 
   return {
     structuredContent,
-    content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }]
+    content: [{ type: "text" as const, text: JSON.stringify(normalizedData, null, 2) }]
   };
 }

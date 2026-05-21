@@ -60,15 +60,7 @@ describe("nexusUrl", () => {
     expect(JSON.stringify(headers)).not.toContain("x-scalev-user-id");
   });
 
-  it("blocks internal, OAuth flow, and storefront client paths from the generic v3 bridge", () => {
-    expect(() =>
-      nexusBusinessUrl({ NEXUS_API_BASE_URL: "https://api.scalev.test" }, "/v3/mcp/html-mode/pages")
-    ).toThrow(/MCP internal/);
-
-    expect(() =>
-      nexusBusinessUrl({ NEXUS_API_BASE_URL: "https://api.scalev.test" }, "/v3/chatgpt/html-mode/pages")
-    ).toThrow(/legacy \/v3\/chatgpt routes/);
-
+  it("blocks OAuth flow and storefront client paths from execute transport", () => {
     expect(() =>
       nexusBusinessUrl({ NEXUS_API_BASE_URL: "https://api.scalev.test" }, "/v3/oauth/authorize")
     ).toThrow(/OAuth flow/);

@@ -38,16 +38,8 @@ export function nexusBusinessUrl(env: Pick<Env, "NEXUS_API_BASE_URL">, path: str
   const url = nexusUrl(env, path);
   const pathname = url.pathname;
 
-  if (pathname.startsWith("/v3/mcp/")) {
-    throw new Error(`Nexus MCP internal routes are not exposed through scalev_v3_request: ${pathname}`);
-  }
-
-  if (pathname.startsWith("/v3/chatgpt/")) {
-    throw new Error(`Nexus legacy /v3/chatgpt routes are not exposed through scalev_v3_request: ${pathname}`);
-  }
-
   if (isOAuthFlowPath(pathname)) {
-    throw new Error(`Nexus OAuth flow routes are not exposed through scalev_v3_request: ${pathname}`);
+    throw new Error(`Nexus OAuth flow routes are not exposed through execute: ${pathname}`);
   }
 
   if (isStorefrontClientPath(pathname)) {

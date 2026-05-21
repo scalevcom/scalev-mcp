@@ -17,28 +17,46 @@ jobs:
   deploy:
     name: Deploy Cloudflare Worker
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: nexus-mcp
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          path: nexus-mcp
+
+      - name: Checkout api-openapi
+        uses: actions/checkout@v4
+        with:
+          repository: scalevcom/api-openapi
+          path: api-openapi
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
+          cache: pnpm
+          cache-dependency-path: nexus-mcp/pnpm-lock.yaml
+
+      - name: Setup pnpm
+        run: corepack enable
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
+
+      - name: Check v3 catalog sync
+        run: pnpm run check:v3-catalog
 
       - name: Typecheck
-        run: npm run typecheck
+        run: pnpm run typecheck
 
       - name: Test
-        run: npm test
+        run: pnpm test
 
       - name: Deploy Worker
-        run: npm run deploy
+        run: pnpm run deploy
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
+    "generate:v3-catalog": "node scripts/generate-v3-catalog.mjs",
+    "check:v3-catalog": "node scripts/generate-v3-catalog.mjs && git diff --exit-code -- src/generated/v3Catalog.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
@@ -20,6 +22,7 @@
     "@types/json-schema": "7.0.15",
     "typescript": "5.9.3",
     "vitest": "4.1.5",
-    "wrangler": "4.87.0"
+    "wrangler": "4.87.0",
+    "yaml": "2.8.3"
   }
 }
