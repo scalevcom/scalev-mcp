@@ -2,7 +2,7 @@ name = "nexus-mcp"
 main = "src/index.ts"
 compatibility_date = "2026-05-01"
 compatibility_flags = ["nodejs_compat"]
-routes = [{ pattern = "mcp.scalev.com", custom_domain = true }]
+workers_dev = false
 
 [vars]
 MCP_RESOURCE_URI = "https://mcp.scalev.com/mcp"
