@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "c97286e8cfafb34c21b50e44358fe951e0d2567a0f51ab0d63de9663f8cde5d2";
+export const V3_CATALOG_SOURCE_SHA256 = "fcf8e23f35a4157f83867e3664700eafa7ee111edc9a51773710ed8696083cb6";
 
 export const V3_ENDPOINTS = [
   {
@@ -5193,7 +5193,7 @@ export const V3_ENDPOINTS = [
     "method": "POST",
     "path": "/v3/pages",
     "summary": "Create a landing page",
-    "description": "Creates a business-scoped landing page using the same page creation behavior as Landing Page Studio. The request body below documents the HTML Mode payload.",
+    "description": "Creates a business-scoped landing page using the same page creation behavior as Landing Page Studio. The request body below documents the HTML Mode payload. To create and publish an HTML Mode page in one call, include `is_published: true` with `page_display`. If `is_published` is omitted or false, the nested `page_display` is saved as an unpublished draft and is not returned as the page's current display; create or pick a page display, then call `PATCH /v3/pages/{id}` with `is_published: true` and `current_page_display_id` to publish it.",
     "tags": [
       "Landing Pages"
     ],
@@ -5210,7 +5210,7 @@ export const V3_ENDPOINTS = [
     "queryParams": [],
     "requestBody": {
       "required": true,
-      "description": "Landing page data to create. HTML Mode payload is documented here.",
+      "description": "Landing page data to create. HTML Mode payload is documented here. For a one-call create-and-publish flow, set `is_published: true` and include `page_display`. Without `is_published: true`, the display is only a draft and must be published later.",
       "contentTypes": [
         "application/json"
       ],

@@ -42,6 +42,8 @@ The Worker exposes exactly four tools:
 
 For `execute`, send request payloads in the `body` field. If an MCP client sends endpoint fields at the top level instead, the Worker treats those extra top-level fields as the JSON request body so `{"operation_id":"createBundle","name":"Example","public_name":"Example"}` and `{"operation_id":"createBundle","body":{"name":"Example","public_name":"Example"}}` both forward `{"name":"Example","public_name":"Example"}` to Nexus.
 
+For HTML Mode landing pages, `createLandingPage` publishes the nested `page_display` only when `is_published: true` is included. Otherwise the display is saved as a draft and the page response has no current display until a later `PATCH /v3/pages/{id}` publishes a selected page display.
+
 `get` and `execute` only run operations that exist in the generated catalog. Nexus remains the source of truth for bearer-token validation, business access, scope enforcement, endpoint behavior, payload validation, and persistence.
 
 The catalog is generated from the sibling `../api-openapi/specs/v3/openapi.yaml` contract:
