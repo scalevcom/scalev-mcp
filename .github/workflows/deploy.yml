@@ -33,15 +33,18 @@ jobs:
           repository: scalevcom/api-openapi
           path: api-openapi
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.1.0
+          run_install: false
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: pnpm
           cache-dependency-path: nexus-mcp/pnpm-lock.yaml
-
-      - name: Setup pnpm
-        run: corepack enable
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
