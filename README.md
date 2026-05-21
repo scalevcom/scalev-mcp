@@ -31,15 +31,16 @@ https://mcp.scalev.com/mcp
 
 ## Tools
 
-The Worker exposes exactly three tools:
+The Worker exposes exactly four tools:
 
-- `get_me`: calls `GET /v3/me` and returns the Nexus-resolved business/user/OAuth context.
-- `search`: searches the generated business-authenticated `/v3` endpoint catalog.
-- `execute`: executes one catalog-approved `/v3` request and forwards the user's OAuth bearer token unchanged to Nexus.
+- `get_me`: confirms the connected Scalev business, user, OAuth app, authorized business, auth method, and effective scopes.
+- `search`: searches the generated business-authenticated `/v3` endpoint catalog. This discovers API capabilities only; it does not read or mutate business records.
+- `get`: runs one catalog-approved GET `/v3` operation and forwards the user's OAuth bearer token unchanged to Nexus. It never accepts a request body.
+- `execute`: runs one catalog-approved non-GET `/v3` operation and forwards the user's OAuth bearer token unchanged to Nexus. This tool is write-capable because it covers create, update, delete, validation, and action endpoints.
 
-`search` is local catalog search. It does not call Nexus. Use it to find an `operation_id`, required path parameters, query parameters, request body shape, and scopes before calling `execute`.
+`search` is local catalog search. It does not call Nexus. Use it to find an `operation_id`, required path parameters, query parameters, request body shape, scopes, and the right `execution_tool` before calling `get` or `execute`.
 
-`execute` only runs operations that exist in the generated catalog. Nexus remains the source of truth for bearer-token validation, business access, scope enforcement, endpoint behavior, payload validation, and persistence.
+`get` and `execute` only run operations that exist in the generated catalog. Nexus remains the source of truth for bearer-token validation, business access, scope enforcement, endpoint behavior, payload validation, and persistence.
 
 The catalog is generated from the sibling `../api-openapi/specs/v3/openapi.yaml` contract:
 

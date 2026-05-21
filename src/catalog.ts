@@ -53,6 +53,7 @@ export interface EndpointSearchInput {
 export interface EndpointSearchResult {
   operation_id: string;
   method: BusinessV3Method;
+  execution_tool: "get" | "execute";
   path_template: string;
   summary: string;
   description?: string;
@@ -62,7 +63,7 @@ export interface EndpointSearchResult {
   path_params: V3EndpointParameter[];
   query_params: V3EndpointParameter[];
   request_body?: V3EndpointRequestBody;
-  execute: {
+  call: {
     operation_id: string;
     required_path_params: string[];
     optional_query_params: string[];
@@ -81,9 +82,8 @@ export interface EndpointSearchResponse {
   };
 }
 
-export interface ExecuteEndpointInput {
+export interface CatalogRequestInput {
   operation_id?: string;
-  method?: BusinessV3Method;
   path?: string;
   path_params?: Record<string, CatalogPrimitive>;
   query?: Record<string, CatalogQueryValue>;
@@ -135,27 +135,43 @@ export function searchEndpoints(input: EndpointSearchInput = {}): EndpointSearch
   };
 }
 
-export function buildExecuteRequest(input: ExecuteEndpointInput): ResolvedEndpointRequest {
-  const resolved = resolveEndpoint(input);
-  const body = input.body;
+export function buildGetRequest(input: CatalogRequestInput): ResolvedEndpointRequest {
+  const resolved = resolveEndpoint(input, ["GET"], "get");
 
-  if (resolved.endpoint.method === "GET" && typeof body !== "undefined") {
-    throw new Error("GET requests must not include a body");
+  if (typeof input.body !== "undefined") {
+    throw new Error("get does not accept a request body");
   }
 
-  const path = withQuery(resolved.path, resolved.queryParams, input.query);
+  const path = withQuery(resolved.endpoint, resolved.path, resolved.queryParams, input.query);
+
+  return {
+    endpoint: resolved.endpoint,
+    request: {
+      method: resolved.endpoint.method,
+      path
+    }
+  };
+}
+
+export function buildExecuteRequest(input: CatalogRequestInput): ResolvedEndpointRequest {
+  const resolved = resolveEndpoint(input, ["POST", "PUT", "PATCH", "DELETE"], "execute");
+  const path = withQuery(resolved.endpoint, resolved.path, resolved.queryParams, input.query);
 
   return {
     endpoint: resolved.endpoint,
     request: {
       method: resolved.endpoint.method,
       path,
-      body
+      body: input.body
     }
   };
 }
 
-function resolveEndpoint(input: ExecuteEndpointInput): {
+function resolveEndpoint(
+  input: CatalogRequestInput,
+  allowedMethods: readonly BusinessV3Method[],
+  toolName: "get" | "execute"
+): {
   endpoint: V3Endpoint;
   path: string;
   queryParams: URLSearchParams;
@@ -163,6 +179,9 @@ function resolveEndpoint(input: ExecuteEndpointInput): {
   if (input.operation_id) {
     const endpoint = ENDPOINTS_BY_OPERATION_ID.get(input.operation_id);
     if (!endpoint) throw new Error(`Unknown v3 operation_id: ${input.operation_id}`);
+    if (!allowedMethods.includes(endpoint.method)) {
+      throw new Error(`${toolName} cannot run ${endpoint.method} operation ${endpoint.operationId}`);
+    }
 
     return {
       endpoint,
@@ -171,18 +190,25 @@ function resolveEndpoint(input: ExecuteEndpointInput): {
     };
   }
 
-  if (!input.method || !input.path) {
-    throw new Error("execute requires either operation_id or method and path");
+  if (!input.path) {
+    throw new Error(`${toolName} requires either operation_id or path`);
   }
 
-  const parsed = parseInputPath(input.path);
-  const endpoint = parsed.pathname.includes("{")
-    ? findTemplateEndpoint(input.method, parsed.pathname)
-    : findConcreteEndpoint(input.method, parsed.pathname);
+  const parsed = parseInputPath(input.path, toolName);
+  const endpoints = parsed.pathname.includes("{")
+    ? findTemplateEndpoints(allowedMethods, parsed.pathname)
+    : findConcreteEndpoints(allowedMethods, parsed.pathname);
 
-  if (!endpoint) {
-    throw new Error(`No business-authenticated v3 catalog operation matches ${input.method} ${parsed.pathname}`);
+  if (endpoints.length === 0) {
+    throw new Error(`No ${toolName}-compatible business-authenticated v3 catalog operation matches ${parsed.pathname}`);
   }
+
+  if (endpoints.length > 1) {
+    const candidates = endpoints.map((endpoint) => `${endpoint.method} ${endpoint.operationId}`).join(", ");
+    throw new Error(`Ambiguous ${toolName} path ${parsed.pathname}. Use operation_id. Candidates: ${candidates}`);
+  }
+
+  const endpoint = endpoints[0];
 
   return {
     endpoint,
@@ -191,15 +217,15 @@ function resolveEndpoint(input: ExecuteEndpointInput): {
   };
 }
 
-function findTemplateEndpoint(method: BusinessV3Method, path: string): V3Endpoint | undefined {
-  return V3_ENDPOINTS.find((endpoint) => endpoint.method === method && endpoint.path === path);
+function findTemplateEndpoints(methods: readonly BusinessV3Method[], path: string): V3Endpoint[] {
+  return V3_ENDPOINTS.filter((endpoint) => methods.includes(endpoint.method) && endpoint.path === path);
 }
 
-function findConcreteEndpoint(method: BusinessV3Method, path: string): V3Endpoint | undefined {
-  const exact = V3_ENDPOINTS.find((endpoint) => endpoint.method === method && endpoint.path === path);
-  if (exact) return exact;
+function findConcreteEndpoints(methods: readonly BusinessV3Method[], path: string): V3Endpoint[] {
+  const exact = V3_ENDPOINTS.filter((endpoint) => methods.includes(endpoint.method) && endpoint.path === path);
+  if (exact.length > 0) return exact;
 
-  return V3_ENDPOINTS.find((endpoint) => endpoint.method === method && pathMatcher(endpoint.path).test(path));
+  return V3_ENDPOINTS.filter((endpoint) => methods.includes(endpoint.method) && pathMatcher(endpoint.path).test(path));
 }
 
 function buildPathFromTemplate(
@@ -223,6 +249,7 @@ function buildPathFromTemplate(
 }
 
 function withQuery(
+  endpoint: V3Endpoint,
   path: string,
   queryParams: URLSearchParams,
   query: Record<string, CatalogQueryValue> | undefined
@@ -240,12 +267,21 @@ function withQuery(
     }
   }
 
+  for (const param of endpoint.queryParams) {
+    if (param.required && !params.has(param.name)) {
+      throw new Error(`Missing required query parameter for ${endpoint.operationId}: ${param.name}`);
+    }
+  }
+
   const queryString = params.toString();
   return queryString ? `${path}?${queryString}` : path;
 }
 
-function parseInputPath(path: string): { pathname: string; searchParams: URLSearchParams } {
-  if (!path.startsWith("/v3/")) throw new Error(`execute only supports /v3 paths: ${path}`);
+function parseInputPath(
+  path: string,
+  toolName: "get" | "execute"
+): { pathname: string; searchParams: URLSearchParams } {
+  if (!path.startsWith("/v3/")) throw new Error(`${toolName} only supports /v3 paths: ${path}`);
 
   const url = new URL(path, "https://nexus.local");
   return { pathname: url.pathname, searchParams: url.searchParams };
@@ -255,6 +291,7 @@ function endpointSearchResult(endpoint: V3Endpoint): EndpointSearchResult {
   return {
     operation_id: endpoint.operationId,
     method: endpoint.method,
+    execution_tool: endpoint.method === "GET" ? "get" : "execute",
     path_template: endpoint.path,
     summary: endpoint.summary,
     description: endpoint.description,
@@ -264,7 +301,7 @@ function endpointSearchResult(endpoint: V3Endpoint): EndpointSearchResult {
     path_params: [...endpoint.pathParams],
     query_params: [...endpoint.queryParams],
     request_body: endpoint.requestBody,
-    execute: {
+    call: {
       operation_id: endpoint.operationId,
       required_path_params: endpoint.pathParams.filter((param) => param.required).map((param) => param.name),
       optional_query_params: endpoint.queryParams.filter((param) => !param.required).map((param) => param.name),

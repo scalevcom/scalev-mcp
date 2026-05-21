@@ -1,7 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { getMcpAuthContext } from "agents/mcp";
 import { z } from "zod";
-import { buildExecuteRequest, searchEndpoints } from "./catalog";
+import { buildExecuteRequest, buildGetRequest, searchEndpoints } from "./catalog";
 import { nexusBusinessRequest } from "./nexusClient";
 import { SCALEV_TOOL_NAMES } from "./toolNames";
 import type { AuthContext, Env } from "./types";
@@ -11,6 +11,30 @@ export { SCALEV_TOOL_NAMES };
 const methodSchema = z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]);
 const primitiveSchema = z.union([z.string(), z.number(), z.boolean()]);
 const queryValueSchema = z.union([primitiveSchema, z.array(primitiveSchema), z.null()]);
+const catalogOperationSchema = {
+  operation_id: z
+    .string()
+    .optional()
+    .describe("Preferred operation id returned by search, for example listLandingPages or createOrder."),
+  path: z
+    .string()
+    .optional()
+    .describe(
+      "Catalog path template or concrete /v3 path. Required only when operation_id is not supplied. The path must match a catalog operation."
+    ),
+  path_params: z
+    .record(z.string(), primitiveSchema)
+    .optional()
+    .describe(
+      "Values for required path template parameters, keyed by OpenAPI parameter name. Example: {\"id\": 123, \"page_id\": 456}."
+    ),
+  query: z
+    .record(z.string(), queryValueSchema)
+    .optional()
+    .describe(
+      "Query parameters for the API call. Array values are sent as repeated query parameters. Null removes a parameter from a concrete path query string."
+    )
+};
 
 export function createScalevMcpServer(env: Env): McpServer {
   const server = new McpServer({ name: "scalev-v3", version: "0.2.0" });
@@ -19,7 +43,8 @@ export function createScalevMcpServer(env: Env): McpServer {
     "get_me",
     {
       title: "Get Scalev identity",
-      description: "Return the authenticated Scalev business, user, OAuth app, and effective scope context.",
+      description:
+        "Use first when you need to know which Scalev business is connected. Returns the Nexus-authenticated business, user, OAuth application, authorized business record, auth method, and effective scopes for the current MCP OAuth token.",
       inputSchema: {},
       annotations: { readOnlyHint: true }
     },
@@ -35,17 +60,31 @@ export function createScalevMcpServer(env: Env): McpServer {
     {
       title: "Search Scalev v3 endpoints",
       description:
-        "Search business-authenticated Scalev /v3 endpoints available through this MCP server. Use this before execute to find the right operation_id, required path params, query params, request body, and scopes.",
+        "Search the local catalog of business-authenticated Scalev API v3 operations. Use this before get or execute unless you already know the exact operation_id. This tool discovers API capabilities only; it does not read or change business records. Results include operation_id, method, execution_tool, path template, required path params, optional query params, request body summary, tags, scopes, and whether the operation is read-only.",
       inputSchema: {
         query: z
           .string()
           .optional()
-          .describe("Free-text search across operation id, path, tags, summary, description, and scopes."),
-        tag: z.string().optional().describe("Filter by OpenAPI tag, for example Orders or Landing Pages."),
-        method: methodSchema.optional(),
-        scope: z.string().optional().describe("Filter by required business scope, for example order:list."),
-        read_only: z.boolean().optional().describe("Filter to GET endpoints when true, or write-capable endpoints when false."),
-        limit: z.number().int().min(1).max(50).optional().describe("Maximum results to return. Defaults to 20.")
+          .describe(
+            "Free-text search across operation id, /v3 path, OpenAPI tags, summary, description, and scopes. Examples: landing pages, list orders, waba account, page:create."
+          ),
+        tag: z
+          .string()
+          .optional()
+          .describe("Filter by API area/tag from the catalog, for example Orders, Landing Pages, or Business Products."),
+        method: methodSchema.optional().describe("Filter by HTTP method."),
+        scope: z.string().optional().describe("Filter by required business scope, for example order:list or page:create."),
+        read_only: z
+          .boolean()
+          .optional()
+          .describe("Set true for read-only GET operations. Set false for operations that may create, update, or delete data."),
+        limit: z
+          .number()
+          .int()
+          .min(1)
+          .max(50)
+          .optional()
+          .describe("Maximum number of matching operations to return. Defaults to 20 and caps at 50.")
       },
       annotations: { readOnlyHint: true }
     },
@@ -55,30 +94,40 @@ export function createScalevMcpServer(env: Env): McpServer {
   );
 
   server.registerTool(
+    "get",
+    {
+      title: "Get Scalev v3 resource",
+      description:
+        "Run one read-only GET operation from the business-authenticated Scalev API v3 search catalog. Use operation_id plus path_params/query from a search result, or a catalog-matching concrete /v3 path. This tool only runs GET operations, never accepts a request body, and forwards the user's OAuth bearer token unchanged to Nexus.",
+      inputSchema: catalogOperationSchema,
+      annotations: { readOnlyHint: true }
+    },
+    async (input) => {
+      const auth = currentAuth();
+      const { endpoint, request } = buildGetRequest(input);
+      const response = await nexusBusinessRequest(env, auth, request);
+
+      return toolResult({
+        operation_id: endpoint.operationId,
+        method: request.method,
+        path: request.path,
+        response: response ?? null
+      });
+    }
+  );
+
+  server.registerTool(
     "execute",
     {
       title: "Execute Scalev v3 request",
       description:
-        "Execute a business-authenticated Scalev /v3 request selected from the search catalog. Prefer operation_id from search results. Nexus validates the bearer token, business access, scopes, and payload.",
+        "Run one non-GET operation from the business-authenticated Scalev API v3 search catalog. Use this for create, update, delete, validation, and other action endpoints after confirming the user's intent. Prefer operation_id plus path_params/query/body from a search result. This tool cannot run GET operations. Nexus validates the OAuth bearer token, business access, scopes, request payload, and endpoint authorization.",
       inputSchema: {
-        operation_id: z
-          .string()
+        ...catalogOperationSchema,
+        body: z
+          .unknown()
           .optional()
-          .describe("Preferred operation id from the search tool, for example listLandingPages."),
-        method: methodSchema.optional().describe("HTTP method. Required only when operation_id is not supplied."),
-        path: z
-          .string()
-          .optional()
-          .describe("Catalog path template or concrete /v3 path. Required only when operation_id is not supplied."),
-        path_params: z
-          .record(z.string(), primitiveSchema)
-          .optional()
-          .describe("Path parameters for template paths, keyed by OpenAPI parameter name."),
-        query: z
-          .record(z.string(), queryValueSchema)
-          .optional()
-          .describe("Query parameters. Array values are sent as repeated query parameters. Null removes the parameter."),
-        body: z.unknown().optional().describe("JSON request body for non-GET requests.")
+          .describe("JSON request body for non-GET operations when the selected API endpoint accepts one.")
       },
       annotations: { readOnlyHint: false }
     },
