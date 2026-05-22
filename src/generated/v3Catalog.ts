@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "c514bcccd06cb87011a2633280f254cb866b3a3915504827a0864da097b94e10";
+export const V3_CATALOG_SOURCE_SHA256 = "04cc6e32c34ff51e949e35ecb29c172e1e9459dd5f62a2a66d2297f41dfa628f";
 
 export const V3_ENDPOINTS = [
   {
@@ -3078,6 +3078,42 @@ export const V3_ENDPOINTS = [
         }
       }
     ],
+    "queryParams": []
+  },
+  {
+    "operationId": "listAuthenticatedConnectedBusinesses",
+    "method": "GET",
+    "path": "/v3/me/connected_businesses",
+    "summary": "List authenticated connected businesses",
+    "description": "Returns only the token-level connected business collection from `GET /v3/me`. OAuth clients use each business `unique_id` as `b_uid` on direct Nexus business-scoped routes or as `business_unique_id` in MCP tools when the token covers multiple businesses.",
+    "tags": [
+      "Identity"
+    ],
+    "scopes": [],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "pathParams": [],
+    "queryParams": []
+  },
+  {
+    "operationId": "getCurrentOAuthApplication",
+    "method": "GET",
+    "path": "/v3/oauth/applications/me",
+    "summary": "Get current OAuth application",
+    "description": "OAuth token identity helper endpoint. Returns the OAuth application represented by the presented access token and never includes the client secret.",
+    "tags": [
+      "OAuth"
+    ],
+    "scopes": [],
+    "auth": [
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "pathParams": [],
     "queryParams": []
   },
   {
