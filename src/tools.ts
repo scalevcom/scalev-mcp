@@ -27,7 +27,7 @@ const catalogOperationSchema = {
     .string()
     .optional()
     .describe(
-      "Business unique id from get_me.connected_businesses[].unique_id. Required by Nexus when this OAuth token is connected to multiple businesses; optional when it has one connected business."
+      "Top-level business selector for this get/execute tool call. Copy one value from get_me.connected_businesses[].unique_id. Required when get_me returns more than one connected business. Do not put business_unique_id inside query, path_params, or body. Example: {\"business_unique_id\":\"ABC123\"}."
     ),
   path_params: z
     .record(z.string(), primitiveSchema)
@@ -60,7 +60,7 @@ export function createScalevMcpServer(env: Env): McpServer {
     {
       title: "Get Scalev identity",
       description:
-        "Use first. Returns token-level Nexus identity for the current MCP OAuth token: authenticated user, OAuth application, auth method, and connected_businesses. If connected_businesses has more than one entry, pass the chosen connected_businesses[].unique_id as business_unique_id to get and execute.",
+        "Use first. Returns token-level Nexus identity for the current MCP OAuth token: authenticated user, OAuth application, auth method, and connected_businesses. If connected_businesses has more than one entry, pass the chosen connected_businesses[].unique_id as the top-level business_unique_id argument to get and execute.",
       inputSchema: {},
       annotations: { readOnlyHint: true }
     },
@@ -114,7 +114,7 @@ export function createScalevMcpServer(env: Env): McpServer {
     {
       title: "Get Scalev v3 resource",
       description:
-        "Run one read-only GET operation from the business-authenticated Scalev API v3 search catalog. Call get_me first; when the token has multiple connected businesses, include business_unique_id from the selected connected business. Use operation_id plus path_params/query from a search result, or a catalog-matching concrete /v3 path. This tool only runs GET operations, never accepts a request body, and forwards the user's OAuth bearer token unchanged to Nexus.",
+        "Run one read-only GET operation from the business-authenticated Scalev API v3 search catalog. Business selection rule: call get_me first. If get_me.connected_businesses has more than one entry, choose one business and include its connected_businesses[].unique_id as the top-level business_unique_id argument on this tool call. Do not put business_unique_id inside query, path_params, or body. Example input: {\"operation_id\":\"listOrders\",\"business_unique_id\":\"ABC123\",\"query\":{\"page_size\":10}}. Use operation_id plus path_params/query from a search result, or a catalog-matching concrete /v3 path. This tool only runs GET operations, never accepts a request body, and forwards the user's OAuth bearer token unchanged to Nexus.",
       inputSchema: catalogOperationSchema,
       annotations: { readOnlyHint: true }
     },
@@ -137,7 +137,7 @@ export function createScalevMcpServer(env: Env): McpServer {
     {
       title: "Execute Scalev v3 request",
       description:
-        "Run one non-GET operation from the business-authenticated Scalev API v3 search catalog. Call get_me first; when the token has multiple connected businesses, include business_unique_id from the selected connected business. Use this for create, update, delete, validation, and other action endpoints after confirming the user's intent. Prefer operation_id plus path_params/query/body from a search result. If body is omitted, extra top-level fields are treated as the JSON request body. This tool cannot run GET operations. Nexus validates the OAuth bearer token, business access, scopes, request payload, and endpoint authorization.",
+        "Run one non-GET operation from the business-authenticated Scalev API v3 search catalog. Business selection rule: call get_me first. If get_me.connected_businesses has more than one entry, choose one business and include its connected_businesses[].unique_id as the top-level business_unique_id argument on this tool call. Do not put business_unique_id inside query, path_params, or body; body is only for the API request payload. Example input: {\"operation_id\":\"createLandingPage\",\"business_unique_id\":\"ABC123\",\"body\":{...}}. Use this for create, update, delete, validation, and other action endpoints after confirming the user's intent. Prefer operation_id plus path_params/query/body from a search result. If body is omitted, extra top-level fields are treated as the JSON request body. This tool cannot run GET operations. Nexus validates the OAuth bearer token, business access, scopes, request payload, and endpoint authorization.",
       inputSchema: executeInputSchema,
       annotations: { readOnlyHint: false }
     },
