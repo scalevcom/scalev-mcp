@@ -21,7 +21,7 @@ MCP_RESOURCE_URI=https://mcp.scalev.test/mcp
 
 ## OAuth
 
-The Worker serves MCP protected-resource metadata and points clients to the Nexus `/v3/oauth` authorization server. MCP clients obtain a merchant OAuth token from Nexus, then send it to `/mcp`. The Worker only checks that a bearer token is present and forwards that exact token to normal business-authenticated Nexus `/v3` endpoints.
+The Worker serves MCP protected-resource metadata and points clients to the Nexus `/v3/oauth` authorization server. MCP clients obtain a merchant OAuth token from Nexus, then send it to `/mcp`. The Worker only checks that a bearer token is present and forwards that exact token to Nexus `/v3` endpoints. Nexus remains responsible for resolving the selected business installation for business-scoped calls.
 
 Tokens must use the MCP resource/audience value for this Worker, for example:
 
@@ -33,18 +33,20 @@ https://mcp.scalev.com/mcp
 
 The Worker exposes exactly four tools:
 
-- `get_me`: confirms the connected Scalev business, user, OAuth app, authorized business, auth method, and effective scopes.
+- `get_me`: returns token-level identity for the current OAuth token, including the Scalev user, OAuth app, auth method, and `connected_businesses`.
 - `search`: searches the generated business-authenticated `/v3` endpoint catalog. This discovers API capabilities only; it does not read or mutate business records.
 - `get`: runs one catalog-approved GET `/v3` operation and forwards the user's OAuth bearer token unchanged to Nexus. It never accepts a request body.
 - `execute`: runs one catalog-approved non-GET `/v3` operation and forwards the user's OAuth bearer token unchanged to Nexus. This tool is write-capable because it covers create, update, delete, validation, and action endpoints.
 
 `search` is local catalog search. It does not call Nexus. Use it to find an `operation_id`, required path parameters, query parameters, request body shape, scopes, and the right `execution_tool` before calling `get` or `execute`.
 
+Call `get_me` first. If `connected_businesses` has more than one entry, pass the selected `connected_businesses[].unique_id` as top-level `business_unique_id` to `get` or `execute`. The Worker forwards this selector to Nexus as `b_uid`. If there is one connected business, `business_unique_id` may be omitted and Nexus infers it.
+
 For `execute`, send request payloads in the `body` field. If an MCP client sends endpoint fields at the top level instead, the Worker treats those extra top-level fields as the JSON request body so `{"operation_id":"createBundle","name":"Example","public_name":"Example"}` and `{"operation_id":"createBundle","body":{"name":"Example","public_name":"Example"}}` both forward `{"name":"Example","public_name":"Example"}` to Nexus.
 
 For HTML Mode landing pages, `createLandingPage` publishes the nested `page_display` only when `is_published: true` is included. Otherwise the display is saved as a draft and the page response has no current display until a later `PATCH /v3/pages/{id}` publishes a selected page display.
 
-`get` and `execute` only run operations that exist in the generated catalog. Nexus remains the source of truth for bearer-token validation, business access, scope enforcement, endpoint behavior, payload validation, and persistence.
+`get` and `execute` only run operations that exist in the generated catalog. Nexus remains the source of truth for bearer-token validation, selected-business resolution, scope enforcement, endpoint behavior, payload validation, and persistence. The Worker does not inspect token claims or store business installation state.
 
 The catalog is generated from the sibling `../api-openapi/specs/v3/openapi.yaml` contract:
 
@@ -63,7 +65,7 @@ Configure these Worker variables in Cloudflare:
 - `NEXUS_OAUTH_ISSUER`
 - `MCP_RESOURCE_URI`
 
-The Worker uses the merchant OAuth bearer token for Nexus `/v3` API requests. Nexus remains responsible for scope enforcement and endpoint behavior.
+The Worker uses the merchant OAuth bearer token for Nexus `/v3` API requests. Nexus remains responsible for selected-business resolution, scope enforcement, and endpoint behavior.
 
 ## Deployment
 

@@ -85,6 +85,7 @@ export interface EndpointSearchResponse {
 export interface CatalogRequestInput {
   operation_id?: string;
   path?: string;
+  business_unique_id?: string;
   path_params?: Record<string, CatalogPrimitive>;
   query?: Record<string, CatalogQueryValue>;
   body?: unknown;
@@ -148,7 +149,8 @@ export function buildGetRequest(input: CatalogRequestInput): ResolvedEndpointReq
     endpoint: resolved.endpoint,
     request: {
       method: resolved.endpoint.method,
-      path
+      path,
+      ...businessSelector(input)
     }
   };
 }
@@ -162,9 +164,14 @@ export function buildExecuteRequest(input: CatalogRequestInput): ResolvedEndpoin
     request: {
       method: resolved.endpoint.method,
       path,
+      ...businessSelector(input),
       body: input.body
     }
   };
+}
+
+function businessSelector(input: CatalogRequestInput): Pick<BusinessV3Request, "businessUniqueId"> {
+  return input.business_unique_id ? { businessUniqueId: input.business_unique_id } : {};
 }
 
 function resolveEndpoint(

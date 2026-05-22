@@ -33,6 +33,7 @@ describe("Scalev MCP tools", () => {
   it("keeps OAuth flow routes and storefront browser routes out of search", () => {
     const paths = V3_ENDPOINTS.map((endpoint) => endpoint.path);
 
+    expect(paths).not.toContain("/v3/me");
     expect(paths).not.toContain("/v3/oauth/authorize");
     expect(paths).not.toContain("/v3/oauth/token");
     expect(paths).not.toContain("/v3/oauth/register");
@@ -57,11 +58,13 @@ describe("Scalev MCP tools", () => {
   it("builds get requests from catalog-matching concrete paths", () => {
     const { endpoint, request } = buildGetRequest({
       path: "/v3/pages/123?page_size=10",
+      business_unique_id: "BIZ123",
       query: { page_size: 20 }
     });
 
     expect(endpoint.operationId).toBe("getLandingPage");
     expect(request.path).toBe("/v3/pages/123?page_size=20");
+    expect(request.businessUniqueId).toBe("BIZ123");
   });
 
   it("validates required query parameters from the catalog", () => {
@@ -95,12 +98,14 @@ describe("Scalev MCP tools", () => {
     expect(
       normalizeExecuteInput({
         operation_id: "createBundle",
+        business_unique_id: "BIZ123",
         name: "MCP Test Bundle",
         public_name: "MCP Test Bundle"
       })
     ).toEqual({
       operation_id: "createBundle",
       path: undefined,
+      business_unique_id: "BIZ123",
       path_params: undefined,
       query: undefined,
       body: { name: "MCP Test Bundle", public_name: "MCP Test Bundle" }

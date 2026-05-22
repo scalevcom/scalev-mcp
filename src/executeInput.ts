@@ -1,6 +1,13 @@
 import type { CatalogRequestInput } from "./catalog";
 
-const RESERVED_EXECUTE_INPUT_KEYS = new Set(["operation_id", "path", "path_params", "query", "body"]);
+const RESERVED_EXECUTE_INPUT_KEYS = new Set([
+  "operation_id",
+  "path",
+  "business_unique_id",
+  "path_params",
+  "query",
+  "body"
+]);
 
 export type ExecuteToolInput = CatalogRequestInput & Record<string, unknown>;
 
@@ -22,12 +29,18 @@ export function normalizeExecuteInput(input: ExecuteToolInput): CatalogRequestIn
 }
 
 function baseExecuteInput(input: ExecuteToolInput): CatalogRequestInput {
-  return {
+  const base: CatalogRequestInput = {
     operation_id: input.operation_id,
     path: input.path,
     path_params: input.path_params,
     query: input.query
   };
+
+  if (input.business_unique_id) {
+    base.business_unique_id = input.business_unique_id;
+  }
+
+  return base;
 }
 
 function collectExtraBodyFields(input: ExecuteToolInput): Record<string, unknown> {

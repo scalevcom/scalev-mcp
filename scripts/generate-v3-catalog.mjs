@@ -71,6 +71,7 @@ console.log(`Generated ${path.relative(repoRoot, outputPath)} with ${endpoints.l
 
 function isAllowedPath(openApiPath) {
   if (!openApiPath.startsWith("/v3/")) return false;
+  if (openApiPath === "/v3/me") return false;
   if (OAUTH_FLOW_PATHS.has(openApiPath)) return false;
   if (openApiPath.startsWith("/v3/oauth/installation/")) return false;
   if (/^\/v3\/stores\/\{[^}]+\}\/(?:public|customers)(?:\/|$)/.test(openApiPath)) return false;

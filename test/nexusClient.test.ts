@@ -60,6 +60,34 @@ describe("nexusUrl", () => {
     expect(JSON.stringify(headers)).not.toContain("x-scalev-user-id");
   });
 
+  it("forwards business_unique_id to Nexus as b_uid without adding business headers", async () => {
+    const fetchMock = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => {
+      return new Response(JSON.stringify({ data: [] }), {
+        headers: { "content-type": "application/json" }
+      });
+    });
+
+    vi.stubGlobal("fetch", fetchMock);
+
+    await nexusBusinessRequest(
+      env,
+      { token: "raw-oauth-token" },
+      {
+        method: "GET",
+        path: "/v3/pages?limit=10",
+        businessUniqueId: "BIZ123"
+      }
+    );
+
+    const headers = fetchMock.mock.calls[0]?.[1]?.headers as Record<string, string>;
+
+    expect(String(fetchMock.mock.calls[0]?.[0])).toBe("https://api.scalev.test/v3/pages?limit=10&b_uid=BIZ123");
+    expect(headers).toMatchObject({
+      authorization: "Bearer raw-oauth-token"
+    });
+    expect(JSON.stringify(headers)).not.toContain("x-scalev-business-id");
+  });
+
   it("forwards JSON bodies for non-GET business-authenticated v3 endpoints", async () => {
     const fetchMock = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => {
       return new Response(JSON.stringify({ id: 1 }), {
@@ -106,6 +134,32 @@ describe("nexusUrl", () => {
     ).rejects.toMatchObject({
       status: 400,
       message: "Nexus request failed with 400 (request_id: req_test): empty response body"
+    });
+  });
+
+  it("surfaces Nexus business selection errors clearly", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => {
+        return new Response(
+          JSON.stringify({
+            error_code: "business_selection_required",
+            error: "business_unique_id is required when this OAuth token is connected to multiple businesses"
+          }),
+          {
+            status: 400,
+            headers: { "content-type": "application/json", "x-request-id": "req_selection" }
+          }
+        );
+      })
+    );
+
+    await expect(
+      nexusBusinessRequest(env, { token: "raw-oauth-token" }, { method: "GET", path: "/v3/pages" })
+    ).rejects.toMatchObject({
+      status: 400,
+      message:
+        "Nexus business_selection_required (request_id: req_selection): business_unique_id is required when this OAuth token is connected to multiple businesses"
     });
   });
 

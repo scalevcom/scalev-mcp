@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "fcf8e23f35a4157f83867e3664700eafa7ee111edc9a51773710ed8696083cb6";
+export const V3_CATALOG_SOURCE_SHA256 = "5508166f8aac37778905619e063880ab84e7491afbec0896d6f7cf27bfaaf051";
 
 export const V3_ENDPOINTS = [
   {
@@ -3078,25 +3078,6 @@ export const V3_ENDPOINTS = [
         }
       }
     ],
-    "queryParams": []
-  },
-  {
-    "operationId": "getAuthenticatedBusinessIdentity",
-    "method": "GET",
-    "path": "/v3/me",
-    "summary": "Get authenticated business identity",
-    "description": "Returns the authenticated business context resolved by Nexus for the bearer token. OAuth tokens may use either the normal Nexus API audience or a configured MCP resource audience accepted by Nexus.",
-    "tags": [
-      "Identity"
-    ],
-    "scopes": [],
-    "auth": [
-      "apiKeyAuth",
-      "bearerAuth",
-      "scalevOAuth"
-    ],
-    "readOnly": true,
-    "pathParams": [],
     "queryParams": []
   },
   {

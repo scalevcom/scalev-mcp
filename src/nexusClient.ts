@@ -6,6 +6,7 @@ export type BusinessV3Method = (typeof BUSINESS_V3_METHODS)[number];
 export interface BusinessV3Request {
   method: BusinessV3Method;
   path: string;
+  businessUniqueId?: string;
   body?: unknown;
 }
 
@@ -75,7 +76,13 @@ export async function nexusBusinessRequest<T>(
     init.body = JSON.stringify(request.body);
   }
 
-  const response = await fetch(nexusBusinessUrl(env, request.path), init);
+  const url = nexusBusinessUrl(env, request.path);
+
+  if (request.businessUniqueId) {
+    url.searchParams.set("b_uid", request.businessUniqueId);
+  }
+
+  const response = await fetch(url, init);
   return parseJsonResponse<T>(response);
 }
 
@@ -121,8 +128,22 @@ function parseJson(text: string): unknown {
 function errorMessage(response: Response, payload: unknown, text: string): string {
   const requestId = response.headers.get("x-request-id");
   const requestIdPart = requestId ? ` (request_id: ${requestId})` : "";
+  const apiErrorCode = payloadString(payload, "error_code");
+  const apiError = payloadString(payload, "error");
+
+  if (apiErrorCode === "business_selection_required") {
+    return `Nexus business_selection_required${requestIdPart}: ${apiError || "business_unique_id is required"}`;
+  }
+
   const detail =
     typeof payload !== "undefined" ? JSON.stringify(payload) : text ? text : "empty response body";
 
   return `Nexus request failed with ${response.status}${requestIdPart}: ${detail}`;
+}
+
+function payloadString(payload: unknown, key: string): string | undefined {
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) return undefined;
+
+  const value = (payload as Record<string, unknown>)[key];
+  return typeof value === "string" ? value : undefined;
 }
