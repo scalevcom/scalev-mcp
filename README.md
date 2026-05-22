@@ -31,16 +31,17 @@ https://mcp.scalev.com/mcp
 
 ## Tools
 
-The Worker exposes exactly four tools:
+The Worker exposes exactly five tools:
 
 - `get_me`: returns token-level identity for the current OAuth token, including the Scalev user, OAuth app, auth method, and `connected_businesses`.
+- `get_docs`: reads Scalev Developers docs bundled into the Worker from the `../docs/docs.json` navigation, so MCP clients can consult docs even when they cannot browse `docs.scalev.com`.
 - `search`: searches the generated business-authenticated `/v3` endpoint catalog. This discovers API capabilities only; it does not read or mutate business records.
 - `get`: runs one catalog-approved GET `/v3` operation and forwards the user's OAuth bearer token unchanged to Nexus. It never accepts a request body.
 - `execute`: runs one catalog-approved non-GET `/v3` operation and forwards the user's OAuth bearer token unchanged to Nexus. This tool is write-capable because it covers create, update, delete, validation, and action endpoints.
 
-`search` is local catalog search. It does not call Nexus. Use it to find an `operation_id`, required path parameters, query parameters, request body shape, scopes, and the right `execution_tool` before calling `get` or `execute`.
+`search` is local catalog search. It does not call Nexus. Use it to find an `operation_id`, required path parameters, query parameters, request body shape, scopes, docs metadata, and the right `execution_tool` before calling `get` or `execute`. If a search result includes `docs_topic`, call `get_docs` with that topic before constructing a request payload or running a write action.
 
-Call `get_me` first. If `connected_businesses` has more than one entry, pass the selected `connected_businesses[].unique_id` as top-level `business_unique_id` to `get` or `execute`. The Worker forwards this selector to Nexus as `b_uid`. If there is one connected business, `business_unique_id` may be omitted and Nexus infers it.
+Call `get_me` first. If `connected_businesses` has more than one entry, pass the selected `connected_businesses[].unique_id` as `business_unique_id` to `get` or `execute`. Top-level `business_unique_id` is preferred. The Worker also recovers this exact key if a client accidentally places it in `body`, `query`, `query_params`, `header_params`, `headers`, or a concrete path query string, strips it from the API payload/query, and forwards it to Nexus as `b_uid`. If there is one connected business, `business_unique_id` may be omitted and Nexus infers it.
 
 For `execute`, send request payloads in the `body` field. If an MCP client sends endpoint fields at the top level instead, the Worker treats those extra top-level fields as the JSON request body so `{"operation_id":"createBundle","name":"Example","public_name":"Example"}` and `{"operation_id":"createBundle","body":{"name":"Example","public_name":"Example"}}` both forward `{"name":"Example","public_name":"Example"}` to Nexus.
 
@@ -48,14 +49,16 @@ For HTML Mode landing pages, `createLandingPage` publishes the nested `page_disp
 
 `get` and `execute` only run operations that exist in the generated catalog. Nexus remains the source of truth for bearer-token validation, selected-business resolution, scope enforcement, endpoint behavior, payload validation, and persistence. The Worker does not inspect token claims or store business installation state.
 
-The catalog is generated from the sibling `../api-openapi/specs/v3/openapi.yaml` contract:
+The endpoint catalog is generated from the sibling `../api-openapi/specs/v3/openapi.yaml` contract, and the docs catalog is generated from all pages under the `Developers` tab in sibling `../docs/docs.json`:
 
 ```bash
-pnpm run generate:v3-catalog
-pnpm run check:v3-catalog
+pnpm run generate:catalogs
+pnpm run check:catalogs
 ```
 
-Run the generator whenever the public business-authenticated `/v3` OpenAPI contract changes, then commit the generated `src/generated/v3Catalog.ts` diff with the Worker change.
+Run the generator whenever the public business-authenticated `/v3` OpenAPI contract or bundled docs change, then commit the generated `src/generated/v3Catalog.ts` and `src/generated/docsCatalog.ts` diffs with the Worker change.
+
+GitHub Actions also has a `Sync Catalogs` workflow. It checks out `scalevcom/api-openapi@main` and `scalevcom/docs@main`, regenerates both catalogs, runs typecheck and tests when the generated files change, then commits the generated catalog update back to `scalevcom/nexus-mcp@main`. This covers source updates that land from another machine or directly through GitHub.
 
 ## Cloudflare Variables
 
@@ -96,7 +99,7 @@ NEXUS_OAUTH_ISSUER=https://api.scalev.com/v3/oauth
 Before merging a deployment change, run:
 
 ```bash
-pnpm run check:v3-catalog
+pnpm run check:catalogs
 pnpm run typecheck
 pnpm test
 pnpm wrangler deploy --dry-run

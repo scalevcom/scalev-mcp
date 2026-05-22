@@ -1,0 +1,88 @@
+name: Sync Catalogs
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 * * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nexus-mcp-sync-catalogs
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Sync generated catalogs from source repos
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: nexus-mcp
+
+    steps:
+      - name: Checkout nexus-mcp
+        uses: actions/checkout@v4
+        with:
+          repository: scalevcom/nexus-mcp
+          ref: main
+          path: nexus-mcp
+
+      - name: Checkout api-openapi
+        uses: actions/checkout@v4
+        with:
+          repository: scalevcom/api-openapi
+          ref: main
+          path: api-openapi
+
+      - name: Checkout docs
+        uses: actions/checkout@v4
+        with:
+          repository: scalevcom/docs
+          ref: main
+          path: docs
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.1.0
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: nexus-mcp/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate catalogs
+        run: pnpm run generate:catalogs
+
+      - name: Check generated diff
+        id: diff
+        run: |
+          if git diff --quiet -- src/generated/v3Catalog.ts src/generated/docsCatalog.ts; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Typecheck
+        if: steps.diff.outputs.changed == 'true'
+        run: pnpm run typecheck
+
+      - name: Test
+        if: steps.diff.outputs.changed == 'true'
+        run: pnpm test
+
+      - name: Commit generated catalogs
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/generated/v3Catalog.ts src/generated/docsCatalog.ts
+          git commit -m "Sync generated MCP catalogs"
+          git push

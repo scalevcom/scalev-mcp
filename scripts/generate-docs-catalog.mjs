@@ -1,0 +1,190 @@
+import { createHash } from "node:crypto";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+const repoRoot = path.resolve(scriptDir, "..");
+const docsRoot = path.resolve(repoRoot, "..", "docs");
+const docsJsonPath = path.resolve(docsRoot, "docs.json");
+const outputPath = path.resolve(repoRoot, "src", "generated", "docsCatalog.ts");
+const generatedDocs = [];
+const sourceHashes = [];
+const TOPIC_OVERRIDES = {
+  "en/authorization-with-o-auth": "oauth_authorization"
+};
+
+const docsJson = await readJson(docsJsonPath);
+const developerDocs = developersDocsFromNavigation(docsJson);
+
+for (const doc of developerDocs) {
+  const sourcePath = path.resolve(docsRoot, `${doc.slug}.mdx`);
+  const source = `../docs/${doc.slug}.mdx`;
+  const raw = await readFile(sourcePath, "utf8");
+  const sourceSha256 = sha256(raw);
+  const { frontmatter, body } = splitFrontmatter(raw);
+  const content = normalizeDocsContent(body);
+
+  sourceHashes.push(`${source}:${sourceSha256}`);
+  generatedDocs.push({
+    topic: doc.topic,
+    title: frontmatter.title || titleFromTopic(doc.topic),
+    description: frontmatter.description,
+    language: doc.language,
+    slug: doc.slug,
+    nav_group: doc.navGroup,
+    nav_path: doc.navPath,
+    url: doc.url,
+    source,
+    source_sha256: sourceSha256,
+    hint: docsHint(doc, frontmatter),
+    content
+  });
+}
+
+await mkdir(path.dirname(outputPath), { recursive: true });
+await writeFile(
+  outputPath,
+  generatedCatalog(sha256([`../docs/docs.json:${sha256(JSON.stringify(docsJson))}`, ...sourceHashes].join("\n")), generatedDocs)
+);
+
+console.log(`Generated ${path.relative(repoRoot, outputPath)} with ${generatedDocs.length} docs`);
+
+async function readJson(filePath) {
+  return JSON.parse(await readFile(filePath, "utf8"));
+}
+
+function developersDocsFromNavigation(docsJson) {
+  const docs = [];
+
+  for (const languageEntry of docsJson.navigation?.languages || []) {
+    const language = languageEntry.language;
+
+    for (const tabEntry of languageEntry.tabs || []) {
+      if (tabEntry.tab !== "Developers") continue;
+
+      docs.push(
+        ...flattenPages(tabEntry.pages || [], {
+          language,
+          navPath: [tabEntry.tab],
+          groupStack: []
+        })
+      );
+    }
+  }
+
+  return docs;
+}
+
+function flattenPages(pages, context) {
+  const docs = [];
+
+  for (const entry of pages) {
+    if (typeof entry === "string") {
+      docs.push(docFromSlug(entry, context));
+      continue;
+    }
+
+    if (!entry || typeof entry !== "object") continue;
+
+    const group = entry.group;
+    const nextContext = group
+      ? {
+          ...context,
+          navPath: [...context.navPath, group],
+          groupStack: [...context.groupStack, group]
+        }
+      : context;
+
+    docs.push(...flattenPages(entry.pages || [], nextContext));
+  }
+
+  return docs;
+}
+
+function docFromSlug(slug, context) {
+  const slugLanguage = slug.split("/")[0];
+  const language = context.language || slugLanguage;
+  const navGroup = context.groupStack.at(-1);
+
+  return {
+    topic: topicFromSlug(slug),
+    language,
+    slug,
+    navGroup,
+    navPath: context.navPath,
+    url: `https://docs.scalev.com/${slug}`
+  };
+}
+
+function topicFromSlug(slug) {
+  if (TOPIC_OVERRIDES[slug]) return TOPIC_OVERRIDES[slug];
+
+  return slug
+    .replace(/^(en|id)\//, "")
+    .replace(/[^a-zA-Z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .toLowerCase();
+}
+
+function splitFrontmatter(raw) {
+  if (!raw.startsWith("---\n")) return { frontmatter: {}, body: raw };
+
+  const end = raw.indexOf("\n---", 4);
+  if (end === -1) return { frontmatter: {}, body: raw };
+
+  return {
+    frontmatter: parseFrontmatter(raw.slice(4, end)),
+    body: raw.slice(end + 4)
+  };
+}
+
+function parseFrontmatter(source) {
+  const frontmatter = {};
+
+  for (const line of source.split(/\r?\n/)) {
+    const match = line.match(/^([a-zA-Z0-9_-]+):\s*(.*)$/);
+    if (!match) continue;
+
+    frontmatter[match[1]] = match[2].replace(/^["']|["']$/g, "").trim();
+  }
+
+  return frontmatter;
+}
+
+function normalizeDocsContent(body) {
+  return body
+    .replace(/\]\(\/(en|id)\//g, "](https://docs.scalev.com/$1/")
+    .replace(/^\s*\{\s*\/\*[\s\S]*?\*\/\s*\}\s*$/gm, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+function titleFromTopic(topic) {
+  return topic
+    .split("_")
+    .map((word) => word[0].toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+function docsHint(doc, frontmatter) {
+  const nav = doc.navPath.join(" / ");
+  const title = frontmatter.title || titleFromTopic(doc.topic);
+  return `Scalev Developers doc: ${nav} / ${title}.`;
+}
+
+function sha256(value) {
+  return createHash("sha256").update(value).digest("hex");
+}
+
+function generatedCatalog(sourceHash, docs) {
+  return `// Generated by scripts/generate-docs-catalog.mjs from ../docs.
+// Do not edit by hand.
+
+import type { ScalevDoc } from "../docs";
+
+export const DOCS_CATALOG_SOURCE_SHA256 = ${JSON.stringify(sourceHash)};
+
+export const SCALEV_DOCS = ${JSON.stringify(docs, null, 2)} as const satisfies readonly ScalevDoc[];
+`;
+}

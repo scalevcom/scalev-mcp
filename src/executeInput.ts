@@ -1,4 +1,4 @@
-import type { CatalogRequestInput } from "./catalog";
+import { normalizeBusinessSelectorInput, type BusinessScopedToolInput } from "./businessSelector";
 
 const RESERVED_EXECUTE_INPUT_KEYS = new Set([
   "operation_id",
@@ -6,12 +6,18 @@ const RESERVED_EXECUTE_INPUT_KEYS = new Set([
   "business_unique_id",
   "path_params",
   "query",
+  "query_params",
+  "query_parameters",
+  "header_params",
+  "headers",
   "body"
 ]);
 
-export type ExecuteToolInput = CatalogRequestInput & Record<string, unknown>;
+export type ExecuteToolInput = BusinessScopedToolInput;
 
-export function normalizeExecuteInput(input: ExecuteToolInput): CatalogRequestInput {
+export function normalizeExecuteInput(input: ExecuteToolInput): BusinessScopedToolInput {
+  input = normalizeBusinessSelectorInput(input);
+
   if (typeof input.body !== "undefined") {
     return { ...baseExecuteInput(input), body: normalizeJsonLikeBody(input.body) };
   }
@@ -28,8 +34,8 @@ export function normalizeExecuteInput(input: ExecuteToolInput): CatalogRequestIn
   };
 }
 
-function baseExecuteInput(input: ExecuteToolInput): CatalogRequestInput {
-  const base: CatalogRequestInput = {
+function baseExecuteInput(input: ExecuteToolInput): BusinessScopedToolInput {
+  const base: BusinessScopedToolInput = {
     operation_id: input.operation_id,
     path: input.path,
     path_params: input.path_params,

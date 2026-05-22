@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "5508166f8aac37778905619e063880ab84e7491afbec0896d6f7cf27bfaaf051";
+export const V3_CATALOG_SOURCE_SHA256 = "c514bcccd06cb87011a2633280f254cb866b3a3915504827a0864da097b94e10";
 
 export const V3_ENDPOINTS = [
   {
@@ -5126,6 +5126,10 @@ export const V3_ENDPOINTS = [
     "path": "/v3/pages",
     "summary": "List landing pages",
     "description": "Business-scoped landing page list. Returns Builder and HTML Mode pages visible to the authenticated business.",
+    "externalDocs": {
+      "url": "https://docs.scalev.com/en/landing-pages-api",
+      "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
+    },
     "tags": [
       "Landing Pages"
     ],
@@ -5175,6 +5179,10 @@ export const V3_ENDPOINTS = [
     "path": "/v3/pages",
     "summary": "Create a landing page",
     "description": "Creates a business-scoped landing page using the same page creation behavior as Landing Page Studio. The request body below documents the HTML Mode payload. To create and publish an HTML Mode page in one call, include `is_published: true` with `page_display`. If `is_published` is omitted or false, the nested `page_display` is saved as an unpublished draft and is not returned as the page's current display; create or pick a page display, then call `PATCH /v3/pages/{id}` with `is_published: true` and `current_page_display_id` to publish it.",
+    "externalDocs": {
+      "url": "https://docs.scalev.com/en/landing-pages-api",
+      "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
+    },
     "tags": [
       "Landing Pages"
     ],
@@ -5216,6 +5224,10 @@ export const V3_ENDPOINTS = [
     "path": "/v3/pages/{id}",
     "summary": "Get a landing page",
     "description": "Returns a business-scoped landing page with its current published page display when one is selected.",
+    "externalDocs": {
+      "url": "https://docs.scalev.com/en/landing-pages-api",
+      "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
+    },
     "tags": [
       "Landing Pages"
     ],
@@ -5247,6 +5259,10 @@ export const V3_ENDPOINTS = [
     "path": "/v3/pages/{id}",
     "summary": "Update a landing page",
     "description": "Updates business-scoped landing page metadata and publishing state using the same page update behavior as Landing Page Studio. Send `is_published: true` with `current_page_display_id` to publish a page display, or `is_published: false` with `current_page_display_id: null` to unpublish the page.",
+    "externalDocs": {
+      "url": "https://docs.scalev.com/en/landing-pages-api",
+      "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
+    },
     "tags": [
       "Landing Pages"
     ],
@@ -5298,6 +5314,10 @@ export const V3_ENDPOINTS = [
     "path": "/v3/pages/{id}",
     "summary": "Delete a landing page",
     "description": "Soft-deletes a business-scoped landing page. Builder and HTML Mode pages are both deletable through this endpoint.",
+    "externalDocs": {
+      "url": "https://docs.scalev.com/en/landing-pages-api",
+      "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
+    },
     "tags": [
       "Landing Pages"
     ],
@@ -5329,6 +5349,10 @@ export const V3_ENDPOINTS = [
     "path": "/v3/pages/{id}/public",
     "summary": "Get landing page public view data",
     "description": "Returns the authenticated public rendering payload for a landing page.",
+    "externalDocs": {
+      "url": "https://docs.scalev.com/en/landing-pages-api",
+      "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
+    },
     "tags": [
       "Landing Pages"
     ],
@@ -5360,6 +5384,10 @@ export const V3_ENDPOINTS = [
     "path": "/v3/pages/{id}/update-tags",
     "summary": "Update landing page tags",
     "description": "Replaces the tags assigned to a landing page.",
+    "externalDocs": {
+      "url": "https://docs.scalev.com/en/landing-pages-api",
+      "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
+    },
     "tags": [
       "Landing Pages"
     ],
@@ -5405,6 +5433,10 @@ export const V3_ENDPOINTS = [
     "path": "/v3/pages/{page_id}/page-displays",
     "summary": "List landing page displays",
     "description": "Lists saved displays for a landing page.",
+    "externalDocs": {
+      "url": "https://docs.scalev.com/en/landing-pages-api",
+      "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
+    },
     "tags": [
       "Landing Pages"
     ],
@@ -5464,6 +5496,10 @@ export const V3_ENDPOINTS = [
     "path": "/v3/pages/{page_id}/page-displays",
     "summary": "Create a landing page display",
     "description": "Creates a new display for an existing landing page. The request body below documents the HTML Mode page display payload.",
+    "externalDocs": {
+      "url": "https://docs.scalev.com/en/landing-pages-api",
+      "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
+    },
     "tags": [
       "Landing Pages"
     ],
@@ -5536,6 +5572,10 @@ export const V3_ENDPOINTS = [
     "path": "/v3/pages/{page_id}/page-displays/{display_id}",
     "summary": "Get a landing page display",
     "description": "Returns one saved landing page display.",
+    "externalDocs": {
+      "url": "https://docs.scalev.com/en/landing-pages-api",
+      "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
+    },
     "tags": [
       "Landing Pages"
     ],
@@ -5576,6 +5616,10 @@ export const V3_ENDPOINTS = [
     "path": "/v3/pages/{page_id}/page-displays/{display_id}",
     "summary": "Delete a landing page display",
     "description": "Deletes one saved landing page display.",
+    "externalDocs": {
+      "url": "https://docs.scalev.com/en/landing-pages-api",
+      "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
+    },
     "tags": [
       "Landing Pages"
     ],
@@ -5616,6 +5660,10 @@ export const V3_ENDPOINTS = [
     "path": "/v3/pages/{page_id}/page-displays/validate",
     "summary": "Validate a landing page display",
     "description": "Validates the same landing page display payload accepted by create without persisting a page-display record.",
+    "externalDocs": {
+      "url": "https://docs.scalev.com/en/landing-pages-api",
+      "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
+    },
     "tags": [
       "Landing Pages"
     ],
@@ -5688,6 +5736,10 @@ export const V3_ENDPOINTS = [
     "path": "/v3/pages/simplified",
     "summary": "List simplified landing pages",
     "description": "Business-scoped simplified landing page list using the same page filtering as Landing Page Studio.",
+    "externalDocs": {
+      "url": "https://docs.scalev.com/en/landing-pages-api",
+      "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
+    },
     "tags": [
       "Landing Pages"
     ],
@@ -5737,6 +5789,10 @@ export const V3_ENDPOINTS = [
     "path": "/v3/pages/tags",
     "summary": "List landing page tags",
     "description": "Lists landing page tags visible to the authenticated business.",
+    "externalDocs": {
+      "url": "https://docs.scalev.com/en/landing-pages-api",
+      "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
+    },
     "tags": [
       "Landing Pages"
     ],

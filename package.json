@@ -7,8 +7,12 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
+    "generate:docs-catalog": "node scripts/generate-docs-catalog.mjs",
     "generate:v3-catalog": "node scripts/generate-v3-catalog.mjs",
+    "generate:catalogs": "pnpm generate:v3-catalog && pnpm generate:docs-catalog",
+    "check:docs-catalog": "node scripts/generate-docs-catalog.mjs && git diff --exit-code -- src/generated/docsCatalog.ts",
     "check:v3-catalog": "node scripts/generate-v3-catalog.mjs && git diff --exit-code -- src/generated/v3Catalog.ts",
+    "check:catalogs": "pnpm check:v3-catalog && pnpm check:docs-catalog",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },

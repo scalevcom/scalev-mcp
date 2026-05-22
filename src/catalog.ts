@@ -1,4 +1,6 @@
 import { V3_CATALOG_SOURCE_SHA256, V3_ENDPOINTS } from "./generated/v3Catalog";
+import { docsTopicForUrl } from "./docs";
+import { normalizeBusinessSelectorInput, type BusinessScopedToolInput } from "./businessSelector";
 import type { BusinessV3Method, BusinessV3Request } from "./nexusClient";
 
 export type CatalogPrimitive = string | number | boolean;
@@ -26,12 +28,18 @@ export interface V3EndpointRequestBody {
   readonly properties: readonly string[];
 }
 
+export interface V3EndpointExternalDocs {
+  readonly url: string;
+  readonly description?: string;
+}
+
 export interface V3Endpoint {
   readonly operationId: string;
   readonly method: BusinessV3Method;
   readonly path: string;
   readonly summary: string;
   readonly description?: string;
+  readonly externalDocs?: V3EndpointExternalDocs;
   readonly tags: readonly string[];
   readonly scopes: readonly string[];
   readonly auth: readonly string[];
@@ -57,6 +65,9 @@ export interface EndpointSearchResult {
   path_template: string;
   summary: string;
   description?: string;
+  docs_url?: string;
+  docs_topic?: string;
+  docs_hint?: string;
   tags: string[];
   scopes: string[];
   read_only: boolean;
@@ -136,7 +147,8 @@ export function searchEndpoints(input: EndpointSearchInput = {}): EndpointSearch
   };
 }
 
-export function buildGetRequest(input: CatalogRequestInput): ResolvedEndpointRequest {
+export function buildGetRequest(input: BusinessScopedToolInput): ResolvedEndpointRequest {
+  input = normalizeBusinessSelectorInput(input);
   const resolved = resolveEndpoint(input, ["GET"], "get");
 
   if (typeof input.body !== "undefined") {
@@ -155,7 +167,8 @@ export function buildGetRequest(input: CatalogRequestInput): ResolvedEndpointReq
   };
 }
 
-export function buildExecuteRequest(input: CatalogRequestInput): ResolvedEndpointRequest {
+export function buildExecuteRequest(input: BusinessScopedToolInput): ResolvedEndpointRequest {
+  input = normalizeBusinessSelectorInput(input);
   const resolved = resolveEndpoint(input, ["POST", "PUT", "PATCH", "DELETE"], "execute");
   const path = withQuery(resolved.endpoint, resolved.path, resolved.queryParams, input.query);
 
@@ -295,6 +308,8 @@ function parseInputPath(
 }
 
 function endpointSearchResult(endpoint: V3Endpoint): EndpointSearchResult {
+  const docsUrl = endpoint.externalDocs?.url;
+
   return {
     operation_id: endpoint.operationId,
     method: endpoint.method,
@@ -302,6 +317,9 @@ function endpointSearchResult(endpoint: V3Endpoint): EndpointSearchResult {
     path_template: endpoint.path,
     summary: endpoint.summary,
     description: endpoint.description,
+    docs_url: docsUrl,
+    docs_topic: docsUrl ? docsTopicForUrl(docsUrl) : undefined,
+    docs_hint: endpoint.externalDocs?.description,
     tags: [...endpoint.tags],
     scopes: [...endpoint.scopes],
     read_only: endpoint.readOnly,

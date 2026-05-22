@@ -2,6 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { getMcpAuthContext } from "agents/mcp";
 import { z } from "zod";
 import { buildExecuteRequest, buildGetRequest, searchEndpoints } from "./catalog";
+import { getDocs } from "./docs";
 import { normalizeExecuteInput } from "./executeInput";
 import { nexusBusinessRequest } from "./nexusClient";
 import { SCALEV_TOOL_NAMES } from "./toolNames";
@@ -27,7 +28,7 @@ const catalogOperationSchema = {
     .string()
     .optional()
     .describe(
-      "Top-level business selector for this get/execute tool call. Copy one value from get_me.connected_businesses[].unique_id. Required when get_me returns more than one connected business. Do not put business_unique_id inside query, path_params, or body. Example: {\"business_unique_id\":\"ABC123\"}."
+      "Canonical top-level business selector for this get/execute tool call. Copy one value from get_me.connected_businesses[].unique_id. Required when get_me returns more than one connected business. Preferred example: {\"business_unique_id\":\"ABC123\"}. For robustness, the connector also recovers this exact key if a client accidentally places it under body, query, query_params, header_params, headers, or the concrete path query string."
     ),
   path_params: z
     .record(z.string(), primitiveSchema)
@@ -53,7 +54,7 @@ const executeInputSchema = z
   .catchall(z.unknown());
 
 export function createScalevMcpServer(env: Env): McpServer {
-  const server = new McpServer({ name: "scalev-v3", version: "0.2.0" });
+  const server = new McpServer({ name: "scalev-v3", version: "0.3.0" });
 
   server.registerTool(
     "get_me",
@@ -72,11 +73,41 @@ export function createScalevMcpServer(env: Env): McpServer {
   );
 
   server.registerTool(
+    "get_docs",
+    {
+      title: "Read Scalev docs",
+      description:
+        "Read Scalev Developers documentation bundled into MCP from the docs repo navigation. Use this before building request payloads or running write actions when search returns docs_topic/docs_url/docs_hint. Topics are generated from Developers-tab slugs, for example landing_pages_api, storefront_api_introduction, oauth_authorization, and scalev_mcp_connector.",
+      inputSchema: {
+        topic: z
+          .string()
+          .optional()
+          .describe("Preferred docs topic. Use search result docs_topic when present, for example landing_pages_api."),
+        url: z
+          .string()
+          .optional()
+          .describe("Public docs URL from search result docs_url. Used when topic is not supplied."),
+        language: z.string().optional().describe("Optional docs language filter, for example en or id."),
+        nav_group: z
+          .string()
+          .optional()
+          .describe("Optional Developers navigation group filter, for example Storefront API, Webhooks, or Landing pages."),
+        query: z.string().optional().describe("Optional docs search query, for example landing pages html mode."),
+        limit: z.number().int().min(1).max(20).optional().describe("Maximum docs to return for query/list mode.")
+      },
+      annotations: { readOnlyHint: true }
+    },
+    async (input) => {
+      return toolResult(getDocs(input));
+    }
+  );
+
+  server.registerTool(
     "search",
     {
       title: "Search Scalev v3 endpoints",
       description:
-        "Search the local catalog of business-authenticated Scalev API v3 operations. Use this before get or execute unless you already know the exact operation_id. This tool discovers API capabilities only; it does not read or change business records. Results include operation_id, method, execution_tool, path template, required path params, optional query params, request body summary, tags, scopes, and whether the operation is read-only.",
+        "Search the local catalog of business-authenticated Scalev API v3 operations. Use this before get or execute unless you already know the exact operation_id. This tool discovers API capabilities only; it does not read or change business records. Results include operation_id, method, execution_tool, path template, required path params, optional query params, request body summary, tags, scopes, and whether the operation is read-only. Results can include docs_topic, docs_url, and docs_hint; when present, call get_docs with docs_topic before building payloads or running write actions.",
       inputSchema: {
         query: z
           .string()
@@ -114,7 +145,7 @@ export function createScalevMcpServer(env: Env): McpServer {
     {
       title: "Get Scalev v3 resource",
       description:
-        "Run one read-only GET operation from the business-authenticated Scalev API v3 search catalog. Business selection rule: call get_me first. If get_me.connected_businesses has more than one entry, choose one business and include its connected_businesses[].unique_id as the top-level business_unique_id argument on this tool call. Do not put business_unique_id inside query, path_params, or body. Example input: {\"operation_id\":\"listOrders\",\"business_unique_id\":\"ABC123\",\"query\":{\"page_size\":10}}. Use operation_id plus path_params/query from a search result, or a catalog-matching concrete /v3 path. This tool only runs GET operations, never accepts a request body, and forwards the user's OAuth bearer token unchanged to Nexus.",
+        "Run one read-only GET operation from the business-authenticated Scalev API v3 search catalog. Business selection rule: call get_me first. If get_me.connected_businesses has more than one entry, choose one business and include its connected_businesses[].unique_id as the business_unique_id argument. Top-level business_unique_id is canonical: {\"operation_id\":\"listOrders\",\"business_unique_id\":\"ABC123\",\"query\":{\"page_size\":10}}. If a client accidentally puts the exact business_unique_id key in query, query_params, header_params, headers, body, or the concrete path query string, Scalev MCP recovers it, strips it from the API payload/query, and forwards it to Nexus as b_uid. Use operation_id plus path_params/query from a search result, or a catalog-matching concrete /v3 path. If the search result included docs_topic/docs_url, call get_docs first when endpoint behavior or fields are unclear. This tool only runs GET operations, never accepts a request body, and forwards the user's OAuth bearer token unchanged to Nexus.",
       inputSchema: catalogOperationSchema,
       annotations: { readOnlyHint: true }
     },
@@ -137,7 +168,7 @@ export function createScalevMcpServer(env: Env): McpServer {
     {
       title: "Execute Scalev v3 request",
       description:
-        "Run one non-GET operation from the business-authenticated Scalev API v3 search catalog. Business selection rule: call get_me first. If get_me.connected_businesses has more than one entry, choose one business and include its connected_businesses[].unique_id as the top-level business_unique_id argument on this tool call. Do not put business_unique_id inside query, path_params, or body; body is only for the API request payload. Example input: {\"operation_id\":\"createLandingPage\",\"business_unique_id\":\"ABC123\",\"body\":{...}}. Use this for create, update, delete, validation, and other action endpoints after confirming the user's intent. Prefer operation_id plus path_params/query/body from a search result. If body is omitted, extra top-level fields are treated as the JSON request body. This tool cannot run GET operations. Nexus validates the OAuth bearer token, business access, scopes, request payload, and endpoint authorization.",
+        "Run one non-GET operation from the business-authenticated Scalev API v3 search catalog. Business selection rule: call get_me first. If get_me.connected_businesses has more than one entry, choose one business and include its connected_businesses[].unique_id as the business_unique_id argument. Top-level business_unique_id is canonical: {\"operation_id\":\"createLandingPage\",\"business_unique_id\":\"ABC123\",\"body\":{...}}. If a client accidentally puts the exact business_unique_id key in body, query, query_params, header_params, headers, or the concrete path query string, Scalev MCP recovers it, strips it from the API payload/query, and forwards it to Nexus as b_uid. Use this for create, update, delete, validation, and other action endpoints after confirming the user's intent. Prefer operation_id plus path_params/query/body from a search result. If the search result included docs_topic/docs_url, call get_docs before constructing the body or running this write action. If body is omitted, extra top-level fields are treated as the JSON request body. This tool cannot run GET operations. Nexus validates the OAuth bearer token, business access, scopes, request payload, and endpoint authorization.",
       inputSchema: executeInputSchema,
       annotations: { readOnlyHint: false }
     },

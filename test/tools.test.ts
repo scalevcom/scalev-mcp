@@ -1,12 +1,14 @@
 import { describe, expect, it } from "vitest";
+import { normalizeBusinessSelectorInput } from "../src/businessSelector";
 import { buildExecuteRequest, buildGetRequest, catalogEndpointCount, searchEndpoints } from "../src/catalog";
+import { getDocs } from "../src/docs";
 import { normalizeExecuteInput } from "../src/executeInput";
 import { V3_ENDPOINTS } from "../src/generated/v3Catalog";
 import { SCALEV_TOOL_NAMES } from "../src/toolNames";
 
 describe("Scalev MCP tools", () => {
-  it("exposes only the four generic tools", () => {
-    expect([...SCALEV_TOOL_NAMES]).toEqual(["get_me", "search", "get", "execute"]);
+  it("exposes only the generic MCP tools", () => {
+    expect([...SCALEV_TOOL_NAMES]).toEqual(["get_me", "get_docs", "search", "get", "execute"]);
   });
 
   it("generates a broad business-authenticated v3 endpoint catalog", () => {
@@ -25,9 +27,37 @@ describe("Scalev MCP tools", () => {
     expect(waba.data.some((endpoint) => endpoint.scopes.includes("waba_account:read"))).toBe(true);
 
     const createPage = searchEndpoints({ query: "create landing page", method: "POST", limit: 10 });
-    expect(createPage.data.find((endpoint) => endpoint.operation_id === "createLandingPage")?.execution_tool).toBe(
-      "execute"
-    );
+    const createLandingPage = createPage.data.find((endpoint) => endpoint.operation_id === "createLandingPage");
+    expect(createLandingPage?.execution_tool).toBe("execute");
+    expect(createLandingPage?.docs_url).toBe("https://docs.scalev.com/en/landing-pages-api");
+    expect(createLandingPage?.docs_topic).toBe("landing_pages_api");
+    expect(createLandingPage?.docs_hint).toMatch(/Landing Pages API/);
+  });
+
+  it("reads bundled Scalev docs by topic or URL", () => {
+    const byTopic = getDocs({ topic: "landing_pages_api" });
+    expect(byTopic.data).toHaveLength(1);
+    expect(byTopic.data[0].url).toBe("https://docs.scalev.com/en/landing-pages-api");
+    expect(byTopic.data[0]).toMatchObject({
+      language: "en",
+      slug: "en/landing-pages-api",
+      nav_group: "Landing pages",
+      nav_path: ["Developers", "Landing pages"]
+    });
+    expect(byTopic.data[0].content).toContain("## HTML Mode display payload");
+    expect(byTopic.catalog.docs_count).toBe(38);
+    expect(byTopic.catalog.available_languages).toEqual(["en", "id"]);
+    expect(byTopic.catalog.available_nav_groups).toContain("Storefront API");
+
+    const byUrl = getDocs({ url: "https://docs.scalev.com/en/landing-pages-api/" });
+    expect(byUrl.data[0].topic).toBe("landing_pages_api");
+
+    const storefront = getDocs({ query: "introduction", language: "en", nav_group: "Storefront API", limit: 5 });
+    expect(storefront.data.map((doc) => doc.topic)).toContain("storefront_api_introduction");
+    expect(storefront.data.every((doc) => doc.language === "en" && doc.nav_group === "Storefront API")).toBe(true);
+
+    const indonesianOauth = getDocs({ topic: "otorisasi_dengan_o_auth", language: "id" });
+    expect(indonesianOauth.data[0].url).toBe("https://docs.scalev.com/id/otorisasi-dengan-o-auth");
   });
 
   it("keeps OAuth flow routes and storefront browser routes out of search", () => {
@@ -65,6 +95,41 @@ describe("Scalev MCP tools", () => {
     expect(endpoint.operationId).toBe("getLandingPage");
     expect(request.path).toBe("/v3/pages/123?page_size=20");
     expect(request.businessUniqueId).toBe("BIZ123");
+  });
+
+  it("recovers misplaced business selectors for get requests", () => {
+    expect(
+      buildGetRequest({
+        operation_id: "listLandingPages",
+        query: { business_unique_id: "BIZ123", page_size: 10 }
+      }).request
+    ).toEqual({
+      method: "GET",
+      path: "/v3/pages?page_size=10",
+      businessUniqueId: "BIZ123"
+    });
+
+    expect(
+      buildGetRequest({
+        path: "/v3/pages?business_unique_id=BIZ123&page_size=20"
+      }).request
+    ).toEqual({
+      method: "GET",
+      path: "/v3/pages?page_size=20",
+      businessUniqueId: "BIZ123"
+    });
+
+    expect(
+      buildGetRequest({
+        operation_id: "listLandingPages",
+        query_params: { business_unique_id: "BIZ123", page_size: 30 },
+        header_params: { business_unique_id: "BIZ123" }
+      }).request
+    ).toEqual({
+      method: "GET",
+      path: "/v3/pages?page_size=30",
+      businessUniqueId: "BIZ123"
+    });
   });
 
   it("validates required query parameters from the catalog", () => {
@@ -122,6 +187,62 @@ describe("Scalev MCP tools", () => {
       operation_id: "createBundle",
       body: { name: "MCP Test Bundle", public_name: "MCP Test Bundle" }
     });
+  });
+
+  it("recovers misplaced business selectors for execute requests", () => {
+    expect(
+      normalizeExecuteInput({
+        operation_id: "createLandingPage",
+        body: { business_unique_id: "BIZ123", name: "Launch", slug: "launch" }
+      })
+    ).toEqual({
+      operation_id: "createLandingPage",
+      path: undefined,
+      business_unique_id: "BIZ123",
+      path_params: undefined,
+      query: undefined,
+      body: { name: "Launch", slug: "launch" }
+    });
+
+    expect(
+      normalizeExecuteInput({
+        operation_id: "createLandingPage",
+        body: "{\"business_unique_id\":\"BIZ123\",\"name\":\"Launch\"}"
+      })
+    ).toEqual({
+      operation_id: "createLandingPage",
+      path: undefined,
+      business_unique_id: "BIZ123",
+      path_params: undefined,
+      query: undefined,
+      body: { name: "Launch" }
+    });
+
+    expect(
+      normalizeExecuteInput({
+        operation_id: "createBundle",
+        query_params: { business_unique_id: "BIZ123" },
+        header_params: { business_unique_id: "BIZ123" },
+        name: "MCP Test Bundle"
+      })
+    ).toEqual({
+      operation_id: "createBundle",
+      path: undefined,
+      business_unique_id: "BIZ123",
+      path_params: undefined,
+      query: undefined,
+      body: { name: "MCP Test Bundle" }
+    });
+  });
+
+  it("rejects conflicting business selectors instead of guessing", () => {
+    expect(() =>
+      normalizeBusinessSelectorInput({
+        operation_id: "listLandingPages",
+        business_unique_id: "BIZ123",
+        query: { business_unique_id: "BIZ456" }
+      })
+    ).toThrow(/Conflicting business_unique_id values/);
   });
 
   it("rejects unknown, malformed, or unsafe catalog requests", () => {

@@ -31,7 +31,15 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: scalevcom/api-openapi
+          ref: main
           path: api-openapi
+
+      - name: Checkout docs
+        uses: actions/checkout@v4
+        with:
+          repository: scalevcom/docs
+          ref: main
+          path: docs
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -49,8 +57,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Check v3 catalog sync
-        run: pnpm run check:v3-catalog
+      - name: Check generated catalog sync
+        run: pnpm run check:catalogs
 
       - name: Typecheck
         run: pnpm run typecheck

@@ -27,6 +27,7 @@ const outputPath = path.resolve(repoRoot, "src", "generated", "v3Catalog.ts");
 const source = await readFile(sourcePath, "utf8");
 const spec = parse(source);
 const sourceHash = createHash("sha256").update(source).digest("hex");
+const tagExternalDocs = tagExternalDocsByName(spec);
 const endpoints = [];
 
 for (const [openApiPath, pathItem] of Object.entries(spec.paths || {})) {
@@ -47,6 +48,7 @@ for (const [openApiPath, pathItem] of Object.entries(spec.paths || {})) {
       path: openApiPath,
       summary: operation.summary || fallbackSummary(method, openApiPath),
       description: cleanText(operation.description),
+      externalDocs: externalDocsMetadata(operation, tagExternalDocs),
       tags: asArray(operation.tags).map(String).sort(),
       scopes: unique([...oauthScopes(operation, pathItem, spec), ...documentedScopes(operation)]).sort(),
       auth: authSchemes(operation, pathItem, spec).sort(),
@@ -145,6 +147,36 @@ function requestBodyMetadata(spec, requestBody) {
     schemaRef,
     requiredFields,
     properties
+  });
+}
+
+function tagExternalDocsByName(spec) {
+  return new Map(
+    asArray(spec.tags)
+      .filter((tag) => tag?.name && tag?.externalDocs?.url)
+      .map((tag) => [String(tag.name), externalDocsPayload(tag.externalDocs)])
+  );
+}
+
+function externalDocsMetadata(operation, tagExternalDocs) {
+  const operationDocs = externalDocsPayload(operation.externalDocs);
+  if (operationDocs) return operationDocs;
+
+  for (const tagName of asArray(operation.tags).map(String)) {
+    const tagDocs = tagExternalDocs.get(tagName);
+    if (tagDocs) return tagDocs;
+  }
+
+  return undefined;
+}
+
+function externalDocsPayload(externalDocs) {
+  const url = cleanText(externalDocs?.url);
+  if (!url) return undefined;
+
+  return compact({
+    url,
+    description: cleanText(externalDocs.description)
   });
 }
 
