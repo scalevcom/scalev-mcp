@@ -209,9 +209,12 @@ function errorMessage(response: Response, payload: unknown, text: string): strin
   }
 
   if (response.status === 400 || response.status === 422) {
+    const validationDetails = validationErrorDetails(payload);
+
     return [
       `Scalev API rejected the request${codePart}${requestIdPart}:`,
-      "check operation_id, path_params, query, and body against search metadata and get_docs before retrying."
+      validationDetails ??
+        "check operation_id, path_params, query, and body against search metadata and get_docs before retrying."
     ].join(" ");
   }
 
@@ -237,4 +240,58 @@ function payloadString(payload: unknown, key: string): string | undefined {
 
   const value = (payload as Record<string, unknown>)[key];
   return typeof value === "string" ? value : undefined;
+}
+
+function validationErrorDetails(payload: unknown): string | undefined {
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) return undefined;
+
+  const errors = (payload as Record<string, unknown>).errors;
+  if (!errors || typeof errors !== "object" || Array.isArray(errors)) return undefined;
+
+  const details = Object.entries(errors)
+    .flatMap(([field, value]) => {
+      const safeField = safeValidationField(field);
+      if (!safeField) return [];
+
+      const messages = validationMessages(value)
+        .map(safeValidationMessage)
+        .filter((message): message is string => Boolean(message));
+
+      if (messages.length === 0) {
+        return [`${safeField}: invalid`];
+      }
+
+      return [`${safeField}: ${messages.slice(0, 2).join("; ")}`];
+    })
+    .slice(0, 4);
+
+  if (details.length === 0) return undefined;
+
+  return `Validation failed. ${details.join("; ")}.`;
+}
+
+function safeValidationField(field: string): string | undefined {
+  const normalized = field.replace(/[^\w.[\]-]/g, "").slice(0, 80);
+  return normalized || undefined;
+}
+
+function validationMessages(value: unknown): string[] {
+  if (typeof value === "string") return [value];
+
+  if (Array.isArray(value)) {
+    return value.filter((item): item is string => typeof item === "string");
+  }
+
+  return [];
+}
+
+function safeValidationMessage(message: string): string | undefined {
+  const normalized = message.replace(/\s+/g, " ").trim();
+  if (!normalized) return undefined;
+
+  return normalized
+    .replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, "[email]")
+    .replace(/\b(?:\+?\d[\d\s().-]{7,}\d)\b/g, "[number]")
+    .replace(/\b(?:CR|ORD)[A-Z0-9-]{4,}\b/g, "[id]")
+    .slice(0, 240);
 }

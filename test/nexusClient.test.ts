@@ -152,6 +152,41 @@ describe("nexusUrl", () => {
     ).rejects.not.toThrow(/buyer@example\.com|628123456789|ORD-SECRET-123/);
   });
 
+  it("surfaces sanitized Nexus validation details when available", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => {
+        return new Response(
+          JSON.stringify({
+            error_code: "validation_failed",
+            errors: {
+              base: [
+                "This order update includes fields that require full order validation and recalculation: product_discount."
+              ],
+              customer_email: ["has invalid format buyer@example.com"]
+            }
+          }),
+          {
+            status: 422,
+            headers: { "content-type": "application/json", "x-request-id": "req_validation" }
+          }
+        );
+      })
+    );
+
+    await expect(
+      nexusBusinessRequest(env, { token: "raw-oauth-token" }, { method: "PATCH", path: "/v3/orders/123", body: {} })
+    ).rejects.toMatchObject({
+      status: 422,
+      message:
+        "Scalev API rejected the request validation_failed (request_id: req_validation): Validation failed. base: This order update includes fields that require full order validation and recalculation: product_discount.; customer_email: has invalid format [email]."
+    });
+
+    await expect(
+      nexusBusinessRequest(env, { token: "raw-oauth-token" }, { method: "PATCH", path: "/v3/orders/123", body: {} })
+    ).rejects.not.toThrow(/buyer@example\.com/);
+  });
+
   it("does not attach raw Nexus payloads to thrown error objects", async () => {
     vi.stubGlobal(
       "fetch",
