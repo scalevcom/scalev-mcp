@@ -289,9 +289,14 @@ function safeValidationMessage(message: string): string | undefined {
   const normalized = message.replace(/\s+/g, " ").trim();
   if (!normalized) return undefined;
 
-  return normalized
+  const redacted = normalized
     .replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, "[email]")
-    .replace(/\b(?:\+?\d[\d\s().-]{7,}\d)\b/g, "[number]")
-    .replace(/\b(?:CR|ORD)[A-Z0-9-]{4,}\b/g, "[id]")
-    .slice(0, 240);
+    .replace(/(^|[^\w.])((?:\+?62|0)\d(?:[\s().-]*\d){7,14})(?=$|[^\w.])/g, "$1[number]")
+    .replace(/\b(?:CR|ORD)[A-Z0-9-]{4,}\b/g, "[id]");
+
+  return truncateValidationMessage(redacted);
+}
+
+function truncateValidationMessage(message: string): string {
+  return message.length <= 400 ? message : `${message.slice(0, 397)}...`;
 }

@@ -163,7 +163,9 @@ describe("nexusUrl", () => {
               base: [
                 "This order update includes fields that require full order validation and recalculation: product_discount."
               ],
-              customer_email: ["has invalid format buyer@example.com"]
+              gross_revenue: ["Gross revenue must be between Rp 10.000 and Rp 10.000.000."],
+              customer_email: ["has invalid format buyer@example.com"],
+              customer_phone: ["has invalid format 628123456789"]
             }
           }),
           {
@@ -179,12 +181,12 @@ describe("nexusUrl", () => {
     ).rejects.toMatchObject({
       status: 422,
       message:
-        "Scalev API rejected the request validation_failed (request_id: req_validation): Validation failed. base: This order update includes fields that require full order validation and recalculation: product_discount.; customer_email: has invalid format [email]."
+        "Scalev API rejected the request validation_failed (request_id: req_validation): Validation failed. base: This order update includes fields that require full order validation and recalculation: product_discount.; gross_revenue: Gross revenue must be between Rp 10.000 and Rp 10.000.000.; customer_email: has invalid format [email]; customer_phone: has invalid format [number]."
     });
 
     await expect(
       nexusBusinessRequest(env, { token: "raw-oauth-token" }, { method: "PATCH", path: "/v3/orders/123", body: {} })
-    ).rejects.not.toThrow(/buyer@example\.com/);
+    ).rejects.not.toThrow(/buyer@example\.com|628123456789/);
   });
 
   it("does not attach raw Nexus payloads to thrown error objects", async () => {
