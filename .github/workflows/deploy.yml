@@ -60,6 +60,12 @@ jobs:
       - name: Check generated catalog sync
         run: pnpm run check:catalogs
 
+      - name: Check submission text safety
+        run: pnpm run check:submission-text
+
+      - name: Check submission package
+        run: pnpm run check:submission-package
+
       - name: Typecheck
         run: pnpm run typecheck
 

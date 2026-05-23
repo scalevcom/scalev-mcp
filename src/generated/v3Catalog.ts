@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "c514bcccd06cb87011a2633280f254cb866b3a3915504827a0864da097b94e10";
+export const V3_CATALOG_SOURCE_SHA256 = "04cc6e32c34ff51e949e35ecb29c172e1e9459dd5f62a2a66d2297f41dfa628f";
 
 export const V3_ENDPOINTS = [
   {
@@ -23,6 +23,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [
       {
@@ -107,6 +108,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [],
     "requestBody": {
@@ -151,6 +153,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "bundle_id",
@@ -208,6 +211,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "bundle_id",
@@ -254,6 +258,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "bundle_id",
@@ -308,6 +313,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": true,
     "pathParams": [
       {
         "name": "bundle_id",
@@ -345,6 +351,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "bundle_id",
@@ -382,6 +389,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "bundle_id",
@@ -439,6 +447,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "bundle_id",
@@ -494,6 +503,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "bundle_id",
@@ -531,6 +541,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "bundle_id",
@@ -594,6 +605,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": true,
     "pathParams": [
       {
         "name": "bundle_id",
@@ -631,6 +643,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "bundle_id",
@@ -660,6 +673,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "bundle_id",
@@ -717,6 +731,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "bundle_id",
@@ -760,6 +775,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": true,
     "pathParams": [
       {
         "name": "bundle_id",
@@ -797,6 +813,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "bundle_id",
@@ -826,6 +843,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -855,6 +873,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -904,6 +923,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": true,
     "pathParams": [
       {
         "name": "id",
@@ -933,6 +953,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -962,6 +983,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [
       {
@@ -1046,6 +1068,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [
       {
@@ -1139,6 +1162,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "uuid",
@@ -1168,6 +1192,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "uuid",
@@ -1206,6 +1231,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": true,
     "pathParams": [
       {
         "name": "uuid",
@@ -1235,6 +1261,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "section_uuid",
@@ -1273,6 +1300,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "section_uuid",
@@ -1311,6 +1339,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "uuid",
@@ -1340,6 +1369,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "uuid",
@@ -1378,6 +1408,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": true,
     "pathParams": [
       {
         "name": "uuid",
@@ -1407,6 +1438,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": []
   },
@@ -1427,6 +1459,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [],
     "requestBody": {
@@ -1456,6 +1489,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "customer_id",
@@ -1485,6 +1519,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "customer_id",
@@ -1523,6 +1558,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "customer_id",
@@ -1560,6 +1596,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "customer_id",
@@ -1606,6 +1643,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": true,
     "pathParams": [
       {
         "name": "customer_id",
@@ -1643,6 +1681,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -1672,6 +1711,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -1710,6 +1750,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -1748,6 +1789,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": []
   },
@@ -1768,6 +1810,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": []
   },
@@ -1788,6 +1831,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [],
     "requestBody": {
@@ -1797,488 +1841,6 @@ export const V3_ENDPOINTS = [
       ],
       "requiredFields": [],
       "properties": []
-    }
-  },
-  {
-    "operationId": "listDeveloperOAuthBillingActions",
-    "method": "GET",
-    "path": "/v3/developer/oauth-billing/actions",
-    "summary": "List available OAuth billing actions",
-    "description": "Requires business auth with `business:manage_developer_settings`.",
-    "tags": [
-      "OAuth Billing"
-    ],
-    "scopes": [
-      "business:manage_developer_settings"
-    ],
-    "auth": [
-      "apiKeyAuth",
-      "bearerAuth"
-    ],
-    "readOnly": true,
-    "pathParams": [],
-    "queryParams": []
-  },
-  {
-    "operationId": "listDeveloperOAuthBillingCharges",
-    "method": "GET",
-    "path": "/v3/developer/oauth-billing/charges",
-    "summary": "List developer OAuth billing charges",
-    "description": "Requires business auth with `business:manage_developer_settings`.",
-    "tags": [
-      "OAuth Billing"
-    ],
-    "scopes": [
-      "business:manage_developer_settings"
-    ],
-    "auth": [
-      "apiKeyAuth",
-      "bearerAuth"
-    ],
-    "readOnly": true,
-    "pathParams": [],
-    "queryParams": [
-      {
-        "name": "action_key",
-        "in": "query",
-        "required": false,
-        "description": "Filter by OAuth billing action key.",
-        "schema": {
-          "type": "string"
-        }
-      },
-      {
-        "name": "billing_idempotency_key",
-        "in": "query",
-        "required": false,
-        "description": "Filter by billing idempotency key.",
-        "schema": {
-          "type": "string"
-        }
-      },
-      {
-        "name": "billing_tag",
-        "in": "query",
-        "required": false,
-        "description": "Filter by OAuth billing tag.",
-        "schema": {
-          "type": "string"
-        }
-      },
-      {
-        "name": "merchant_business_id",
-        "in": "query",
-        "required": false,
-        "description": "Filter by merchant business ID.",
-        "schema": {
-          "type": "integer"
-        }
-      },
-      {
-        "name": "next_cursor",
-        "in": "query",
-        "required": false,
-        "description": "Opaque cursor for the next page.",
-        "schema": {
-          "type": "string"
-        }
-      },
-      {
-        "name": "oauth_application_id",
-        "in": "query",
-        "required": false,
-        "description": "Filter by OAuth application ID.",
-        "schema": {
-          "type": "integer"
-        }
-      },
-      {
-        "name": "oauth_authorized_business_id",
-        "in": "query",
-        "required": false,
-        "description": "Filter by OAuth authorized business/install ID.",
-        "schema": {
-          "type": "integer"
-        }
-      },
-      {
-        "name": "page_size",
-        "in": "query",
-        "required": false,
-        "description": "Cursor page size.",
-        "schema": {
-          "type": "integer"
-        }
-      },
-      {
-        "name": "previous_cursor",
-        "in": "query",
-        "required": false,
-        "description": "Opaque cursor for the previous page.",
-        "schema": {
-          "type": "string"
-        }
-      },
-      {
-        "name": "request_id",
-        "in": "query",
-        "required": false,
-        "description": "Filter by machine API request ID.",
-        "schema": {
-          "type": "string"
-        }
-      }
-    ]
-  },
-  {
-    "operationId": "getDeveloperOAuthBillingCharge",
-    "method": "GET",
-    "path": "/v3/developer/oauth-billing/charges/{id}",
-    "summary": "Get a developer OAuth billing charge",
-    "description": "Requires business auth with `business:manage_developer_settings`.",
-    "tags": [
-      "OAuth Billing"
-    ],
-    "scopes": [
-      "business:manage_developer_settings"
-    ],
-    "auth": [
-      "apiKeyAuth",
-      "bearerAuth"
-    ],
-    "readOnly": true,
-    "pathParams": [
-      {
-        "name": "id",
-        "in": "path",
-        "required": true,
-        "schema": {
-          "type": "string"
-        }
-      }
-    ],
-    "queryParams": []
-  },
-  {
-    "operationId": "getDeveloperOAuthBillingEarnings",
-    "method": "GET",
-    "path": "/v3/developer/oauth-billing/earnings",
-    "summary": "Get developer OAuth billing earnings balance",
-    "description": "Requires business auth with `business:manage_developer_settings`.",
-    "tags": [
-      "OAuth Billing"
-    ],
-    "scopes": [
-      "business:manage_developer_settings"
-    ],
-    "auth": [
-      "apiKeyAuth",
-      "bearerAuth"
-    ],
-    "readOnly": true,
-    "pathParams": [],
-    "queryParams": []
-  },
-  {
-    "operationId": "listDeveloperOAuthBillingLedger",
-    "method": "GET",
-    "path": "/v3/developer/oauth-billing/ledger",
-    "summary": "List developer OAuth billing earnings ledger entries",
-    "description": "Requires business auth with `business:manage_developer_settings`.",
-    "tags": [
-      "OAuth Billing"
-    ],
-    "scopes": [
-      "business:manage_developer_settings"
-    ],
-    "auth": [
-      "apiKeyAuth",
-      "bearerAuth"
-    ],
-    "readOnly": true,
-    "pathParams": [],
-    "queryParams": [
-      {
-        "name": "entry_type",
-        "in": "query",
-        "required": false,
-        "description": "Filter by developer earnings ledger entry type.",
-        "schema": {
-          "type": "string",
-          "enum": [
-            "accrual",
-            "withdrawal",
-            "adjustment"
-          ]
-        }
-      },
-      {
-        "name": "next_cursor",
-        "in": "query",
-        "required": false,
-        "description": "Opaque cursor for the next page.",
-        "schema": {
-          "type": "string"
-        }
-      },
-      {
-        "name": "oauth_application_id",
-        "in": "query",
-        "required": false,
-        "description": "Filter by OAuth application ID.",
-        "schema": {
-          "type": "integer"
-        }
-      },
-      {
-        "name": "page_size",
-        "in": "query",
-        "required": false,
-        "description": "Cursor page size.",
-        "schema": {
-          "type": "integer"
-        }
-      },
-      {
-        "name": "previous_cursor",
-        "in": "query",
-        "required": false,
-        "description": "Opaque cursor for the previous page.",
-        "schema": {
-          "type": "string"
-        }
-      }
-    ]
-  },
-  {
-    "operationId": "listDeveloperOAuthBillingReservations",
-    "method": "GET",
-    "path": "/v3/developer/oauth-billing/reservations",
-    "summary": "List developer OAuth billing reservations",
-    "description": "Requires business auth with `business:manage_developer_settings`.",
-    "tags": [
-      "OAuth Billing"
-    ],
-    "scopes": [
-      "business:manage_developer_settings"
-    ],
-    "auth": [
-      "apiKeyAuth",
-      "bearerAuth"
-    ],
-    "readOnly": true,
-    "pathParams": [],
-    "queryParams": [
-      {
-        "name": "action_key",
-        "in": "query",
-        "required": false,
-        "description": "Filter by OAuth billing action key.",
-        "schema": {
-          "type": "string"
-        }
-      },
-      {
-        "name": "billing_idempotency_key",
-        "in": "query",
-        "required": false,
-        "description": "Filter by billing idempotency key.",
-        "schema": {
-          "type": "string"
-        }
-      },
-      {
-        "name": "billing_status",
-        "in": "query",
-        "required": false,
-        "description": "Filter by reservation billing status.",
-        "schema": {
-          "type": "string"
-        }
-      },
-      {
-        "name": "billing_tag",
-        "in": "query",
-        "required": false,
-        "description": "Filter by OAuth billing tag.",
-        "schema": {
-          "type": "string"
-        }
-      },
-      {
-        "name": "merchant_business_id",
-        "in": "query",
-        "required": false,
-        "description": "Filter by merchant business ID.",
-        "schema": {
-          "type": "integer"
-        }
-      },
-      {
-        "name": "next_cursor",
-        "in": "query",
-        "required": false,
-        "description": "Opaque cursor for the next page.",
-        "schema": {
-          "type": "string"
-        }
-      },
-      {
-        "name": "oauth_application_id",
-        "in": "query",
-        "required": false,
-        "description": "Filter by OAuth application ID.",
-        "schema": {
-          "type": "integer"
-        }
-      },
-      {
-        "name": "oauth_authorized_business_id",
-        "in": "query",
-        "required": false,
-        "description": "Filter by OAuth authorized business/install ID.",
-        "schema": {
-          "type": "integer"
-        }
-      },
-      {
-        "name": "page_size",
-        "in": "query",
-        "required": false,
-        "description": "Cursor page size.",
-        "schema": {
-          "type": "integer"
-        }
-      },
-      {
-        "name": "previous_cursor",
-        "in": "query",
-        "required": false,
-        "description": "Opaque cursor for the previous page.",
-        "schema": {
-          "type": "string"
-        }
-      }
-    ]
-  },
-  {
-    "operationId": "getDeveloperOAuthBillingReservation",
-    "method": "GET",
-    "path": "/v3/developer/oauth-billing/reservations/{id}",
-    "summary": "Get a developer OAuth billing reservation",
-    "description": "Requires business auth with `business:manage_developer_settings`.",
-    "tags": [
-      "OAuth Billing"
-    ],
-    "scopes": [
-      "business:manage_developer_settings"
-    ],
-    "auth": [
-      "apiKeyAuth",
-      "bearerAuth"
-    ],
-    "readOnly": true,
-    "pathParams": [
-      {
-        "name": "id",
-        "in": "path",
-        "required": true,
-        "schema": {
-          "type": "string"
-        }
-      }
-    ],
-    "queryParams": []
-  },
-  {
-    "operationId": "listDeveloperOAuthBillingSettlements",
-    "method": "GET",
-    "path": "/v3/developer/oauth-billing/settlements",
-    "summary": "List developer OAuth billing settlements",
-    "description": "Requires business auth with `business:manage_developer_settings`.",
-    "tags": [
-      "OAuth Billing"
-    ],
-    "scopes": [
-      "business:manage_developer_settings"
-    ],
-    "auth": [
-      "apiKeyAuth",
-      "bearerAuth"
-    ],
-    "readOnly": true,
-    "pathParams": [],
-    "queryParams": [
-      {
-        "name": "next_cursor",
-        "in": "query",
-        "required": false,
-        "description": "Opaque cursor for the next page.",
-        "schema": {
-          "type": "string"
-        }
-      },
-      {
-        "name": "page_size",
-        "in": "query",
-        "required": false,
-        "description": "Cursor page size.",
-        "schema": {
-          "type": "integer"
-        }
-      },
-      {
-        "name": "previous_cursor",
-        "in": "query",
-        "required": false,
-        "description": "Opaque cursor for the previous page.",
-        "schema": {
-          "type": "string"
-        }
-      },
-      {
-        "name": "status",
-        "in": "query",
-        "required": false,
-        "description": "Filter by settlement status.",
-        "schema": {
-          "type": "string"
-        }
-      }
-    ]
-  },
-  {
-    "operationId": "createDeveloperOAuthBillingWithdrawal",
-    "method": "POST",
-    "path": "/v3/developer/oauth-billing/withdrawals",
-    "summary": "Withdraw developer OAuth billing earnings",
-    "description": "Requires business auth with `business:manage_developer_settings`. Xendit is the only supported settlement rail.",
-    "tags": [
-      "OAuth Billing"
-    ],
-    "scopes": [
-      "business:manage_developer_settings"
-    ],
-    "auth": [
-      "apiKeyAuth",
-      "bearerAuth"
-    ],
-    "readOnly": false,
-    "pathParams": [],
-    "queryParams": [],
-    "requestBody": {
-      "required": true,
-      "contentTypes": [
-        "application/json"
-      ],
-      "schemaRef": "OAuthBillingWithdrawalRequest",
-      "requiredFields": [
-        "amount"
-      ],
-      "properties": [
-        "amount",
-        "settlement_rail"
-      ]
     }
   },
   {
@@ -2299,6 +1861,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [
       {
@@ -2357,6 +1920,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [],
     "requestBody": {
@@ -2394,6 +1958,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -2424,6 +1989,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -2470,6 +2036,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": false,
+    "isDestructive": true,
     "pathParams": [
       {
         "name": "id",
@@ -2500,6 +2067,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [
       {
@@ -2549,6 +2117,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [
       {
@@ -2607,6 +2176,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [],
     "requestBody": {
@@ -2641,6 +2211,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -2671,6 +2242,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -2714,6 +2286,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": false,
+    "isDestructive": true,
     "pathParams": [
       {
         "name": "id",
@@ -2744,6 +2317,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [
       {
@@ -2806,6 +2380,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [],
     "requestBody": {
@@ -2843,6 +2418,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -2873,6 +2449,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -2919,6 +2496,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": false,
+    "isDestructive": true,
     "pathParams": [
       {
         "name": "id",
@@ -2949,6 +2527,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [
       {
@@ -3010,6 +2589,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [
       {
@@ -3067,6 +2647,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "location_id",
@@ -3075,95 +2656,6 @@ export const V3_ENDPOINTS = [
         "description": "Legacy numeric location ID.",
         "schema": {
           "type": "integer"
-        }
-      }
-    ],
-    "queryParams": []
-  },
-  {
-    "operationId": "createOAuthBillingRefund",
-    "method": "POST",
-    "path": "/v3/oauth/billing/refunds",
-    "summary": "Refund a captured OAuth billing charge",
-    "description": "No OAuth installation scope. OAuth flow endpoint. Requires an installed-app OAuth access token that owns the original authorized-business charge. Refunds are full post-capture reversals; reservation release remains the pre-capture flow.",
-    "tags": [
-      "OAuth Billing"
-    ],
-    "scopes": [],
-    "auth": [
-      "bearerAuth"
-    ],
-    "readOnly": false,
-    "pathParams": [],
-    "queryParams": [],
-    "requestBody": {
-      "required": true,
-      "contentTypes": [
-        "application/json"
-      ],
-      "schemaRef": "OAuthBillingRefundRequest",
-      "requiredFields": [
-        "reason",
-        "reason_code",
-        "refund_idempotency_key"
-      ],
-      "properties": [
-        "billing_charge_id",
-        "billing_reservation_id",
-        "metadata",
-        "reason",
-        "reason_code",
-        "refund_idempotency_key"
-      ]
-    }
-  },
-  {
-    "operationId": "createOAuthBillingReservation",
-    "method": "POST",
-    "path": "/v3/oauth/billing/reservations",
-    "summary": "Create an OAuth billing reservation",
-    "description": "No OAuth installation scope. OAuth flow endpoint. Requires an installed-app OAuth access token. JWT and business API key auth do not apply on this route.",
-    "tags": [
-      "OAuth Billing"
-    ],
-    "scopes": [],
-    "auth": [
-      "bearerAuth"
-    ],
-    "readOnly": false,
-    "pathParams": [],
-    "queryParams": [],
-    "requestBody": {
-      "required": false,
-      "contentTypes": [
-        "application/json"
-      ],
-      "schemaRef": "GenericJsonObject",
-      "requiredFields": [],
-      "properties": []
-    }
-  },
-  {
-    "operationId": "releaseOAuthBillingReservation",
-    "method": "POST",
-    "path": "/v3/oauth/billing/reservations/{id}/release",
-    "summary": "Release an OAuth billing reservation",
-    "description": "No OAuth installation scope. OAuth flow endpoint. Requires an installed-app OAuth access token. JWT and business API key auth do not apply on this route.",
-    "tags": [
-      "OAuth Billing"
-    ],
-    "scopes": [],
-    "auth": [
-      "bearerAuth"
-    ],
-    "readOnly": false,
-    "pathParams": [
-      {
-        "name": "id",
-        "in": "path",
-        "required": true,
-        "schema": {
-          "type": "string"
         }
       }
     ],
@@ -3186,6 +2678,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [
       {
@@ -3641,6 +3134,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [],
     "requestBody": {
@@ -3708,6 +3202,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -3737,6 +3232,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -3806,6 +3302,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -3835,6 +3332,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -3864,6 +3362,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "chat_id",
@@ -3873,64 +3372,6 @@ export const V3_ENDPOINTS = [
           "type": "string"
         }
       },
-      {
-        "name": "id",
-        "in": "path",
-        "required": true,
-        "schema": {
-          "type": "string"
-        }
-      }
-    ],
-    "queryParams": []
-  },
-  {
-    "operationId": "checkOrderPayment",
-    "method": "POST",
-    "path": "/v3/orders/{id}/check-payment",
-    "summary": "Check order payment status",
-    "description": "Requires the `order:read` scope. Check the payment status of an order.",
-    "tags": [
-      "Orders"
-    ],
-    "scopes": [
-      "order:read"
-    ],
-    "auth": [
-      "apiKeyAuth",
-      "bearerAuth"
-    ],
-    "readOnly": false,
-    "pathParams": [
-      {
-        "name": "id",
-        "in": "path",
-        "required": true,
-        "schema": {
-          "type": "string"
-        }
-      }
-    ],
-    "queryParams": []
-  },
-  {
-    "operationId": "checkOrderSettlement",
-    "method": "POST",
-    "path": "/v3/orders/{id}/check-settlement",
-    "summary": "Check order settlement status",
-    "description": "Requires the `order:read` scope. Check the settlement status of an order.",
-    "tags": [
-      "Orders"
-    ],
-    "scopes": [
-      "order:read"
-    ],
-    "auth": [
-      "apiKeyAuth",
-      "bearerAuth"
-    ],
-    "readOnly": false,
-    "pathParams": [
       {
         "name": "id",
         "in": "path",
@@ -3959,6 +3400,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -4002,6 +3444,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": true,
     "pathParams": [
       {
         "name": "id",
@@ -4048,6 +3491,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -4077,6 +3521,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -4106,6 +3551,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -4133,35 +3579,6 @@ export const V3_ENDPOINTS = [
     }
   },
   {
-    "operationId": "createOrderPayment",
-    "method": "POST",
-    "path": "/v3/orders/{id}/payment",
-    "summary": "Create a payment for an order",
-    "description": "Requires the `order:update` scope. Create a payment request / intent for an order.",
-    "tags": [
-      "Orders"
-    ],
-    "scopes": [
-      "order:update"
-    ],
-    "auth": [
-      "apiKeyAuth",
-      "bearerAuth"
-    ],
-    "readOnly": false,
-    "pathParams": [
-      {
-        "name": "id",
-        "in": "path",
-        "required": true,
-        "schema": {
-          "type": "string"
-        }
-      }
-    ],
-    "queryParams": []
-  },
-  {
     "operationId": "sendLmsAccess",
     "method": "POST",
     "path": "/v3/orders/{id}/send-lms-access",
@@ -4178,6 +3595,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -4207,6 +3625,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -4236,6 +3655,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -4281,6 +3701,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -4324,6 +3745,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -4371,6 +3793,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -4400,6 +3823,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -4443,6 +3867,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": true,
     "pathParams": [],
     "queryParams": [],
     "requestBody": {
@@ -4477,6 +3902,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [],
     "requestBody": {
@@ -4519,6 +3945,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": true,
     "pathParams": [],
     "queryParams": [],
     "requestBody": {
@@ -4553,6 +3980,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [],
     "requestBody": {
@@ -4587,6 +4015,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [],
     "requestBody": {
@@ -4605,65 +4034,6 @@ export const V3_ENDPOINTS = [
     }
   },
   {
-    "operationId": "getOrderByPgReferenceId",
-    "method": "GET",
-    "path": "/v3/orders/pg-reference-id/{pg_reference_id}",
-    "summary": "Get an order by payment gateway reference ID",
-    "description": "Requires the `order:read` scope. Retrieve order details using payment gateway reference ID.",
-    "tags": [
-      "Orders"
-    ],
-    "scopes": [
-      "order:read"
-    ],
-    "auth": [
-      "apiKeyAuth",
-      "bearerAuth"
-    ],
-    "readOnly": true,
-    "pathParams": [
-      {
-        "name": "pg_reference_id",
-        "in": "path",
-        "required": true,
-        "schema": {
-          "type": "string"
-        }
-      }
-    ],
-    "queryParams": []
-  },
-  {
-    "operationId": "listOrdersByPgReferenceIds",
-    "method": "GET",
-    "path": "/v3/orders/pg-reference-ids",
-    "summary": "Get orders by payment gateway reference IDs",
-    "description": "Requires the `order:list` scope. Retrieve orders using multiple payment gateway reference IDs.",
-    "tags": [
-      "Orders"
-    ],
-    "scopes": [
-      "order:list"
-    ],
-    "auth": [
-      "apiKeyAuth",
-      "bearerAuth"
-    ],
-    "readOnly": true,
-    "pathParams": [],
-    "queryParams": [
-      {
-        "name": "pg_reference_ids",
-        "in": "query",
-        "required": true,
-        "description": "Comma-separated payment gateway reference IDs",
-        "schema": {
-          "type": "string"
-        }
-      }
-    ]
-  },
-  {
     "operationId": "getOrderStatistics",
     "method": "GET",
     "path": "/v3/orders/statistics",
@@ -4680,6 +4050,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [
       {
@@ -4870,6 +4241,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [
       {
@@ -4900,6 +4272,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [],
     "requestBody": {
@@ -4929,6 +4302,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [],
     "requestBody": {
@@ -4958,6 +4332,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [],
     "requestBody": {
@@ -4987,6 +4362,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [
       {
@@ -5017,6 +4393,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [
       {
@@ -5047,6 +4424,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [
       {
@@ -5077,6 +4455,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [
       {
@@ -5107,6 +4486,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [
       {
@@ -5142,6 +4522,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [
       {
@@ -5195,6 +4576,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [],
     "requestBody": {
@@ -5240,6 +4622,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -5275,6 +4658,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -5330,6 +4714,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": false,
+    "isDestructive": true,
     "pathParams": [
       {
         "name": "id",
@@ -5365,6 +4750,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -5400,6 +4786,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -5449,6 +4836,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "page_id",
@@ -5512,6 +4900,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "page_id",
@@ -5588,6 +4977,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "display_id",
@@ -5632,6 +5022,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": false,
+    "isDestructive": true,
     "pathParams": [
       {
         "name": "display_id",
@@ -5676,6 +5067,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "page_id",
@@ -5752,6 +5144,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [
       {
@@ -5805,6 +5198,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": []
   },
@@ -5825,6 +5219,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [
       {
@@ -5882,6 +5277,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -5911,6 +5307,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [
       {
@@ -6072,6 +5469,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [],
     "requestBody": {
@@ -6122,6 +5520,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -6151,6 +5550,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -6210,6 +5610,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": true,
     "pathParams": [
       {
         "name": "id",
@@ -6239,6 +5640,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -6268,6 +5670,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "product_id",
@@ -6325,6 +5728,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "product_id",
@@ -6380,6 +5784,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -6417,6 +5822,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -6480,6 +5886,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": true,
     "pathParams": [
       {
         "name": "id",
@@ -6517,6 +5924,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "product_id",
@@ -6546,6 +5954,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "product_id",
@@ -6603,6 +6012,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "product_id",
@@ -6649,6 +6059,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -6686,6 +6097,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -6740,6 +6152,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": true,
     "pathParams": [
       {
         "name": "id",
@@ -6777,6 +6190,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "product_id",
@@ -6834,6 +6248,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "product_id",
@@ -6877,6 +6292,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": true,
     "pathParams": [
       {
         "name": "id",
@@ -6914,6 +6330,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "product_id",
@@ -6952,6 +6369,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "product_id",
@@ -6990,6 +6408,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "product_id",
@@ -7019,6 +6438,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [
       {
@@ -7180,6 +6600,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [
       {
@@ -7350,6 +6771,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [],
     "requestBody": {
@@ -7391,6 +6813,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [],
     "requestBody": {
@@ -7435,6 +6858,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [],
     "requestBody": {
@@ -7475,6 +6899,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "store_id",
@@ -7518,6 +6943,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -7557,6 +6983,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": false,
+    "isDestructive": true,
     "pathParams": [
       {
         "name": "id",
@@ -7596,6 +7023,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -7635,6 +7063,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "store_id",
@@ -7694,6 +7123,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "bundle_id",
@@ -7732,6 +7162,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "store_id",
@@ -7791,6 +7222,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "store_id",
@@ -7831,96 +7263,6 @@ export const V3_ENDPOINTS = [
         }
       }
     ]
-  },
-  {
-    "operationId": "listBusinessStorePaymentAccounts",
-    "method": "GET",
-    "path": "/v3/stores/{store_id}/payment-accounts",
-    "summary": "List payment accounts available to a business store",
-    "description": "Requires the `payment_account:list` scope.",
-    "tags": [
-      "Business Stores"
-    ],
-    "scopes": [
-      "payment_account:list"
-    ],
-    "auth": [
-      "apiKeyAuth",
-      "bearerAuth",
-      "scalevOAuth"
-    ],
-    "readOnly": true,
-    "pathParams": [
-      {
-        "name": "store_id",
-        "in": "path",
-        "required": true,
-        "description": "Numeric Scalev store database ID for authenticated business routes.",
-        "schema": {
-          "type": "integer"
-        }
-      }
-    ],
-    "queryParams": [
-      {
-        "name": "next_cursor",
-        "in": "query",
-        "required": false,
-        "description": "Opaque cursor for the next page.",
-        "schema": {
-          "type": "string"
-        }
-      },
-      {
-        "name": "page_size",
-        "in": "query",
-        "required": false,
-        "description": "Number of items per page.",
-        "schema": {
-          "type": "integer"
-        }
-      },
-      {
-        "name": "previous_cursor",
-        "in": "query",
-        "required": false,
-        "description": "Opaque cursor for the previous page.",
-        "schema": {
-          "type": "string"
-        }
-      }
-    ]
-  },
-  {
-    "operationId": "listBusinessStorePaymentMethods",
-    "method": "GET",
-    "path": "/v3/stores/{store_id}/payment-methods",
-    "summary": "List enabled payment methods for a business store",
-    "description": "Requires the `store:read` scope.",
-    "tags": [
-      "Business Stores"
-    ],
-    "scopes": [
-      "store:read"
-    ],
-    "auth": [
-      "apiKeyAuth",
-      "bearerAuth",
-      "scalevOAuth"
-    ],
-    "readOnly": true,
-    "pathParams": [
-      {
-        "name": "store_id",
-        "in": "path",
-        "required": true,
-        "description": "Numeric Scalev store database ID for authenticated business routes.",
-        "schema": {
-          "type": "integer"
-        }
-      }
-    ],
-    "queryParams": []
   },
   {
     "operationId": "searchBusinessStoreProductKnowledge",
@@ -7940,6 +7282,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "store_id",
@@ -8008,6 +7351,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "store_id",
@@ -8067,6 +7411,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "store_id",
@@ -8098,6 +7443,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "store_id",
@@ -8129,6 +7475,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": false,
+    "isDestructive": true,
     "pathParams": [
       {
         "name": "id",
@@ -8168,6 +7515,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "store_id",
@@ -8227,6 +7575,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "store_id",
@@ -8258,6 +7607,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "store_id",
@@ -8302,6 +7652,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": false,
+    "isDestructive": true,
     "pathParams": [
       {
         "name": "id",
@@ -8341,6 +7692,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "store_id",
@@ -8380,6 +7732,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [
       {
@@ -8429,6 +7782,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [
       {
@@ -8487,6 +7841,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [],
     "requestBody": {
@@ -8524,6 +7879,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -8554,6 +7910,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -8600,6 +7957,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": false,
+    "isDestructive": true,
     "pathParams": [
       {
         "name": "id",
@@ -8630,6 +7988,7 @@ export const V3_ENDPOINTS = [
       "scalevOAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [
       {
@@ -8678,6 +8037,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -8707,6 +8067,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -8736,6 +8097,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -8774,6 +8136,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -8803,6 +8166,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "variant_id",
@@ -8841,6 +8205,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "variant_id",
@@ -8879,6 +8244,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "variant_id",
@@ -8936,6 +8302,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "variant_id",
@@ -8974,6 +8341,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -9011,6 +8379,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": true,
     "pathParams": [
       {
         "name": "id",
@@ -9048,6 +8417,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "variant_id",
@@ -9105,6 +8475,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "variant_id",
@@ -9151,6 +8522,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -9188,6 +8560,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -9242,6 +8615,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": true,
     "pathParams": [
       {
         "name": "id",
@@ -9279,6 +8653,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": []
   },
@@ -9299,6 +8674,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -9328,6 +8704,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -9366,6 +8743,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": true,
     "pathParams": [
       {
         "name": "id",
@@ -9395,6 +8773,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -9424,6 +8803,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -9453,6 +8833,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -9482,6 +8863,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -9520,6 +8902,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -9558,6 +8941,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -9587,6 +8971,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -9624,6 +9009,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "unique_id",
@@ -9653,6 +9039,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -9699,6 +9086,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -9745,6 +9133,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "unique_id",
@@ -9774,6 +9163,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "unique_id",
@@ -9812,6 +9202,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -9858,6 +9249,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": true,
     "pathParams": [
       {
         "name": "id",
@@ -9895,6 +9287,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "wa_user_id",
@@ -9940,6 +9333,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "wa_user_id",
@@ -10014,6 +9408,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "wa_user_id",
@@ -10060,6 +9455,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "wa_user_id",
@@ -10105,6 +9501,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "wa_user_id",
@@ -10159,6 +9556,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": true,
     "pathParams": [
       {
         "name": "wa_user_id",
@@ -10204,6 +9602,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "wa_user_id",
@@ -10249,6 +9648,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [],
     "requestBody": {
@@ -10278,6 +9678,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": []
   },
@@ -10298,6 +9699,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [],
     "requestBody": {
@@ -10327,6 +9729,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -10356,6 +9759,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -10394,6 +9798,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": true,
     "pathParams": [
       {
         "name": "id",
@@ -10423,6 +9828,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": []
   },
@@ -10443,6 +9849,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [],
     "queryParams": [],
     "requestBody": {
@@ -10472,6 +9879,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": true,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -10501,6 +9909,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",
@@ -10539,6 +9948,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": true,
     "pathParams": [
       {
         "name": "id",
@@ -10568,6 +9978,7 @@ export const V3_ENDPOINTS = [
       "bearerAuth"
     ],
     "readOnly": false,
+    "isDestructive": false,
     "pathParams": [
       {
         "name": "id",

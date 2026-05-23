@@ -8,3 +8,9 @@ workers_dev = false
 MCP_RESOURCE_URI = "https://mcp.scalev.com/mcp"
 NEXUS_API_BASE_URL = "https://api.scalev.com"
 NEXUS_OAUTH_ISSUER = "https://api.scalev.com/v3/oauth"
+ALLOWED_ORIGINS = "https://claude.ai,https://www.claude.ai,https://claude.com,https://www.claude.com,https://console.anthropic.com,https://chatgpt.com,https://chat.openai.com,https://platform.openai.com"
+SENTRY_DSN = "https://275d7e4e68e0597f883696f3248b2171@o1383091.ingest.us.sentry.io/4511432905850880"
+
+[observability]
+enabled = true
+head_sampling_rate = 1

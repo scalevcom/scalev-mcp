@@ -44,10 +44,13 @@ export interface V3Endpoint {
   readonly scopes: readonly string[];
   readonly auth: readonly string[];
   readonly readOnly: boolean;
+  readonly isDestructive: boolean;
   readonly pathParams: readonly V3EndpointParameter[];
   readonly queryParams: readonly V3EndpointParameter[];
   readonly requestBody?: V3EndpointRequestBody;
 }
+
+export type EndpointExecutionTool = "get" | "execute_safe" | "execute_destructive";
 
 export interface EndpointSearchInput {
   query?: string;
@@ -61,7 +64,7 @@ export interface EndpointSearchInput {
 export interface EndpointSearchResult {
   operation_id: string;
   method: BusinessV3Method;
-  execution_tool: "get" | "execute";
+  execution_tool: EndpointExecutionTool;
   path_template: string;
   summary: string;
   description?: string;
@@ -71,6 +74,7 @@ export interface EndpointSearchResult {
   tags: string[];
   scopes: string[];
   read_only: boolean;
+  is_destructive: boolean;
   path_params: V3EndpointParameter[];
   query_params: V3EndpointParameter[];
   request_body?: V3EndpointRequestBody;
@@ -167,9 +171,27 @@ export function buildGetRequest(input: BusinessScopedToolInput): ResolvedEndpoin
   };
 }
 
-export function buildExecuteRequest(input: BusinessScopedToolInput): ResolvedEndpointRequest {
+export function buildExecuteSafeRequest(input: BusinessScopedToolInput): ResolvedEndpointRequest {
+  return buildExecuteRequest(input, false, "execute_safe");
+}
+
+export function buildExecuteDestructiveRequest(input: BusinessScopedToolInput): ResolvedEndpointRequest {
+  return buildExecuteRequest(input, true, "execute_destructive");
+}
+
+function buildExecuteRequest(
+  input: BusinessScopedToolInput,
+  destructive: boolean,
+  toolName: "execute_safe" | "execute_destructive"
+): ResolvedEndpointRequest {
   input = normalizeBusinessSelectorInput(input);
-  const resolved = resolveEndpoint(input, ["POST", "PUT", "PATCH", "DELETE"], "execute");
+  const resolved = resolveEndpoint(input, ["POST", "PUT", "PATCH", "DELETE"], toolName);
+
+  if (resolved.endpoint.isDestructive !== destructive) {
+    const expectedTool = resolved.endpoint.isDestructive ? "execute_destructive" : "execute_safe";
+    throw new Error(`${toolName} cannot run ${resolved.endpoint.operationId}; use ${expectedTool}`);
+  }
+
   const path = withQuery(resolved.endpoint, resolved.path, resolved.queryParams, input.query);
 
   return {
@@ -190,7 +212,7 @@ function businessSelector(input: CatalogRequestInput): Pick<BusinessV3Request, "
 function resolveEndpoint(
   input: CatalogRequestInput,
   allowedMethods: readonly BusinessV3Method[],
-  toolName: "get" | "execute"
+  toolName: EndpointExecutionTool
 ): {
   endpoint: V3Endpoint;
   path: string;
@@ -299,7 +321,7 @@ function withQuery(
 
 function parseInputPath(
   path: string,
-  toolName: "get" | "execute"
+  toolName: EndpointExecutionTool
 ): { pathname: string; searchParams: URLSearchParams } {
   if (!path.startsWith("/v3/")) throw new Error(`${toolName} only supports /v3 paths: ${path}`);
 
@@ -309,11 +331,13 @@ function parseInputPath(
 
 function endpointSearchResult(endpoint: V3Endpoint): EndpointSearchResult {
   const docsUrl = endpoint.externalDocs?.url;
+  const executionTool =
+    endpoint.method === "GET" ? "get" : endpoint.isDestructive ? "execute_destructive" : "execute_safe";
 
   return {
     operation_id: endpoint.operationId,
     method: endpoint.method,
-    execution_tool: endpoint.method === "GET" ? "get" : "execute",
+    execution_tool: executionTool,
     path_template: endpoint.path,
     summary: endpoint.summary,
     description: endpoint.description,
@@ -323,6 +347,7 @@ function endpointSearchResult(endpoint: V3Endpoint): EndpointSearchResult {
     tags: [...endpoint.tags],
     scopes: [...endpoint.scopes],
     read_only: endpoint.readOnly,
+    is_destructive: endpoint.isDestructive,
     path_params: [...endpoint.pathParams],
     query_params: [...endpoint.queryParams],
     request_body: endpoint.requestBody,
