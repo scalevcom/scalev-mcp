@@ -74,6 +74,10 @@ jobs:
         if: steps.diff.outputs.changed == 'true'
         run: pnpm run typecheck
 
+      - name: Check submission text safety
+        if: steps.diff.outputs.changed == 'true'
+        run: pnpm run check:submission-text
+
       - name: Test
         if: steps.diff.outputs.changed == 'true'
         run: pnpm test

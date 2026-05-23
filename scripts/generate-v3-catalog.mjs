@@ -6,12 +6,15 @@ import { parse } from "yaml";
 
 const METHODS = ["get", "post", "put", "patch", "delete"];
 const BUSINESS_AUTH_SCHEMES = new Set(["bearerAuth", "apiKeyAuth", "scalevOAuth"]);
+const DESTRUCTIVE_OPERATION_PATTERN = /(cancel|revoke|delete|remove|disconnect)/i;
 const OAUTH_FLOW_PATHS = new Set([
   "/v3/oauth/.well-known/oauth-authorization-server",
   "/v3/oauth/authorize",
   "/v3/oauth/authorize/approve",
   "/v3/oauth/application",
+  "/v3/oauth/applications/me",
   "/v3/oauth/register",
+  "/v3/oauth/scopes",
   "/v3/oauth/token",
   "/v3/oauth/revoke",
   "/v3/oauth/introspect"
@@ -53,6 +56,7 @@ for (const [openApiPath, pathItem] of Object.entries(spec.paths || {})) {
       scopes: unique([...oauthScopes(operation, pathItem, spec), ...documentedScopes(operation)]).sort(),
       auth: authSchemes(operation, pathItem, spec).sort(),
       readOnly: method === "get",
+      isDestructive: isDestructiveOperation(method, openApiPath, operation),
       pathParams: parametersFor(parameters, "path"),
       queryParams: parametersFor(parameters, "query"),
       requestBody: requestBodyMetadata(spec, operation.requestBody)
@@ -74,10 +78,22 @@ console.log(`Generated ${path.relative(repoRoot, outputPath)} with ${endpoints.l
 function isAllowedPath(openApiPath) {
   if (!openApiPath.startsWith("/v3/")) return false;
   if (openApiPath === "/v3/me") return false;
+  if (openApiPath === "/v3/me/connected_businesses") return false;
   if (OAUTH_FLOW_PATHS.has(openApiPath)) return false;
   if (openApiPath.startsWith("/v3/oauth/installation/")) return false;
+  if (openApiPath.startsWith("/v3/oauth/billing/")) return false;
+  if (openApiPath.startsWith("/v3/developer/oauth-billing/")) return false;
+  if (isPaymentSurfacePath(openApiPath)) return false;
   if (/^\/v3\/stores\/\{[^}]+\}\/(?:public|customers)(?:\/|$)/.test(openApiPath)) return false;
   return true;
+}
+
+function isPaymentSurfacePath(openApiPath) {
+  return (
+    /^\/v3\/orders\/\{[^}]+\}\/(?:check-payment|check-settlement|payment)$/.test(openApiPath) ||
+    /^\/v3\/orders\/pg-reference-id(?:s|\b)/.test(openApiPath) ||
+    /^\/v3\/stores\/\{[^}]+\}\/payment-(?:accounts|methods)$/.test(openApiPath)
+  );
 }
 
 function isBusinessAuthenticated(operation, pathItem, spec) {
@@ -148,6 +164,14 @@ function requestBodyMetadata(spec, requestBody) {
     requiredFields,
     properties
   });
+}
+
+function isDestructiveOperation(method, openApiPath, operation) {
+  if (method === "delete") return true;
+
+  return DESTRUCTIVE_OPERATION_PATTERN.test(
+    [operation.operationId, openApiPath, operation.summary].filter(Boolean).join(" ")
+  );
 }
 
 function tagExternalDocsByName(spec) {

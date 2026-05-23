@@ -11,25 +11,33 @@ export interface BusinessV3Request {
 }
 
 export class NexusError extends Error {
+  public readonly errorCode?: string;
+
   constructor(
     message: string,
     public readonly status: number,
-    public readonly payload?: unknown
+    payload?: unknown
   ) {
     super(message);
+    this.errorCode = payloadString(payload, "error_code");
   }
+}
+
+export function nexusErrorCode(error: unknown): string | undefined {
+  if (!(error instanceof NexusError)) return undefined;
+  return error.errorCode;
 }
 
 export function nexusUrl(env: Pick<Env, "NEXUS_API_BASE_URL">, path: string): URL {
   if (!path.startsWith("/v3/")) {
-    throw new Error(`Nexus calls must use /v3 paths: ${path}`);
+    throw new Error(`Scalev API calls must use /v3 paths: ${path}`);
   }
 
   const base = env.NEXUS_API_BASE_URL.replace(/\/+$/, "");
   const url = new URL(`${base}${path}`);
 
   if (url.pathname.includes("/v2/") || url.href.includes("/v2/")) {
-    throw new Error(`Nexus MCP calls must never use /v2: ${url.href}`);
+    throw new Error(`Scalev MCP calls must never use /v2: ${url.href}`);
   }
 
   return url;
@@ -40,7 +48,15 @@ export function nexusBusinessUrl(env: Pick<Env, "NEXUS_API_BASE_URL">, path: str
   const pathname = url.pathname;
 
   if (isOAuthFlowPath(pathname)) {
-    throw new Error(`Nexus OAuth flow routes are not exposed through execute: ${pathname}`);
+    throw new Error(`Scalev OAuth flow routes are not exposed through execute: ${pathname}`);
+  }
+
+  if (isOAuthBillingPath(pathname)) {
+    throw new Error(`Scalev OAuth billing routes are not exposed through execute: ${pathname}`);
+  }
+
+  if (isPaymentSurfacePath(pathname)) {
+    throw new Error(`Scalev payment routes are not exposed through execute: ${pathname}`);
   }
 
   if (isStorefrontClientPath(pathname)) {
@@ -58,7 +74,7 @@ export async function nexusBusinessRequest<T>(
   const method = request.method.toUpperCase() as BusinessV3Method;
 
   if (!BUSINESS_V3_METHODS.includes(method)) {
-    throw new Error(`Unsupported Nexus v3 method: ${request.method}`);
+    throw new Error(`Unsupported Scalev API method: ${request.method}`);
   }
 
   if (method === "GET" && typeof request.body !== "undefined") {
@@ -100,6 +116,18 @@ function isOAuthFlowPath(pathname: string): boolean {
   );
 }
 
+function isOAuthBillingPath(pathname: string): boolean {
+  return pathname.startsWith("/v3/oauth/billing/") || pathname.startsWith("/v3/developer/oauth-billing/");
+}
+
+function isPaymentSurfacePath(pathname: string): boolean {
+  return (
+    /^\/v3\/orders\/[^/]+\/(?:check-payment|check-settlement|payment)$/.test(pathname) ||
+    /^\/v3\/orders\/pg-reference-id(?:s|\b)/.test(pathname) ||
+    /^\/v3\/stores\/[^/]+\/payment-(?:accounts|methods)$/.test(pathname)
+  );
+}
+
 function isStorefrontClientPath(pathname: string): boolean {
   return /^\/v3\/stores\/[^/]+\/(?:public|customers)(?:\/|$)/.test(pathname);
 }
@@ -129,16 +157,79 @@ function errorMessage(response: Response, payload: unknown, text: string): strin
   const requestId = response.headers.get("x-request-id");
   const requestIdPart = requestId ? ` (request_id: ${requestId})` : "";
   const apiErrorCode = payloadString(payload, "error_code");
-  const apiError = payloadString(payload, "error");
+  const codePart = apiErrorCode ? ` ${apiErrorCode}` : "";
 
   if (apiErrorCode === "business_selection_required") {
-    return `Nexus business_selection_required${requestIdPart}: ${apiError || "business_unique_id is required"}`;
+    return [
+      `Scalev API business_selection_required${requestIdPart}:`,
+      "choose one business from get_me.connected_businesses and pass its unique_id as top-level business_unique_id."
+    ].join(" ");
   }
 
-  const detail =
-    typeof payload !== "undefined" ? JSON.stringify(payload) : text ? text : "empty response body";
+  if (apiErrorCode === "business_not_found" || apiErrorCode === "business_access_denied") {
+    return [
+      `Scalev API${codePart}${requestIdPart}:`,
+      "the selected business_unique_id is not connected to this OAuth token or is no longer active."
+    ].join(" ");
+  }
 
-  return `Nexus request failed with ${response.status}${requestIdPart}: ${detail}`;
+  if (response.status === 401) {
+    return [
+      `Scalev API authentication failed${codePart}${requestIdPart}:`,
+      "the OAuth token is missing, expired, revoked, or not accepted for this connector. Reconnect Scalev in Claude and retry."
+    ].join(" ");
+  }
+
+  if (response.status === 403) {
+    return [
+      `Scalev API authorization failed${codePart}${requestIdPart}:`,
+      "the OAuth token, selected business, or approved scopes do not allow this action. Use get_me to inspect connected businesses and scopes, then reconnect if a scope is missing."
+    ].join(" ");
+  }
+
+  if (response.status === 404) {
+    return [
+      `Scalev API resource not found${codePart}${requestIdPart}:`,
+      "the requested Scalev resource does not exist or is not visible to the selected business."
+    ].join(" ");
+  }
+
+  if (response.status === 409) {
+    return [
+      `Scalev API state conflict${codePart}${requestIdPart}:`,
+      "refresh the resource, confirm the latest state, and retry only if the requested change still applies."
+    ].join(" ");
+  }
+
+  if (response.status === 429) {
+    return [
+      `Scalev API rate limit reached${codePart}${requestIdPart}:`,
+      "wait before retrying this Scalev action."
+    ].join(" ");
+  }
+
+  if (response.status === 400 || response.status === 422) {
+    return [
+      `Scalev API rejected the request${codePart}${requestIdPart}:`,
+      "check operation_id, path_params, query, and body against search metadata and get_docs before retrying."
+    ].join(" ");
+  }
+
+  if (response.status >= 500) {
+    return [
+      `Scalev API service error${codePart}${requestIdPart}:`,
+      "Scalev could not complete the request. Retry later or contact Scalev support with the request_id."
+    ].join(" ");
+  }
+
+  if (!text && typeof payload === "undefined") {
+    return `Scalev API request failed with ${response.status}${codePart}${requestIdPart}: empty response body`;
+  }
+
+  return [
+    `Scalev API request failed with ${response.status}${codePart}${requestIdPart}:`,
+    "Scalev returned an error that was not exposed to Claude to avoid leaking business or customer data."
+  ].join(" ");
 }
 
 function payloadString(payload: unknown, key: string): string | undefined {

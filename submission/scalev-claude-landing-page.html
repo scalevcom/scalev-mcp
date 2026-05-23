@@ -1,0 +1,953 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Scalev for Claude — Official MCP connector</title>
+    <meta
+      name="description"
+      content="Run Scalev from Claude. The official Scalev MCP connector lets Claude inspect and update your landing pages and orders through OAuth 2.1, per-business consent, and Scalev API audit logging."
+    />
+    <link rel="alternate" hreflang="en" href="/claude" />
+    <link rel="alternate" hreflang="id" href="/claude-id" />
+    <link rel="canonical" href="/claude" />
+    <style>
+      :root {
+        --cyan: #05adeb;
+        --cyan-deep: #047fb5;
+        --ink: #1d2868;
+        --ink-soft: #40509a;
+        --paper: #f5f9ff;
+        --line: #d9e4f5;
+        --line-strong: #b9c8e3;
+        --lime: #c9f269;
+        --coral: #ff6b4a;
+        --white: #ffffff;
+        --shadow: 0 24px 80px rgba(18, 38, 92, 0.16);
+        --display: "Aptos Display", "Segoe UI", sans-serif;
+        --sans: "Aptos", "Segoe UI", sans-serif;
+        --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--white);
+        font-family: var(--sans);
+        line-height: 1.55;
+      }
+      a { color: inherit; }
+      img { max-width: 100%; height: auto; }
+
+      .shell {
+        width: min(1120px, calc(100% - 40px));
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* NAV */
+      .nav {
+        position: absolute;
+        inset: 28px 0 auto;
+        z-index: 2;
+      }
+      .nav-inner {
+        width: min(1120px, calc(100% - 40px));
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: var(--white);
+      }
+      .brand-mark {
+        font-family: var(--display);
+        font-size: clamp(28px, 4vw, 46px);
+        font-weight: 800;
+      }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        font-size: 14px;
+        font-weight: 700;
+      }
+      .nav-links a { text-decoration: none; }
+      .lang-switch {
+        padding: 6px 12px;
+        border: 1px solid rgba(255,255,255,0.5);
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 700;
+      }
+
+      /* HERO */
+      .hero {
+        min-height: 92vh;
+        position: relative;
+        display: grid;
+        align-items: center;
+        overflow: hidden;
+        isolation: isolate;
+        background: linear-gradient(118deg, rgba(5,173,235,0.94), rgba(29,40,104,0.92));
+      }
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(900px 480px at 10% 0%, rgba(201,242,105,0.16), transparent 60%),
+          radial-gradient(700px 360px at 90% 100%, rgba(255,107,74,0.18), transparent 60%);
+        z-index: 0;
+      }
+      .hero::after {
+        content: "";
+        position: absolute;
+        inset: auto 0 0;
+        height: 22vh;
+        background: linear-gradient(180deg, rgba(255,255,255,0), var(--white));
+        z-index: 0;
+        pointer-events: none;
+      }
+      .hero-content {
+        max-width: 760px;
+        padding: 108px 0 0;
+        color: var(--white);
+      }
+      .eyebrow {
+        display: inline-block;
+        margin-bottom: 14px;
+        padding: 6px 12px;
+        border: 1px solid rgba(255,255,255,0.55);
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .brand-title {
+        margin: 0;
+        font-family: var(--display);
+        font-size: clamp(60px, 11vw, 132px);
+        line-height: 0.88;
+      }
+      .hero h2 {
+        margin: 24px 0 0;
+        max-width: 700px;
+        font-family: var(--display);
+        font-size: clamp(28px, 4.6vw, 56px);
+        line-height: 1.02;
+      }
+      .hero p.lead {
+        max-width: 620px;
+        margin: 22px 0 0;
+        font-size: clamp(17px, 2.1vw, 21px);
+        opacity: 0.94;
+      }
+      .trust-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 26px;
+      }
+      .trust-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.28);
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .trust-pill::before {
+        content: "";
+        width: 8px; height: 8px; border-radius: 50%;
+        background: var(--lime);
+      }
+      .cta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 32px;
+      }
+      .button {
+        display: inline-flex;
+        min-height: 48px;
+        align-items: center;
+        justify-content: center;
+        padding: 0 22px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 800;
+        transition: transform 120ms ease, box-shadow 120ms ease;
+      }
+      .button:hover { transform: translateY(-1px); }
+      .button.primary { background: var(--lime); color: var(--ink); }
+      .button.secondary {
+        border: 1px solid rgba(255,255,255,0.72);
+        background: rgba(29,40,104,0.2);
+        color: var(--white);
+      }
+      .button.dark { background: var(--ink); color: var(--white); }
+
+      /* Connector card overlay */
+      .connector-plane {
+        position: absolute;
+        right: max(24px, calc((100vw - 1120px) / 2));
+        bottom: 64px;
+        width: min(420px, 42vw);
+        color: var(--ink);
+        transform: rotate(-2deg);
+        z-index: 1;
+      }
+      .connector-window {
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.46);
+        background: rgba(255,255,255,0.96);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(18px);
+        border-radius: 4px;
+      }
+      .window-top {
+        display: flex;
+        gap: 7px;
+        padding: 13px;
+        border-bottom: 1px solid var(--line);
+      }
+      .dot {
+        width: 10px; height: 10px; border-radius: 50%;
+        background: var(--coral);
+      }
+      .dot:nth-child(2) { background: #ffd166; }
+      .dot:nth-child(3) { background: var(--lime); }
+      .window-body { padding: 22px; }
+      .flow-mini {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr auto 1fr;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 18px;
+        font-weight: 800;
+        font-size: 12px;
+      }
+      .flow-pill {
+        padding: 10px 8px;
+        border-radius: 4px;
+        background: var(--paper);
+        text-align: center;
+      }
+      .flow-arrow { color: var(--cyan-deep); font-weight: 800; }
+      .tool-list { display: grid; gap: 8px; }
+      .tool-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-left: 4px solid var(--cyan);
+        background: var(--paper);
+        padding: 10px 12px;
+        font-size: 13px;
+      }
+      .tool-item strong { font-size: 14px; }
+
+      /* SECTIONS */
+      section { padding: 96px 0; }
+      .section-kicker {
+        margin: 0 0 12px;
+        color: var(--cyan-deep);
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-size: 12px;
+      }
+      h2 {
+        margin: 0;
+        font-family: var(--display);
+        font-size: clamp(32px, 4.8vw, 60px);
+        line-height: 1.04;
+      }
+      .lead {
+        max-width: 720px;
+        margin: 18px 0 0;
+        color: var(--ink-soft);
+        font-size: 19px;
+      }
+
+      /* Capabilities grid */
+      .cap-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 28px;
+        margin-top: 44px;
+      }
+      .cap {
+        padding: 26px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+      }
+      .cap h3 {
+        margin: 0;
+        font-family: var(--display);
+        font-size: 24px;
+      }
+      .cap p {
+        margin: 10px 0 18px;
+        color: var(--ink-soft);
+      }
+      .cap ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .cap li {
+        padding: 8px 0;
+        border-top: 1px solid var(--line);
+        font-family: var(--mono);
+        font-size: 13px;
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .cap li:first-child { border-top: none; }
+      .cap li span.kind {
+        font-family: var(--sans);
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--cyan-deep);
+      }
+      .cap li span.kind.write { color: var(--ink); }
+      .cap li span.kind.destr { color: var(--coral); }
+
+      /* Prompt cards */
+      .prompts {
+        background: var(--ink);
+        color: var(--white);
+      }
+      .prompts h2 { color: var(--white); }
+      .prompts .lead { color: rgba(255,255,255,0.78); }
+      .prompts .section-kicker { color: var(--lime); }
+      .prompt-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 22px;
+        margin-top: 44px;
+      }
+      .prompt {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.14);
+        padding: 24px;
+        border-radius: 6px;
+      }
+      .prompt-no {
+        font-family: var(--display);
+        font-size: 36px;
+        color: var(--lime);
+        line-height: 1;
+      }
+      .prompt blockquote {
+        margin: 14px 0 0;
+        padding: 14px 16px;
+        border-left: 3px solid var(--lime);
+        background: rgba(201,242,105,0.06);
+        font-family: var(--mono);
+        font-size: 14px;
+        color: #e9efff;
+      }
+      .prompt h4 {
+        margin: 18px 0 8px;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: rgba(255,255,255,0.7);
+      }
+      .prompt ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        font-family: var(--mono);
+        font-size: 12.5px;
+        color: rgba(255,255,255,0.92);
+      }
+      .prompt li { padding: 4px 0; }
+
+      /* Flow / how it works */
+      .how .flow {
+        margin-top: 44px;
+        display: grid;
+        grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+        align-items: center;
+        gap: 14px;
+      }
+      .node {
+        padding: 22px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        text-align: center;
+      }
+      .node strong {
+        display: block;
+        font-family: var(--display);
+        font-size: 18px;
+        margin-bottom: 4px;
+      }
+      .node span {
+        font-size: 12px;
+        color: var(--ink-soft);
+      }
+      .arrow {
+        font-family: var(--mono);
+        color: var(--cyan-deep);
+        font-weight: 800;
+      }
+      .how-points {
+        margin-top: 36px;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 22px;
+      }
+      .how-point {
+        padding-top: 14px;
+        border-top: 3px solid var(--cyan);
+      }
+      .how-point h4 {
+        margin: 0 0 6px;
+        font-size: 16px;
+      }
+      .how-point p {
+        margin: 0;
+        font-size: 14px;
+        color: var(--ink-soft);
+      }
+
+      /* Permissions table */
+      .perm {
+        background: var(--paper);
+      }
+      .perm-table {
+        width: 100%;
+        margin-top: 36px;
+        border-collapse: collapse;
+        background: var(--white);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        overflow: hidden;
+      }
+      .perm-table th,
+      .perm-table td {
+        text-align: left;
+        padding: 14px 18px;
+        border-bottom: 1px solid var(--line);
+        font-size: 14px;
+      }
+      .perm-table th {
+        background: var(--ink);
+        color: var(--white);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      .perm-table tr:last-child td { border-bottom: none; }
+      .perm-table td code {
+        font-family: var(--mono);
+        font-size: 13px;
+        background: var(--paper);
+        padding: 2px 6px;
+        border-radius: 3px;
+      }
+
+      /* Security strip */
+      .security {
+        background: var(--ink);
+        color: var(--white);
+      }
+      .security h2 { color: var(--white); }
+      .security .lead { color: rgba(255,255,255,0.78); }
+      .security .section-kicker { color: var(--lime); }
+      .sec-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+        margin-top: 44px;
+      }
+      .sec {
+        padding: 22px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 6px;
+      }
+      .sec h4 {
+        margin: 0;
+        font-family: var(--display);
+        font-size: 18px;
+      }
+      .sec p {
+        margin: 8px 0 0;
+        color: rgba(255,255,255,0.78);
+        font-size: 13px;
+      }
+
+      /* Install */
+      .install-grid {
+        margin-top: 44px;
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 18px;
+        counter-reset: step;
+      }
+      .step {
+        padding: 22px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        position: relative;
+      }
+      .step::before {
+        counter-increment: step;
+        content: counter(step);
+        position: absolute;
+        top: -14px;
+        left: 18px;
+        width: 28px; height: 28px;
+        background: var(--ink);
+        color: var(--lime);
+        font-family: var(--display);
+        font-weight: 800;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+      }
+      .step h4 {
+        margin: 6px 0 8px;
+        font-size: 15px;
+      }
+      .step p {
+        margin: 0;
+        font-size: 13px;
+        color: var(--ink-soft);
+      }
+
+      /* CTA */
+      .final {
+        background: linear-gradient(118deg, rgba(5,173,235,0.96), rgba(29,40,104,0.96));
+        color: var(--white);
+      }
+      .final h2 { color: var(--white); max-width: 720px; }
+      .final-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 32px;
+        flex-wrap: wrap;
+      }
+      .final p.url {
+        font-family: var(--mono);
+        margin: 12px 0 0;
+        font-size: 15px;
+        opacity: 0.86;
+      }
+
+      /* FOOTER */
+      footer {
+        background: var(--ink);
+        color: rgba(255,255,255,0.78);
+        font-size: 13px;
+      }
+      footer .shell {
+        padding: 48px 0;
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: 32px;
+      }
+      footer h5 {
+        margin: 0 0 10px;
+        color: var(--white);
+        font-family: var(--display);
+        font-size: 16px;
+      }
+      footer ul { margin: 0; padding: 0; list-style: none; }
+      footer li { padding: 4px 0; }
+      footer a { text-decoration: none; }
+      footer a:hover { color: var(--lime); }
+      footer .legal {
+        border-top: 1px solid rgba(255,255,255,0.12);
+        padding: 24px 0;
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        color: rgba(255,255,255,0.5);
+      }
+
+      @media (max-width: 900px) {
+        .nav-links { gap: 12px; font-size: 13px; }
+        .connector-plane { display: none; }
+        .cap-grid,
+        .prompt-grid,
+        .how-points,
+        .sec-grid,
+        .install-grid,
+        footer .shell {
+          grid-template-columns: 1fr;
+        }
+        .how .flow {
+          grid-template-columns: 1fr;
+          gap: 8px;
+        }
+        .arrow { transform: rotate(90deg); justify-self: center; }
+        section { padding: 64px 0; }
+        .hero-content { padding: 88px 0 24px; }
+      }
+
+      @media (max-width: 560px) {
+        .nav-links a:not(.lang-switch) { display: none; }
+        footer .legal { flex-direction: column; gap: 6px; }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="nav" aria-label="Primary">
+      <div class="nav-inner">
+        <div class="brand-mark">Scalev</div>
+        <div class="nav-links">
+          <a href="#capabilities">Capabilities</a>
+          <a href="#prompts">Try it</a>
+          <a href="#install">Install</a>
+          <a class="lang-switch" href="/claude-id">Bahasa Indonesia</a>
+        </div>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <div class="shell">
+        <div class="hero-content">
+          <span class="eyebrow">Official MCP connector</span>
+          <h1 class="brand-title">Run Scalev<br />from Claude.</h1>
+          <h2>Ask Claude to inspect, draft, and update your landing pages and orders.</h2>
+          <p class="lead">
+            One click connects Claude to Scalev with OAuth 2.1, per-business consent,
+            and audit logging on every call. No data is stored on the connector.
+          </p>
+          <div class="trust-row">
+            <span class="trust-pill">OAuth 2.1 + DCR</span>
+            <span class="trust-pill">PKCE S256</span>
+            <span class="trust-pill">Per-business consent</span>
+            <span class="trust-pill">Audited in Scalev API</span>
+          </div>
+          <div class="cta-row">
+            <a class="button primary" href="https://claude.ai/settings/connectors">Add to Claude</a>
+            <a class="button secondary" href="https://docs.scalev.com">Read the docs</a>
+          </div>
+        </div>
+      </div>
+      <div class="connector-plane" aria-label="Scalev Claude connector overview">
+        <div class="connector-window">
+          <div class="window-top">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+          <div class="window-body">
+            <div class="flow-mini">
+              <div class="flow-pill">Claude</div>
+              <div class="flow-arrow">&rarr;</div>
+              <div class="flow-pill">mcp.scalev.com</div>
+              <div class="flow-arrow">&rarr;</div>
+              <div class="flow-pill">Scalev API /v3</div>
+            </div>
+            <div class="tool-list">
+              <div class="tool-item"><strong>Landing pages</strong><span>list, create, publish, delete</span></div>
+              <div class="tool-item"><strong>Orders</strong><span>list, update, change status, cancel AWB</span></div>
+              <div class="tool-item"><strong>Catalog escape hatch</strong><span>search, get, execute_safe</span></div>
+              <div class="tool-item"><strong>Identity</strong><span>get_me, get_docs</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="capabilities">
+        <div class="shell">
+          <p class="section-kicker">What Claude can do</p>
+          <h2>Two domains. Real merchant workflows.</h2>
+          <p class="lead">
+            Scalev exposes 11 hand-picked semantic tools for Landing Pages and Orders, plus
+            6 generic tools (<code>search</code>, <code>get</code>, <code>execute_safe</code>,
+            <code>execute_destructive</code>, <code>get_me</code>, <code>get_docs</code>) as an
+            escape hatch into the rest of the 237-endpoint Scalev API.
+          </p>
+          <div class="cap-grid">
+            <div class="cap">
+              <h3>Landing pages</h3>
+              <p>Draft, publish, and clean up HTML Mode pages without leaving Claude.</p>
+              <ul>
+                <li>list_landing_pages <span class="kind">read</span></li>
+                <li>get_landing_page <span class="kind">read</span></li>
+                <li>create_landing_page <span class="kind write">write</span></li>
+                <li>update_landing_page <span class="kind write">write</span></li>
+                <li>delete_landing_page <span class="kind destr">destructive</span></li>
+              </ul>
+            </div>
+            <div class="cap">
+              <h3>Orders</h3>
+              <p>Triage, edit, and fulfil orders with explicit confirmation for destructive moves.</p>
+              <ul>
+                <li>list_orders <span class="kind">read</span></li>
+                <li>get_order <span class="kind">read</span></li>
+                <li>create_order <span class="kind write">write</span></li>
+                <li>update_order <span class="kind write">write</span></li>
+                <li>change_order_status <span class="kind write">write</span></li>
+                <li>cancel_order_awb <span class="kind destr">destructive</span></li>
+              </ul>
+            </div>
+            <div class="cap">
+              <h3>Power-user tools</h3>
+              <p>Reach the rest of the Scalev API safely via the catalog-driven generic tools.</p>
+              <ul>
+                <li>get_me <span class="kind">read</span></li>
+                <li>get_docs <span class="kind">read</span></li>
+                <li>search <span class="kind">read</span></li>
+                <li>get <span class="kind">read</span></li>
+                <li>execute_safe <span class="kind write">write</span></li>
+                <li>execute_destructive <span class="kind destr">destructive</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="prompts" class="prompts">
+        <div class="shell">
+          <p class="section-kicker">Try these prompts</p>
+          <h2>Three prompts. End-to-end workflows.</h2>
+          <p class="lead">
+            These are the exact prompts in our submission reviewer package &mdash;
+            try them yourself once the connector is installed.
+          </p>
+          <div class="prompt-grid">
+            <div class="prompt">
+              <div class="prompt-no">01</div>
+              <blockquote>
+                Use Scalev to list my connected businesses, choose the review business,
+                and summarize my landing pages.
+              </blockquote>
+              <h4>Tools Claude will call</h4>
+              <ul>
+                <li>get_me</li>
+                <li>list_landing_pages</li>
+              </ul>
+            </div>
+            <div class="prompt">
+              <div class="prompt-no">02</div>
+              <blockquote>
+                Create a draft HTML Mode landing page called Claude Review Draft,
+                update it to publish with is_published: true, fetch it, then delete it.
+              </blockquote>
+              <h4>Tools Claude will call</h4>
+              <ul>
+                <li>get_me</li>
+                <li>get_docs (landing_pages_api)</li>
+                <li>create_landing_page</li>
+                <li>update_landing_page</li>
+                <li>get_landing_page</li>
+                <li>delete_landing_page</li>
+              </ul>
+            </div>
+            <div class="prompt">
+              <div class="prompt-no">03</div>
+              <blockquote>
+                Find pending review orders, fetch one order, update its notes,
+                change its status to confirmed, and cancel AWB only on the seeded
+                safe AWB test order.
+              </blockquote>
+              <h4>Tools Claude will call</h4>
+              <ul>
+                <li>get_me</li>
+                <li>list_orders</li>
+                <li>get_order</li>
+                <li>update_order</li>
+                <li>change_order_status</li>
+                <li>cancel_order_awb</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="how">
+        <div class="shell">
+          <p class="section-kicker">How it works</p>
+          <h2>OAuth out front, Scalev API in charge.</h2>
+          <p class="lead">
+            The MCP Worker is a thin gateway. It validates the OAuth bearer is present and
+            forwards it unchanged to the Scalev API. All authorization, scope enforcement,
+            business selection, validation, and persistence stay in the Scalev API.
+          </p>
+          <div class="flow">
+            <div class="node"><strong>Claude</strong><span>desktop, web, code</span></div>
+            <div class="arrow">&rarr;</div>
+            <div class="node"><strong>mcp.scalev.com</strong><span>Cloudflare Worker</span></div>
+            <div class="arrow">&rarr;</div>
+            <div class="node"><strong>api.scalev.com /v3</strong><span>Scalev API authorization &amp; logic</span></div>
+            <div class="arrow">&rarr;</div>
+            <div class="node"><strong>Postgres</strong><span>Your merchant data</span></div>
+          </div>
+          <div class="how-points">
+            <div class="how-point">
+              <h4>Nothing persists on the Worker</h4>
+              <p>No tokens cached, no merchant data stored. The Worker is stateless.</p>
+            </div>
+            <div class="how-point">
+              <h4>Per-business explicit consent</h4>
+              <p>Each tool call carries <code>business_unique_id</code>. No guesses across businesses.</p>
+            </div>
+            <div class="how-point">
+              <h4>Every call audited</h4>
+              <p>Machine API logs in the Scalev API capture caller, scope, request, status, request_id.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="perm">
+        <div class="shell">
+          <p class="section-kicker">Permissions</p>
+          <h2>The scopes Claude will ask for.</h2>
+          <p class="lead">
+            Scopes are granted per business at consent time. You can revoke any grant from
+            Scalev settings or claude.ai. Nothing is granted beyond what you approve.
+          </p>
+          <table class="perm-table">
+            <thead>
+              <tr>
+                <th>Scope</th>
+                <th>What it lets Claude do</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><code>page:list</code> &middot; <code>page:read</code></td><td>View your landing pages and inspect a single page.</td></tr>
+              <tr><td><code>page:create</code></td><td>Create new landing pages, including HTML Mode drafts.</td></tr>
+              <tr><td><code>page:update</code></td><td>Edit page metadata, publish, or unpublish a landing page.</td></tr>
+              <tr><td><code>page:delete</code></td><td>Soft-delete a landing page.</td></tr>
+              <tr><td><code>order:list</code> &middot; <code>order:read</code></td><td>View your orders and inspect a single order.</td></tr>
+              <tr><td><code>order:create</code></td><td>Create a new order on your behalf.</td></tr>
+              <tr><td><code>order:update</code></td><td>Edit order metadata, notes, or customer info.</td></tr>
+              <tr><td><code>order:change_status</code></td><td>Move an order through its status workflow.</td></tr>
+              <tr><td><code>order:create_awb</code></td><td>Create or cancel an AWB (airway bill) on an order.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="security">
+        <div class="shell">
+          <p class="section-kicker">Security &amp; privacy</p>
+          <h2>Built for review and built for production.</h2>
+          <div class="sec-grid">
+            <div class="sec">
+              <h4>OAuth 2.1 + DCR</h4>
+              <p>Claude registers dynamically (RFC 7591). PKCE S256 enforced. Refresh tokens rotate on every use.</p>
+            </div>
+            <div class="sec">
+              <h4>Per-business scopes</h4>
+              <p>Granular scopes (<code>order:list</code>, <code>page:create</code>, &hellip;) granted per business.</p>
+            </div>
+            <div class="sec">
+              <h4>Audit log on every call</h4>
+              <p>The Scalev API records caller, scope, request, status, and a correlatable <code>request_id</code>.</p>
+            </div>
+            <div class="sec">
+              <h4>Disclosure-ready</h4>
+              <p>See <a href="https://mcp.scalev.com/.well-known/security.txt">security.txt</a> &middot; <a href="https://status.scalev.com">status.scalev.com</a></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="install">
+        <div class="shell">
+          <p class="section-kicker">Install</p>
+          <h2>Five steps to wire Claude to Scalev.</h2>
+          <div class="install-grid">
+            <div class="step">
+              <h4>Open Claude settings</h4>
+              <p>Inside claude.ai, go to Settings &rsaquo; Connectors.</p>
+            </div>
+            <div class="step">
+              <h4>Add a connector</h4>
+              <p>Choose Add custom connector while Scalev is awaiting directory approval.</p>
+            </div>
+            <div class="step">
+              <h4>Paste the URL</h4>
+              <p><code>https://mcp.scalev.com/mcp</code></p>
+            </div>
+            <div class="step">
+              <h4>Sign in with Scalev</h4>
+              <p>Select the business(es) you want Claude to access. Approve the scope list.</p>
+            </div>
+            <div class="step">
+              <h4>Use it in chat</h4>
+              <p>Enable Scalev from the connectors menu and try one of the prompts above.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="final">
+        <div class="shell final-inner">
+          <div>
+            <p class="section-kicker" style="color: var(--lime);">Get started</p>
+            <h2>Connect Scalev to Claude in under a minute.</h2>
+            <p class="url">https://mcp.scalev.com/mcp</p>
+          </div>
+          <a class="button primary" href="https://claude.ai/settings/connectors">Add to Claude</a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="shell">
+        <div>
+          <h5>Scalev for Claude</h5>
+          <p>The official Scalev MCP connector for Claude. Operated by Scalev.</p>
+          <p style="margin-top: 12px;"><a href="/claude-id">Bahasa Indonesia &rsaquo;</a></p>
+        </div>
+        <div>
+          <h5>Product</h5>
+          <ul>
+            <li><a href="#capabilities">Capabilities</a></li>
+            <li><a href="#prompts">Reviewer prompts</a></li>
+            <li><a href="#install">Install guide</a></li>
+            <li><a href="https://docs.scalev.com">Scalev developer docs</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5>Trust</h5>
+          <ul>
+            <li><a href="/privacy">Privacy policy</a></li>
+            <li><a href="/terms">Terms of service</a></li>
+            <li><a href="https://mcp.scalev.com/.well-known/security.txt">security.txt</a></li>
+            <li><a href="https://status.scalev.com">status.scalev.com</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5>Support</h5>
+          <ul>
+            <li><a href="/contact-us">Contact us</a></li>
+            <li><a href="https://docs.scalev.com">Developer docs</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="shell legal">
+        <span>&copy; Scalev. All rights reserved.</span>
+        <span>Claude and Anthropic are trademarks of Anthropic, PBC.</span>
+      </div>
+    </footer>
+  </body>
+</html>
