@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: nexus-mcp-sync-catalogs
+  group: scalev-mcp-sync-catalogs
   cancel-in-progress: false
 
 jobs:
@@ -18,15 +18,15 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: nexus-mcp
+        working-directory: scalev-mcp
 
     steps:
-      - name: Checkout nexus-mcp
+      - name: Checkout scalev-mcp
         uses: actions/checkout@v5
         with:
-          repository: scalevcom/nexus-mcp
+          repository: scalevcom/scalev-mcp
           ref: main
-          path: nexus-mcp
+          path: scalev-mcp
 
       - name: Checkout api-openapi
         uses: actions/checkout@v5
@@ -53,7 +53,7 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-          cache-dependency-path: nexus-mcp/pnpm-lock.yaml
+          cache-dependency-path: scalev-mcp/pnpm-lock.yaml
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

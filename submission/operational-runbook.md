@@ -27,7 +27,7 @@ Do not ask reviewers to send OAuth tokens, refresh tokens, order payloads, custo
 
 Before broad rollout:
 
-0. Run `pnpm check:submission-local` from `nexus-mcp`.
+0. Run `pnpm check:submission-local` from `scalev-mcp`.
 1. Deploy Scalev API changes to the canary environment.
 2. Deploy the Worker to a canary route or preview environment when available.
 3. Run unauthenticated `/mcp` and assert `401` plus `WWW-Authenticate`.
@@ -98,7 +98,7 @@ Expected:
 Rollback order if the connector causes authorization, data-access, or tool-routing regressions:
 
 1. Disable the Claude OAuth application or revoke the reviewer/test installation if the risk is credential-scoped.
-2. Roll back the `nexus-mcp` Worker to the previous known-good deployment.
+2. Roll back the `scalev-mcp` Worker to the previous known-good deployment.
 3. If `/v3` behavior is faulty, roll back the Scalev API after confirming the previous OpenAPI/catalog version still matches the deployed Worker.
 4. Pause submission or notify the reviewer if the issue affects review credentials.
 5. Preserve request ids and timestamps for post-incident analysis; do not preserve raw bodies or tokens.
