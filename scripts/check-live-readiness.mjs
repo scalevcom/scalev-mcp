@@ -208,7 +208,9 @@ async function resolveEffectiveCaa(hostname) {
     const source = labels.slice(index).join(".");
     const records = await resolveCaaOrEmpty(source);
 
-    if (records.some((record) => ["issue", "issuewild"].includes(record.tag))) {
+    // node:dns resolveCaa returns records as { critical, [tag]: value },
+    // not { tag: 'issue', value: '...' }. Check for tag presence by key.
+    if (records.some((record) => "issue" in record || "issuewild" in record)) {
       return { source, records };
     }
   }
