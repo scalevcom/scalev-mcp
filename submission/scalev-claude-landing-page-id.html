@@ -1,16 +1,16 @@
 <!doctype html>
-<html lang="en">
+<html lang="id">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Scalev for Claude — Official MCP connector</title>
+    <title>Scalev untuk Claude — Connector MCP resmi</title>
     <meta
       name="description"
-      content="Run Scalev from Claude. The official Scalev MCP connector lets Claude inspect and update your landing pages and orders through OAuth 2.1, per-business consent, and Scalev API audit logging."
+      content="Jalankan Scalev dari Claude. Connector MCP resmi Scalev memungkinkan Claude memeriksa dan memperbarui landing page serta order Anda melalui OAuth 2.1, persetujuan per-bisnis, dan audit log di Scalev API."
     />
     <link rel="alternate" hreflang="en" href="/claude" />
     <link rel="alternate" hreflang="id" href="/claude-id" />
-    <link rel="canonical" href="/claude" />
+    <link rel="canonical" href="/claude-id" />
     <style>
       :root {
         --cyan: #05adeb;
@@ -48,7 +48,6 @@
         z-index: 1;
       }
 
-      /* NAV */
       .nav {
         position: absolute;
         inset: 28px 0 auto;
@@ -83,7 +82,6 @@
         font-weight: 700;
       }
 
-      /* HERO */
       .hero {
         min-height: 92vh;
         position: relative;
@@ -194,7 +192,6 @@
       }
       .button.dark { background: var(--ink); color: var(--white); }
 
-      /* Connector card overlay */
       .connector-plane {
         position: absolute;
         right: max(24px, calc((100vw - 1120px) / 2));
@@ -253,7 +250,6 @@
       }
       .tool-item strong { font-size: 14px; }
 
-      /* SECTIONS */
       section { padding: 96px 0; }
       .section-kicker {
         margin: 0 0 12px;
@@ -276,7 +272,6 @@
         font-size: 19px;
       }
 
-      /* Capabilities grid */
       .cap-grid {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -298,11 +293,7 @@
         margin: 10px 0 18px;
         color: var(--ink-soft);
       }
-      .cap ul {
-        margin: 0;
-        padding: 0;
-        list-style: none;
-      }
+      .cap ul { margin: 0; padding: 0; list-style: none; }
       .cap li {
         padding: 8px 0;
         border-top: 1px solid var(--line);
@@ -324,11 +315,7 @@
       .cap li span.kind.write { color: var(--ink); }
       .cap li span.kind.destr { color: var(--coral); }
 
-      /* Prompt cards */
-      .prompts {
-        background: var(--ink);
-        color: var(--white);
-      }
+      .prompts { background: var(--ink); color: var(--white); }
       .prompts h2 { color: var(--white); }
       .prompts .lead { color: rgba(255,255,255,0.78); }
       .prompts .section-kicker { color: var(--lime); }
@@ -376,7 +363,6 @@
       }
       .prompt li { padding: 4px 0; }
 
-      /* Flow / how it works */
       .how .flow {
         margin-top: 44px;
         display: grid;
@@ -397,39 +383,19 @@
         font-size: 18px;
         margin-bottom: 4px;
       }
-      .node span {
-        font-size: 12px;
-        color: var(--ink-soft);
-      }
-      .arrow {
-        font-family: var(--mono);
-        color: var(--cyan-deep);
-        font-weight: 800;
-      }
+      .node span { font-size: 12px; color: var(--ink-soft); }
+      .arrow { font-family: var(--mono); color: var(--cyan-deep); font-weight: 800; }
       .how-points {
         margin-top: 36px;
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 22px;
       }
-      .how-point {
-        padding-top: 14px;
-        border-top: 3px solid var(--cyan);
-      }
-      .how-point h4 {
-        margin: 0 0 6px;
-        font-size: 16px;
-      }
-      .how-point p {
-        margin: 0;
-        font-size: 14px;
-        color: var(--ink-soft);
-      }
+      .how-point { padding-top: 14px; border-top: 3px solid var(--cyan); }
+      .how-point h4 { margin: 0 0 6px; font-size: 16px; }
+      .how-point p { margin: 0; font-size: 14px; color: var(--ink-soft); }
 
-      /* Permissions table */
-      .perm {
-        background: var(--paper);
-      }
+      .perm { background: var(--paper); }
       .perm-table {
         width: 100%;
         margin-top: 36px;
@@ -462,11 +428,7 @@
         border-radius: 3px;
       }
 
-      /* Security strip */
-      .security {
-        background: var(--ink);
-        color: var(--white);
-      }
+      .security { background: var(--ink); color: var(--white); }
       .security h2 { color: var(--white); }
       .security .lead { color: rgba(255,255,255,0.78); }
       .security .section-kicker { color: var(--lime); }
@@ -482,18 +444,9 @@
         border: 1px solid rgba(255,255,255,0.12);
         border-radius: 6px;
       }
-      .sec h4 {
-        margin: 0;
-        font-family: var(--display);
-        font-size: 18px;
-      }
-      .sec p {
-        margin: 8px 0 0;
-        color: rgba(255,255,255,0.78);
-        font-size: 13px;
-      }
+      .sec h4 { margin: 0; font-family: var(--display); font-size: 18px; }
+      .sec p { margin: 8px 0 0; color: rgba(255,255,255,0.78); font-size: 13px; }
 
-      /* Install */
       .install-grid {
         margin-top: 44px;
         display: grid;
@@ -523,17 +476,9 @@
         display: grid;
         place-items: center;
       }
-      .step h4 {
-        margin: 6px 0 8px;
-        font-size: 15px;
-      }
-      .step p {
-        margin: 0;
-        font-size: 13px;
-        color: var(--ink-soft);
-      }
+      .step h4 { margin: 6px 0 8px; font-size: 15px; }
+      .step p { margin: 0; font-size: 13px; color: var(--ink-soft); }
 
-      /* CTA */
       .final {
         background: linear-gradient(118deg, rgba(5,173,235,0.96), rgba(29,40,104,0.96));
         color: var(--white);
@@ -553,7 +498,6 @@
         opacity: 0.86;
       }
 
-      /* FOOTER */
       footer {
         background: var(--ink);
         color: rgba(255,255,255,0.78);
@@ -592,13 +536,8 @@
         .how-points,
         .sec-grid,
         .install-grid,
-        footer .shell {
-          grid-template-columns: 1fr;
-        }
-        .how .flow {
-          grid-template-columns: 1fr;
-          gap: 8px;
-        }
+        footer .shell { grid-template-columns: 1fr; }
+        .how .flow { grid-template-columns: 1fr; gap: 8px; }
         .arrow { transform: rotate(90deg); justify-self: center; }
         section { padding: 64px 0; }
         .hero-content { padding: 88px 0 24px; }
@@ -611,14 +550,14 @@
     </style>
   </head>
   <body>
-    <nav class="nav" aria-label="Primary">
+    <nav class="nav" aria-label="Navigasi utama">
       <div class="nav-inner">
         <div class="brand-mark">Scalev</div>
         <div class="nav-links">
-          <a href="#capabilities">Capabilities</a>
-          <a href="#prompts">Try it</a>
-          <a href="#install">Install</a>
-          <a class="lang-switch" href="/claude-id">Bahasa Indonesia</a>
+          <a href="#capabilities">Kemampuan</a>
+          <a href="#prompts">Coba</a>
+          <a href="#install">Pasang</a>
+          <a class="lang-switch" href="/claude">English</a>
         </div>
       </div>
     </nav>
@@ -626,26 +565,27 @@
     <header class="hero">
       <div class="shell">
         <div class="hero-content">
-          <span class="eyebrow">Official MCP connector</span>
-          <h1 class="brand-title">Run Scalev<br />from Claude.</h1>
-          <h2>Ask Claude to inspect, draft, and update your landing pages and orders.</h2>
+          <span class="eyebrow">Connector MCP resmi</span>
+          <h1 class="brand-title">Jalankan Scalev<br />dari Claude.</h1>
+          <h2>Minta Claude memeriksa, mendraf, dan memperbarui landing page serta order Anda.</h2>
           <p class="lead">
-            One click connects Claude to Scalev with OAuth 2.1, per-business consent,
-            and audit logging on every call. No data is stored on the connector.
+            Satu klik untuk menyambungkan Claude ke Scalev lewat OAuth 2.1,
+            persetujuan per-bisnis, dan audit log di setiap panggilan. Tidak ada
+            data yang disimpan di connector.
           </p>
           <div class="trust-row">
             <span class="trust-pill">OAuth 2.1 + DCR</span>
             <span class="trust-pill">PKCE S256</span>
-            <span class="trust-pill">Per-business consent</span>
-            <span class="trust-pill">Audited in Scalev API</span>
+            <span class="trust-pill">Persetujuan per-bisnis</span>
+            <span class="trust-pill">Audit di Scalev API</span>
           </div>
           <div class="cta-row">
-            <a class="button primary" href="https://claude.ai/settings/connectors">Add to Claude</a>
-            <a class="button secondary" href="https://docs.scalev.com">Read the docs</a>
+            <a class="button primary" href="https://claude.ai/settings/connectors">Tambahkan ke Claude</a>
+            <a class="button secondary" href="https://docs.scalev.com">Baca dokumentasi</a>
           </div>
         </div>
       </div>
-      <div class="connector-plane" aria-label="Scalev Claude connector overview">
+      <div class="connector-plane" aria-label="Ringkasan Scalev Claude connector">
         <div class="connector-window">
           <div class="window-top">
             <span class="dot"></span>
@@ -661,10 +601,10 @@
               <div class="flow-pill">Scalev API /v3</div>
             </div>
             <div class="tool-list">
-              <div class="tool-item"><strong>Landing pages</strong><span>list, create, publish, delete</span></div>
-              <div class="tool-item"><strong>Orders</strong><span>list, update, change status, cancel AWB</span></div>
-              <div class="tool-item"><strong>Catalog escape hatch</strong><span>search, get, execute_safe</span></div>
-              <div class="tool-item"><strong>Identity</strong><span>get_me, get_docs</span></div>
+              <div class="tool-item"><strong>Landing page</strong><span>list, create, publish, delete</span></div>
+              <div class="tool-item"><strong>Order</strong><span>list, update, change status, cancel AWB</span></div>
+              <div class="tool-item"><strong>Tool generik</strong><span>search, get, execute_safe</span></div>
+              <div class="tool-item"><strong>Identitas</strong><span>get_me, get_docs</span></div>
             </div>
           </div>
         </div>
@@ -674,48 +614,49 @@
     <main>
       <section id="capabilities">
         <div class="shell">
-          <p class="section-kicker">What Claude can do</p>
-          <h2>Two domains. Real merchant workflows.</h2>
+          <p class="section-kicker">Yang bisa Claude lakukan</p>
+          <h2>Dua domain. Workflow merchant nyata.</h2>
           <p class="lead">
-            Scalev exposes 11 hand-picked semantic tools for Landing Pages and Orders, plus
-            6 generic tools (<code>search</code>, <code>get</code>, <code>execute_safe</code>,
-            <code>execute_destructive</code>, <code>get_me</code>, <code>get_docs</code>) as an
-            escape hatch into the rest of the 237-endpoint Scalev API.
+            Scalev menyediakan 11 semantic tool pilihan untuk Landing Page dan Order,
+            plus 6 tool generik (<code>search</code>, <code>get</code>,
+            <code>execute_safe</code>, <code>execute_destructive</code>,
+            <code>get_me</code>, <code>get_docs</code>) sebagai jalur ke 237 endpoint
+            lainnya di Scalev API.
           </p>
           <div class="cap-grid">
             <div class="cap">
-              <h3>Landing pages</h3>
-              <p>Draft, publish, and clean up HTML Mode pages without leaving Claude.</p>
+              <h3>Landing page</h3>
+              <p>Buat draft, publish, dan rapikan halaman HTML Mode tanpa keluar dari Claude.</p>
               <ul>
-                <li>list_landing_pages <span class="kind">read</span></li>
-                <li>get_landing_page <span class="kind">read</span></li>
-                <li>create_landing_page <span class="kind write">write</span></li>
-                <li>update_landing_page <span class="kind write">write</span></li>
-                <li>delete_landing_page <span class="kind destr">destructive</span></li>
+                <li>list_landing_pages <span class="kind">baca</span></li>
+                <li>get_landing_page <span class="kind">baca</span></li>
+                <li>create_landing_page <span class="kind write">tulis</span></li>
+                <li>update_landing_page <span class="kind write">tulis</span></li>
+                <li>delete_landing_page <span class="kind destr">destruktif</span></li>
               </ul>
             </div>
             <div class="cap">
-              <h3>Orders</h3>
-              <p>Triage, edit, and fulfil orders with explicit confirmation for destructive moves.</p>
+              <h3>Order</h3>
+              <p>Triase, edit, dan selesaikan order; aksi destruktif perlu konfirmasi eksplisit.</p>
               <ul>
-                <li>list_orders <span class="kind">read</span></li>
-                <li>get_order <span class="kind">read</span></li>
-                <li>create_order <span class="kind write">write</span></li>
-                <li>update_order <span class="kind write">write</span></li>
-                <li>change_order_status <span class="kind write">write</span></li>
-                <li>cancel_order_awb <span class="kind destr">destructive</span></li>
+                <li>list_orders <span class="kind">baca</span></li>
+                <li>get_order <span class="kind">baca</span></li>
+                <li>create_order <span class="kind write">tulis</span></li>
+                <li>update_order <span class="kind write">tulis</span></li>
+                <li>change_order_status <span class="kind write">tulis</span></li>
+                <li>cancel_order_awb <span class="kind destr">destruktif</span></li>
               </ul>
             </div>
             <div class="cap">
-              <h3>Power-user tools</h3>
-              <p>Reach the rest of the Scalev API safely via the catalog-driven generic tools.</p>
+              <h3>Tool generik</h3>
+              <p>Jangkau seluruh Scalev API dengan aman melalui tool katalog.</p>
               <ul>
-                <li>get_me <span class="kind">read</span></li>
-                <li>get_docs <span class="kind">read</span></li>
-                <li>search <span class="kind">read</span></li>
-                <li>get <span class="kind">read</span></li>
-                <li>execute_safe <span class="kind write">write</span></li>
-                <li>execute_destructive <span class="kind destr">destructive</span></li>
+                <li>get_me <span class="kind">baca</span></li>
+                <li>get_docs <span class="kind">baca</span></li>
+                <li>search <span class="kind">baca</span></li>
+                <li>get <span class="kind">baca</span></li>
+                <li>execute_safe <span class="kind write">tulis</span></li>
+                <li>execute_destructive <span class="kind destr">destruktif</span></li>
               </ul>
             </div>
           </div>
@@ -724,20 +665,20 @@
 
       <section id="prompts" class="prompts">
         <div class="shell">
-          <p class="section-kicker">Try these prompts</p>
-          <h2>Three prompts. End-to-end workflows.</h2>
+          <p class="section-kicker">Coba prompt ini</p>
+          <h2>Tiga prompt. Workflow end-to-end.</h2>
           <p class="lead">
-            These are the exact prompts in our submission reviewer package &mdash;
-            try them yourself once the connector is installed.
+            Ini prompt yang sama dengan paket reviewer pada submission kami &mdash;
+            silakan coba sendiri setelah connector terpasang.
           </p>
           <div class="prompt-grid">
             <div class="prompt">
               <div class="prompt-no">01</div>
               <blockquote>
-                Use Scalev to list my connected businesses, choose the review business,
-                and summarize my landing pages.
+                Gunakan Scalev untuk menampilkan bisnis saya yang terhubung,
+                pilih bisnis review, lalu ringkas landing page saya.
               </blockquote>
-              <h4>Tools Claude will call</h4>
+              <h4>Tool yang Claude panggil</h4>
               <ul>
                 <li>get_me</li>
                 <li>list_landing_pages</li>
@@ -746,10 +687,10 @@
             <div class="prompt">
               <div class="prompt-no">02</div>
               <blockquote>
-                Create a draft HTML Mode landing page called Claude Review Draft,
-                update it to publish with is_published: true, fetch it, then delete it.
+                Buat draft HTML Mode landing page bernama Claude Review Draft,
+                publish dengan is_published: true, ambil lagi datanya, lalu hapus.
               </blockquote>
-              <h4>Tools Claude will call</h4>
+              <h4>Tool yang Claude panggil</h4>
               <ul>
                 <li>get_me</li>
                 <li>get_docs (landing_pages_api)</li>
@@ -762,11 +703,11 @@
             <div class="prompt">
               <div class="prompt-no">03</div>
               <blockquote>
-                Find pending review orders, fetch one order, update its notes,
-                change its status to confirmed, and cancel AWB only on the seeded
-                safe AWB test order.
+                Cari order review yang pending, ambil satu order, ubah catatannya,
+                ubah statusnya menjadi confirmed, dan cancel AWB hanya untuk
+                seeded safe AWB test order.
               </blockquote>
-              <h4>Tools Claude will call</h4>
+              <h4>Tool yang Claude panggil</h4>
               <ul>
                 <li>get_me</li>
                 <li>list_orders</li>
@@ -782,34 +723,34 @@
 
       <section class="how">
         <div class="shell">
-          <p class="section-kicker">How it works</p>
-          <h2>OAuth out front, Scalev API in charge.</h2>
+          <p class="section-kicker">Cara kerjanya</p>
+          <h2>OAuth di depan, Scalev API yang berwenang.</h2>
           <p class="lead">
-            The MCP Worker is a thin gateway. It validates the OAuth bearer is present and
-            forwards it unchanged to the Scalev API. All authorization, scope enforcement,
-            business selection, validation, and persistence stay in the Scalev API.
+            Worker MCP hanya jadi gateway tipis. Worker memeriksa bahwa bearer
+            OAuth ada, lalu meneruskannya apa adanya ke Scalev API. Autorisasi,
+            scope, pemilihan bisnis, validasi, dan persistensi tetap di Scalev API.
           </p>
           <div class="flow">
             <div class="node"><strong>Claude</strong><span>desktop, web, code</span></div>
             <div class="arrow">&rarr;</div>
             <div class="node"><strong>mcp.scalev.com</strong><span>Cloudflare Worker</span></div>
             <div class="arrow">&rarr;</div>
-            <div class="node"><strong>api.scalev.com /v3</strong><span>Scalev API authorization &amp; logic</span></div>
+            <div class="node"><strong>api.scalev.com /v3</strong><span>Otorisasi &amp; logika Scalev API</span></div>
             <div class="arrow">&rarr;</div>
-            <div class="node"><strong>Postgres</strong><span>Your merchant data</span></div>
+            <div class="node"><strong>Postgres</strong><span>Data merchant Anda</span></div>
           </div>
           <div class="how-points">
             <div class="how-point">
-              <h4>Nothing persists on the Worker</h4>
-              <p>No tokens cached, no merchant data stored. The Worker is stateless.</p>
+              <h4>Tidak ada data tersimpan di Worker</h4>
+              <p>Tidak men-cache token, tidak menyimpan data merchant. Worker stateless.</p>
             </div>
             <div class="how-point">
-              <h4>Per-business explicit consent</h4>
-              <p>Each tool call carries <code>business_unique_id</code>. No guesses across businesses.</p>
+              <h4>Persetujuan eksplisit per bisnis</h4>
+              <p>Setiap panggilan membawa <code>business_unique_id</code>. Claude tidak menebak antar bisnis.</p>
             </div>
             <div class="how-point">
-              <h4>Every call audited</h4>
-              <p>Machine API logs in the Scalev API capture caller, scope, request, status, request_id.</p>
+              <h4>Setiap panggilan diaudit</h4>
+              <p>Machine API log di Scalev API mencatat caller, scope, request, status, dan request_id.</p>
             </div>
           </div>
         </div>
@@ -817,29 +758,30 @@
 
       <section class="perm">
         <div class="shell">
-          <p class="section-kicker">Permissions</p>
-          <h2>The scopes Claude will ask for.</h2>
+          <p class="section-kicker">Izin</p>
+          <h2>Scope yang akan diminta Claude.</h2>
           <p class="lead">
-            Scopes are granted per business at consent time. You can revoke any grant from
-            Scalev settings or claude.ai. Nothing is granted beyond what you approve.
+            Scope diberikan per bisnis saat consent. Anda bisa mencabut grant
+            dari setting Scalev atau dari claude.ai. Tidak ada akses di luar
+            yang Anda setujui.
           </p>
           <table class="perm-table">
             <thead>
               <tr>
                 <th>Scope</th>
-                <th>What it lets Claude do</th>
+                <th>Yang bisa dilakukan Claude</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td><code>page:list</code> &middot; <code>page:read</code></td><td>View your landing pages and inspect a single page.</td></tr>
-              <tr><td><code>page:create</code></td><td>Create new landing pages, including HTML Mode drafts.</td></tr>
-              <tr><td><code>page:update</code></td><td>Edit page metadata, publish, or unpublish a landing page.</td></tr>
-              <tr><td><code>page:delete</code></td><td>Soft-delete a landing page.</td></tr>
-              <tr><td><code>order:list</code> &middot; <code>order:read</code></td><td>View your orders and inspect a single order.</td></tr>
-              <tr><td><code>order:create</code></td><td>Create a new order on your behalf.</td></tr>
-              <tr><td><code>order:update</code></td><td>Edit order metadata, notes, or customer info.</td></tr>
-              <tr><td><code>order:change_status</code></td><td>Move an order through its status workflow.</td></tr>
-              <tr><td><code>order:create_awb</code></td><td>Create or cancel an AWB (airway bill) on an order.</td></tr>
+              <tr><td><code>page:list</code> &middot; <code>page:read</code></td><td>Melihat daftar landing page dan satu halaman.</td></tr>
+              <tr><td><code>page:create</code></td><td>Membuat landing page baru, termasuk draft HTML Mode.</td></tr>
+              <tr><td><code>page:update</code></td><td>Mengubah metadata, publish, atau unpublish landing page.</td></tr>
+              <tr><td><code>page:delete</code></td><td>Menghapus landing page (soft-delete).</td></tr>
+              <tr><td><code>order:list</code> &middot; <code>order:read</code></td><td>Melihat daftar order dan satu order.</td></tr>
+              <tr><td><code>order:create</code></td><td>Membuat order baru atas nama Anda.</td></tr>
+              <tr><td><code>order:update</code></td><td>Mengubah metadata, catatan, atau data pelanggan order.</td></tr>
+              <tr><td><code>order:change_status</code></td><td>Memindahkan order melewati workflow status.</td></tr>
+              <tr><td><code>order:create_awb</code></td><td>Membuat atau membatalkan AWB pengiriman.</td></tr>
             </tbody>
           </table>
         </div>
@@ -847,24 +789,24 @@
 
       <section class="security">
         <div class="shell">
-          <p class="section-kicker">Security &amp; privacy</p>
-          <h2>Built for review and built for production.</h2>
+          <p class="section-kicker">Keamanan &amp; privasi</p>
+          <h2>Dirancang untuk lolos review dan untuk produksi.</h2>
           <div class="sec-grid">
             <div class="sec">
               <h4>OAuth 2.1 + DCR</h4>
-              <p>Claude registers dynamically (RFC 7591). PKCE S256 enforced. Refresh tokens rotate on every use.</p>
+              <p>Claude registrasi otomatis (RFC 7591). PKCE S256 wajib. Refresh token rotasi tiap penggunaan.</p>
             </div>
             <div class="sec">
-              <h4>Per-business scopes</h4>
-              <p>Granular scopes (<code>order:list</code>, <code>page:create</code>, &hellip;) granted per business.</p>
+              <h4>Scope per bisnis</h4>
+              <p>Scope granular (<code>order:list</code>, <code>page:create</code>, &hellip;) diberikan per bisnis.</p>
             </div>
             <div class="sec">
-              <h4>Audit log on every call</h4>
-              <p>The Scalev API records caller, scope, request, status, and a correlatable <code>request_id</code>.</p>
+              <h4>Audit log tiap panggilan</h4>
+              <p>Scalev API mencatat caller, scope, request, status, dan <code>request_id</code> yang bisa ditelusuri.</p>
             </div>
             <div class="sec">
-              <h4>Disclosure-ready</h4>
-              <p>See <a href="https://mcp.scalev.com/.well-known/security.txt">security.txt</a> &middot; <a href="https://status.scalev.com">status.scalev.com</a></p>
+              <h4>Siap disclosure</h4>
+              <p>Lihat <a href="https://mcp.scalev.com/.well-known/security.txt">security.txt</a> &middot; <a href="https://status.scalev.com">status.scalev.com</a></p>
             </div>
           </div>
         </div>
@@ -872,28 +814,28 @@
 
       <section id="install">
         <div class="shell">
-          <p class="section-kicker">Install</p>
-          <h2>Five steps to wire Claude to Scalev.</h2>
+          <p class="section-kicker">Pasang</p>
+          <h2>Lima langkah menghubungkan Claude ke Scalev.</h2>
           <div class="install-grid">
             <div class="step">
-              <h4>Open Claude settings</h4>
-              <p>Inside claude.ai, go to Settings &rsaquo; Connectors.</p>
+              <h4>Buka setting Claude</h4>
+              <p>Di claude.ai, masuk ke Settings &rsaquo; Connectors.</p>
             </div>
             <div class="step">
-              <h4>Add a connector</h4>
-              <p>Choose Add custom connector while Scalev is awaiting directory approval.</p>
+              <h4>Tambah connector</h4>
+              <p>Pilih Add custom connector selama Scalev masih menunggu approval direktori.</p>
             </div>
             <div class="step">
-              <h4>Paste the URL</h4>
+              <h4>Tempel URL</h4>
               <p><code>https://mcp.scalev.com/mcp</code></p>
             </div>
             <div class="step">
-              <h4>Sign in with Scalev</h4>
-              <p>Select the business(es) you want Claude to access. Approve the scope list.</p>
+              <h4>Login dengan Scalev</h4>
+              <p>Pilih bisnis yang ingin diakses Claude. Setujui daftar scope.</p>
             </div>
             <div class="step">
-              <h4>Use it in chat</h4>
-              <p>Enable Scalev from the connectors menu and try one of the prompts above.</p>
+              <h4>Pakai di chat</h4>
+              <p>Aktifkan Scalev dari menu connectors lalu coba salah satu prompt di atas.</p>
             </div>
           </div>
         </div>
@@ -902,11 +844,11 @@
       <section class="final">
         <div class="shell final-inner">
           <div>
-            <p class="section-kicker" style="color: var(--lime);">Get started</p>
-            <h2>Connect Scalev to Claude in under a minute.</h2>
+            <p class="section-kicker" style="color: var(--lime);">Mulai</p>
+            <h2>Hubungkan Scalev ke Claude kurang dari satu menit.</h2>
             <p class="url">https://mcp.scalev.com/mcp</p>
           </div>
-          <a class="button primary" href="https://claude.ai/settings/connectors">Add to Claude</a>
+          <a class="button primary" href="https://claude.ai/settings/connectors">Tambahkan ke Claude</a>
         </div>
       </section>
     </main>
@@ -914,39 +856,39 @@
     <footer>
       <div class="shell">
         <div>
-          <h5>Scalev for Claude</h5>
-          <p>The official Scalev MCP connector for Claude. Operated by Scalev.</p>
-          <p style="margin-top: 12px;"><a href="/claude-id">Bahasa Indonesia &rsaquo;</a></p>
+          <h5>Scalev untuk Claude</h5>
+          <p>Connector MCP resmi Scalev untuk Claude. Dioperasikan oleh Scalev.</p>
+          <p style="margin-top: 12px;"><a href="/claude">English &rsaquo;</a></p>
         </div>
         <div>
-          <h5>Product</h5>
+          <h5>Produk</h5>
           <ul>
-            <li><a href="#capabilities">Capabilities</a></li>
-            <li><a href="#prompts">Reviewer prompts</a></li>
-            <li><a href="#install">Install guide</a></li>
-            <li><a href="https://docs.scalev.com">Scalev developer docs</a></li>
+            <li><a href="#capabilities">Kemampuan</a></li>
+            <li><a href="#prompts">Prompt reviewer</a></li>
+            <li><a href="#install">Panduan pemasangan</a></li>
+            <li><a href="https://docs.scalev.com">Dokumentasi developer Scalev</a></li>
           </ul>
         </div>
         <div>
-          <h5>Trust</h5>
+          <h5>Kepercayaan</h5>
           <ul>
-            <li><a href="/privacy">Privacy policy</a></li>
-            <li><a href="/terms">Terms of service</a></li>
+            <li><a href="/privacy">Kebijakan privasi</a></li>
+            <li><a href="/terms">Syarat layanan</a></li>
             <li><a href="https://mcp.scalev.com/.well-known/security.txt">security.txt</a></li>
             <li><a href="https://status.scalev.com">status.scalev.com</a></li>
           </ul>
         </div>
         <div>
-          <h5>Support</h5>
+          <h5>Dukungan</h5>
           <ul>
-            <li><a href="/contact-us">Contact us</a></li>
-            <li><a href="https://docs.scalev.com">Developer docs</a></li>
+            <li><a href="/contact-us">Hubungi kami</a></li>
+            <li><a href="https://docs.scalev.com">Dokumentasi developer</a></li>
           </ul>
         </div>
       </div>
       <div class="shell legal">
-        <span>&copy; Scalev. All rights reserved.</span>
-        <span>Claude and Anthropic are trademarks of Anthropic, PBC.</span>
+        <span>&copy; Scalev. Hak cipta dilindungi.</span>
+        <span>Claude dan Anthropic adalah merek dagang Anthropic, PBC.</span>
       </div>
     </footer>
   </body>
