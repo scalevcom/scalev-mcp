@@ -3,3 +3,17 @@ allowBuilds:
   esbuild: true
   sharp: false
   workerd: true
+
+# Security-driven overrides — force patched transitive versions.
+# qs <=6.15.1: DoS in qs.stringify on null/undefined entries (patched 6.15.2).
+# ws <8.20.1: uninitialized memory disclosure (patched 8.20.1).
+overrides:
+  qs: ^6.15.2
+  ws: ^8.20.1
+
+# Exclude security-patched packages from the global 7-day release-age
+# quarantine; otherwise the freshly published security fixes for qs and
+# ws would be filtered out and the dependabot alerts could not be resolved.
+minimumReleaseAgeExclude:
+  - qs
+  - ws
