@@ -81,7 +81,7 @@ export function createScalevMcpServer(env: Env): McpServer {
     {
       title: "Read Scalev docs",
       description:
-        "Reads Scalev Developers documentation bundled into MCP from the docs repo navigation. Relevant for request payload fields and write action details when search returns docs_topic/docs_url/docs_hint. Topics are generated from Developers-tab slugs, for example landing_pages_api, storefront_api_introduction, oauth_authorization, and scalev_mcp_connector.",
+        "Local read-only docs lookup. Reads Scalev Developers documentation bundled into MCP from the docs repo navigation without calling the Scalev API or changing business data. Relevant for request payload fields and write action details when search returns docs_topic/docs_url/docs_hint. Topics are generated from Developers-tab slugs, for example landing_pages_api, storefront_api_introduction, oauth_authorization, and scalev_mcp_connector.",
       inputSchema: {
         topic: z
           .string()

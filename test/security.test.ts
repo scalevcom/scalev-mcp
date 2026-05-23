@@ -29,7 +29,8 @@ describe("security", () => {
 
     expect(headers.get("strict-transport-security")).toBe(HSTS_HEADER);
     expect(headers.get("x-content-type-options")).toBe("nosniff");
-    expect(headers.get("x-frame-options")).toBe("DENY");
+    // x-frame-options is owned by the Cloudflare Transform Rule, not the Worker.
+    expect(headers.get("x-frame-options")).toBeNull();
   });
 
   it("renders a public connector health response without secrets", async () => {
@@ -70,7 +71,7 @@ describe("security", () => {
     expect(body.status).toBe("ok");
     expect(response.headers.get("strict-transport-security")).toBe(HSTS_HEADER);
     expect(response.headers.get("x-content-type-options")).toBe("nosniff");
-    expect(response.headers.get("x-frame-options")).toBe("DENY");
+    expect(response.headers.get("x-frame-options")).toBeNull();
     expect(response.headers.get("x-request-id")).toBeTruthy();
   });
 
@@ -102,7 +103,7 @@ describe("security", () => {
       );
       expect(response.headers.get("strict-transport-security")).toBe(HSTS_HEADER);
       expect(response.headers.get("x-content-type-options")).toBe("nosniff");
-      expect(response.headers.get("x-frame-options")).toBe("DENY");
+      expect(response.headers.get("x-frame-options")).toBeNull();
       expect(response.headers.get("x-request-id")).toBeTruthy();
     }
   });
@@ -122,7 +123,7 @@ describe("security", () => {
     expect(response.headers.get("www-authenticate")).toBeNull();
     expect(response.headers.get("strict-transport-security")).toBe(HSTS_HEADER);
     expect(response.headers.get("x-content-type-options")).toBe("nosniff");
-    expect(response.headers.get("x-frame-options")).toBe("DENY");
+    expect(response.headers.get("x-frame-options")).toBeNull();
     expect(response.headers.get("x-request-id")).toBeTruthy();
   });
 });

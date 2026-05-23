@@ -35,6 +35,7 @@ export interface DocsLookupResult {
     available_topics: string[];
     available_languages: string[];
     available_nav_groups: string[];
+    available_nav_groups_by_language: Record<string, string[]>;
   };
 }
 
@@ -46,7 +47,8 @@ const DOCS = SCALEV_DOCS as readonly ScalevDoc[];
 const DOCS_BY_TOPIC = new Map<string, ScalevDoc>(DOCS.map((doc) => [normalize(doc.topic), doc]));
 const DOCS_BY_URL = new Map<string, ScalevDoc>(DOCS.map((doc) => [normalizeUrl(doc.url), doc]));
 const AVAILABLE_LANGUAGES = uniqueSorted(DOCS.map((doc) => doc.language));
-const AVAILABLE_NAV_GROUPS = uniqueSorted(DOCS.map((doc) => doc.nav_group).filter(isString));
+const AVAILABLE_NAV_GROUPS = canonicalNavGroups(DOCS);
+const AVAILABLE_NAV_GROUPS_BY_LANGUAGE = navGroupsByLanguage(DOCS);
 
 export function docsTopicForUrl(url: string): string | undefined {
   return DOCS_BY_URL.get(normalizeUrl(url))?.topic;
@@ -88,7 +90,8 @@ export function getDocs(input: DocsLookupInput = {}): DocsLookupResult {
       docs_count: DOCS.length,
       available_topics: DOCS.map((doc) => doc.topic),
       available_languages: AVAILABLE_LANGUAGES,
-      available_nav_groups: AVAILABLE_NAV_GROUPS
+      available_nav_groups: AVAILABLE_NAV_GROUPS,
+      available_nav_groups_by_language: AVAILABLE_NAV_GROUPS_BY_LANGUAGE
     }
   };
 }
@@ -160,6 +163,43 @@ function clampLimit(limit: number | undefined): number {
 
 function uniqueSorted(values: readonly string[]): string[] {
   return [...new Set(values)].sort((left, right) => left.localeCompare(right));
+}
+
+function canonicalNavGroups(docs: readonly ScalevDoc[]): string[] {
+  const groupsByKey = new Map<string, { label: string; language: string }>();
+
+  for (const doc of docs) {
+    if (!doc.nav_group) continue;
+
+    const key = normalize(doc.nav_group);
+    const existing = groupsByKey.get(key);
+
+    if (!existing || doc.language === "en") {
+      groupsByKey.set(key, { label: doc.nav_group, language: doc.language });
+    }
+  }
+
+  return [...groupsByKey.values()]
+    .map((group) => group.label)
+    .sort((left, right) => left.toLowerCase().localeCompare(right.toLowerCase()));
+}
+
+function navGroupsByLanguage(docs: readonly ScalevDoc[]): Record<string, string[]> {
+  const groups = new Map<string, string[]>();
+
+  for (const language of AVAILABLE_LANGUAGES) {
+    groups.set(
+      language,
+      uniqueSorted(
+        docs
+          .filter((doc) => doc.language === language)
+          .map((doc) => doc.nav_group)
+          .filter(isString)
+      )
+    );
+  }
+
+  return Object.fromEntries(groups);
 }
 
 function isString(value: unknown): value is string {

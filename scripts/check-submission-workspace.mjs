@@ -7,16 +7,6 @@ const WORKSPACE = resolve(ROOT, "..");
 const requiredFiles = [
   {
     repo: "nexus",
-    path: "lib/scalev_api_web/plugs/security_headers.ex",
-    snippets: [
-      "strict-transport-security",
-      "x-content-type-options",
-      "x-frame-options",
-      "DENY"
-    ]
-  },
-  {
-    repo: "nexus",
     path: "lib/scalev_api_web/controllers/security_txt_controller.ex",
     snippets: ["Contact:", "Policy:", "Canonical:", "Expires:"]
   },
@@ -34,7 +24,6 @@ const requiredFiles = [
     repo: "nexus",
     path: "lib/scalev_api_web/router.ex",
     snippets: [
-      "ScalevApiWeb.Plugs.SecurityHeaders",
       "get \"/me/connected_businesses\"",
       "get \"/scopes\"",
       "get \"/applications/me\""

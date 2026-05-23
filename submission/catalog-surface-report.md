@@ -15,7 +15,7 @@ Generated from `src/generated/v3Catalog.ts`.
 - `search` returns `execution_tool`, so write calls are split between `execute_safe` and `execute_destructive`.
 - Destructive operations require the destructive tool annotation and are rejected by `execute_safe`.
 - OAuth flow, storefront browser, OAuth billing, developer payout, and direct payment-gateway routes are excluded by generation and runtime checks.
-- The Scalev API remains the authority for OAuth token validation, selected-business authorization, scopes, audit logs, and rate limits.
+- Nexus remains the authority for OAuth token validation, selected-business authorization, scopes, audit logs, and rate limits.
 
 ## Write Endpoints By Tag
 

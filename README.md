@@ -78,7 +78,7 @@ Call `get_me` first. If `connected_businesses` has more than one entry, choose o
 | Tool | Type | Description |
 | --- | --- | --- |
 | `get_me` | Read | Returns token-level identity and connected businesses. |
-| `get_docs` | Local read | Reads bundled Scalev developer docs. |
+| `get_docs` | Local read | Reads bundled Scalev developer docs without calling the Scalev API or changing business data. |
 | `search` | Local read | Searches the generated business-authenticated `/v3` catalog. |
 | `get` | Read | Runs one catalog-approved GET operation. |
 | `execute_safe` | Non-destructive write | Runs one non-destructive non-GET catalog operation. |
@@ -97,6 +97,8 @@ Call `get_me` first. If `connected_businesses` has more than one entry, choose o
 
 `search` returns `execution_tool` as `get`, `execute_safe`, or `execute_destructive`. Use that value. The Worker rejects safe/destructive mismatches.
 OAuth flow, storefront browser, OAuth billing, developer payout, and direct payment-gateway endpoints are intentionally excluded from the generated MCP catalog.
+
+Older clients may still remember a single `execute` tool from an early connector build. Refresh the connector tool list and use `execute_safe` or `execute_destructive` according to the `search.execution_tool` value.
 
 ## Scopes In Plain English
 

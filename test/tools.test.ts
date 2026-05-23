@@ -92,6 +92,12 @@ describe("Scalev MCP tools", () => {
       idempotentHint: false,
       openWorldHint: true
     });
+    expect(registeredTools.get_docs?.annotations).toMatchObject({
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false
+    });
   });
 
   it("generates a broad business-authenticated v3 endpoint catalog", () => {
@@ -137,6 +143,10 @@ describe("Scalev MCP tools", () => {
     expect(byTopic.catalog.docs_count).toBe(38);
     expect(byTopic.catalog.available_languages).toEqual(["en", "id"]);
     expect(byTopic.catalog.available_nav_groups).toContain("Storefront API");
+    expect(byTopic.catalog.available_nav_groups).toContain("Landing pages");
+    expect(byTopic.catalog.available_nav_groups).not.toContain("Landing Pages");
+    expect(byTopic.catalog.available_nav_groups_by_language.en).toContain("Landing pages");
+    expect(byTopic.catalog.available_nav_groups_by_language.id).toContain("Landing Pages");
 
     const byUrl = getDocs({ url: "https://docs.scalev.com/en/landing-pages-api/" });
     expect(byUrl.data[0].topic).toBe("landing_pages_api");

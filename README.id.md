@@ -53,7 +53,7 @@ sebagai `business_unique_id` tingkat atas ke tool bisnis.
 | Tool | Jenis | Ringkasan |
 | --- | --- | --- |
 | `get_me` | Baca | Mengambil identitas token dan bisnis yang terhubung. |
-| `get_docs` | Baca lokal | Membaca dokumentasi developer Scalev yang dibundel. |
+| `get_docs` | Baca lokal | Membaca dokumentasi developer Scalev yang dibundel tanpa memanggil Scalev API atau mengubah data bisnis. |
 | `search` | Baca lokal | Mencari katalog endpoint `/v3` yang bisa dipakai. |
 | `get` | Baca | Menjalankan satu operasi GET dari katalog. |
 | `execute_safe` | Tulis non-destruktif | Menjalankan operasi non-GET yang tidak destruktif. |
@@ -75,6 +75,10 @@ sebagai `business_unique_id` tingkat atas ke tool bisnis.
 destruktif tertukar.
 Endpoint OAuth flow, storefront browser, OAuth billing, developer payout, dan
 direct payment-gateway sengaja dikeluarkan dari katalog MCP yang dihasilkan.
+
+Client lama mungkin masih mengingat tool tunggal `execute` dari build awal
+connector. Refresh daftar tool connector dan gunakan `execute_safe` atau
+`execute_destructive` sesuai nilai `search.execution_tool`.
 
 ## Scope Dalam Bahasa Sederhana
 

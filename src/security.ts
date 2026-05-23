@@ -5,7 +5,10 @@ export const HSTS_HEADER = "max-age=31536000; includeSubDomains; preload";
 export function applySecurityHeaders(headers: Headers): Headers {
   headers.set("strict-transport-security", HSTS_HEADER);
   headers.set("x-content-type-options", "nosniff");
-  headers.set("x-frame-options", "DENY");
+  // x-frame-options is set by the Cloudflare zone-wide Transform Rule
+  // (Modify response header, Set static, x-frame-options=DENY) so that
+  // there is exactly one source of truth and responses never emit it
+  // twice. Do not re-add it here.
   return headers;
 }
 
