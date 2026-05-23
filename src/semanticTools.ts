@@ -24,7 +24,7 @@ const businessUniqueIdSchema = z
   );
 
 const paginationSchema = {
-  page_size: z.number().int().min(1).max(25).optional().describe("Number of records to return. Nexus caps this at 25."),
+  page_size: z.number().int().min(1).max(25).optional().describe("Number of records to return. Scalev caps this at 25."),
   next_cursor: z.string().optional().describe("Cursor for the next page."),
   previous_cursor: z.string().optional().describe("Cursor for the previous page.")
 };

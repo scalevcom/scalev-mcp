@@ -2,13 +2,13 @@
 
 Indonesian version: [README.id.md](README.id.md)
 
-Remote MCP server for Scalev Nexus API v3, hosted at:
+Remote MCP server for the Scalev API v3, hosted at:
 
 ```text
 https://mcp.scalev.com/mcp
 ```
 
-The Worker is a thin MCP wrapper. It does not inspect token claims, store selected-business state, or authorize business actions locally. It forwards the merchant's OAuth bearer token to Nexus `/v3`; Nexus owns token validation, business selection, scope checks, audit logs, rate limits, and endpoint behavior.
+The Worker is a thin MCP wrapper. It does not inspect token claims, store selected-business state, or authorize business actions locally. It forwards the merchant's OAuth bearer token to the Scalev API `/v3`; the Scalev API owns token validation, business selection, scope checks, audit logs, rate limits, and endpoint behavior.
 
 ## Install In Claude
 
@@ -66,10 +66,10 @@ Claude -> mcp.scalev.com/mcp -> api.scalev.com/v3 -> Scalev business data
 ```
 
 - Claude discovers protected-resource metadata at `/.well-known/oauth-protected-resource/mcp`.
-- Nexus publishes OAuth authorization-server metadata at `/v3/oauth/.well-known/oauth-authorization-server`.
-- Claude obtains a merchant OAuth token from Nexus.
-- The Worker receives the token and forwards it unchanged to Nexus `/v3`.
-- For business-scoped tools, `business_unique_id` is forwarded to Nexus as `b_uid`.
+- The Scalev API publishes OAuth authorization-server metadata at `/v3/oauth/.well-known/oauth-authorization-server`.
+- Claude obtains a merchant OAuth token from the Scalev API.
+- The Worker receives the token and forwards it unchanged to the Scalev API `/v3`.
+- For business-scoped tools, `business_unique_id` is forwarded to the Scalev API as `b_uid`.
 
 Call `get_me` first. If `connected_businesses` has more than one entry, choose one `connected_businesses[].unique_id` and pass it as top-level `business_unique_id` to business tools.
 
@@ -109,7 +109,7 @@ Scalev OAuth consent groups scopes by the business data or action they unlock:
 - `order:change_status`: change order or payment status.
 - `order:create_awb`: generate or cancel shipment airway bills.
 
-The connector never grants more access than the merchant approved in Scalev. Nexus enforces scopes per selected business on every call.
+The connector never grants more access than the merchant approved in Scalev. The Scalev API enforces scopes per selected business on every call.
 
 ## Reviewer Prompts
 
@@ -122,7 +122,7 @@ Use a populated review business with at least 30 orders, 5 landing pages, 5 cust
 Negative checks:
 
 - Ask Claude to run a destructive operation with `execute_safe`; it should refuse or receive a wrong-tool error.
-- Omit `business_unique_id` when multiple businesses are connected; Nexus should return a friendly selector-required error.
+- Omit `business_unique_id` when multiple businesses are connected; the Scalev API should return a friendly selector-required error.
 - Revoke the OAuth grant in Scalev, reconnect, and repeat the identity and list flow.
 
 Submission package drafts live in `submission/claude-connector-submission.md`,
@@ -147,7 +147,7 @@ pnpm generate:docs-catalog
 pnpm check:docs-catalog
 ```
 
-When Nexus business-authenticated `/v3` behavior changes, update Nexus, `../api-openapi/specs/v3/openapi.yaml`, and the generated catalog in the same work.
+When Scalev API business-authenticated `/v3` behavior changes, update the Scalev API backend, `../api-openapi/specs/v3/openapi.yaml`, and the generated catalog in the same work.
 
 ## Deployment
 

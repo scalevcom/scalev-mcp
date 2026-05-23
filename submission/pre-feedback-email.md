@@ -29,16 +29,16 @@ Connector details:
 - Legal: `https://scalev.com/privacy`, `https://scalev.com/terms`
 - Support: `https://scalev.com/contact-us`
 
-The connector uses Nexus-owned OAuth, business selection, scopes, audit logging, and rate limits. The MCP Worker is a thin wrapper that forwards the merchant bearer token to Nexus `/v3` and forwards selected business context as `b_uid`.
+The connector uses Scalev API-owned OAuth, business selection, scopes, audit logging, and rate limits. The MCP Worker is a thin wrapper that forwards the merchant bearer token to the Scalev API `/v3` and forwards selected business context as `b_uid`.
 
 Review-risk mitigations already implemented:
 
-- `execute_safe` and `execute_destructive` are split by generated `isDestructive` metadata; wrong-tool calls are refused before any Nexus request is sent.
+- `execute_safe` and `execute_destructive` are split by generated `isDestructive` metadata; wrong-tool calls are refused before any Scalev API request is sent.
 - `search` returns the required execution tool for each catalog entry, plus docs hints for request shaping.
 - OAuth flow, storefront browser, OAuth billing, developer payout, and direct payment-gateway routes are excluded from the generated catalog and blocked again at runtime.
 - The 11 semantic tools cover the intended first-review workflows for Landing Pages and Orders; the generic tools are retained for broader approved `/v3` coverage.
 - Every tool has `title`, `readOnlyHint`, `destructiveHint`, `idempotentHint`, and `openWorldHint` annotations.
-- Worker/Sentry logs are restricted to request id, tool name, operation id, status, and Nexus `error_code`; tokens, request bodies, customer data, order data, and landing page payloads are not logged.
+- Worker/Sentry logs are restricted to request id, tool name, operation id, status, and Scalev API `error_code`; tokens, request bodies, customer data, order data, and landing page payloads are not logged.
 
 We would appreciate early feedback on these review-risk areas before the formal submission:
 

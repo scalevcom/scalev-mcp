@@ -1,6 +1,6 @@
 # Scalev Claude Connector
 
-Remote MCP server untuk Scalev Nexus API v3, di-host di:
+Remote MCP server untuk Scalev API v3, di-host di:
 
 ```text
 https://mcp.scalev.com/mcp
@@ -11,7 +11,7 @@ server-to-server tanpa header `Origin` tetap diizinkan.
 
 Worker ini hanya membungkus protokol MCP. Worker tidak memeriksa claim token,
 tidak menyimpan pilihan bisnis, dan tidak memberi izin akses bisnis secara
-lokal. Worker meneruskan OAuth bearer token merchant ke Nexus `/v3`. Nexus yang
+lokal. Worker meneruskan OAuth bearer token merchant ke Scalev API `/v3`. Scalev API yang
 memvalidasi token, memilih bisnis, memeriksa scope, mencatat audit log,
 menerapkan rate limit, dan menjalankan perilaku endpoint.
 
@@ -38,11 +38,11 @@ Claude -> mcp.scalev.com/mcp -> api.scalev.com/v3 -> data bisnis Scalev
 ```
 
 - Claude membaca protected-resource metadata dari `/.well-known/oauth-protected-resource/mcp`.
-- Nexus menerbitkan OAuth authorization-server metadata di `/v3/oauth/.well-known/oauth-authorization-server`.
+- Scalev API menerbitkan OAuth authorization-server metadata di `/v3/oauth/.well-known/oauth-authorization-server`.
 - Health check publik untuk monitoring uptime/status tersedia di `https://mcp.scalev.com/health`.
-- Claude memperoleh OAuth token merchant dari Nexus.
-- Worker menerima token dan meneruskannya apa adanya ke Nexus `/v3`.
-- Untuk tool yang membutuhkan bisnis, `business_unique_id` diteruskan ke Nexus sebagai `b_uid`.
+- Claude memperoleh OAuth token merchant dari Scalev API.
+- Worker menerima token dan meneruskannya apa adanya ke Scalev API `/v3`.
+- Untuk tool yang membutuhkan bisnis, `business_unique_id` diteruskan ke Scalev API sebagai `b_uid`.
 
 Panggil `get_me` terlebih dahulu. Jika `connected_businesses` berisi lebih dari
 satu bisnis, pilih salah satu `connected_businesses[].unique_id` dan kirim
@@ -86,7 +86,7 @@ direct payment-gateway sengaja dikeluarkan dari katalog MCP yang dihasilkan.
 - `order:change_status`: mengubah status order atau pembayaran.
 - `order:create_awb`: membuat atau membatalkan AWB pengiriman.
 
-Connector tidak memberi akses melebihi persetujuan merchant di Scalev. Nexus
+Connector tidak memberi akses melebihi persetujuan merchant di Scalev. Scalev API
 memeriksa scope per bisnis yang dipilih pada setiap request.
 
 ## Prompt Reviewer
@@ -101,7 +101,7 @@ dan 10 produk.
 Pemeriksaan negatif:
 
 - Minta Claude menjalankan operasi destruktif dengan `execute_safe`; tool harus menolak atau mengembalikan wrong-tool error.
-- Hilangkan `business_unique_id` saat beberapa bisnis terhubung; Nexus harus mengembalikan error pemilihan bisnis yang jelas.
+- Hilangkan `business_unique_id` saat beberapa bisnis terhubung; Scalev API harus mengembalikan error pemilihan bisnis yang jelas.
 - Revoke OAuth grant di Scalev, sambungkan ulang, lalu ulangi alur identitas dan daftar data.
 
 ## Pemeriksaan Lokal

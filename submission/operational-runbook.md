@@ -4,14 +4,14 @@ Date: 2026-05-22
 
 ## Scope
 
-This runbook covers the production remote MCP connector at `https://mcp.scalev.com/mcp`, the Nexus `/v3` OAuth/API surfaces it calls, and the submission-review support path.
+This runbook covers the production remote MCP connector at `https://mcp.scalev.com/mcp`, the Scalev API `/v3` OAuth/API surfaces it calls, and the submission-review support path.
 
 ## Support Ownership
 
 - Primary support URL: `https://scalev.com/contact-us`
 - Security contact: `https://mcp.scalev.com/.well-known/security.txt`
 - Anthropic submission path: MCP directory submission form; use `mcp-review@anthropic.com` only for form-access problems, optional early outreach, or review escalation.
-- Internal owner: Scalev engineering on-call for Nexus/OAuth.
+- Internal owner: Scalev engineering on-call for the Scalev API and OAuth.
 - Review-window expectation: respond to Anthropic reviewer questions within one business day.
 
 Do not ask reviewers to send OAuth tokens, refresh tokens, order payloads, customer data, landing-page HTML, or raw request bodies. Request connector URL, approximate time, request id if visible, OAuth app/client id if shown, and a short reproduction.
@@ -21,21 +21,21 @@ Do not ask reviewers to send OAuth tokens, refresh tokens, order payloads, custo
 - Connector package version: `0.3.x` during Claude directory submission.
 - Public tool-surface changes require a minor version bump.
 - Tool description, docs, and generated catalog changes without behavior changes may use a patch version.
-- Keep Nexus behavior, `../api-openapi/specs/v3/openapi.yaml`, and `src/generated/v3Catalog.ts` synchronized in the same rollout.
+- Keep Scalev API behavior, `../api-openapi/specs/v3/openapi.yaml`, and `src/generated/v3Catalog.ts` synchronized in the same rollout.
 
 ## Canary Checklist
 
 Before broad rollout:
 
 0. Run `pnpm check:submission-local` from `nexus-mcp`.
-1. Deploy Nexus/API changes to the canary environment.
+1. Deploy Scalev API changes to the canary environment.
 2. Deploy the Worker to a canary route or preview environment when available.
 3. Run unauthenticated `/mcp` and assert `401` plus `WWW-Authenticate`.
 4. Run OAuth DCR registration and authorization with PKCE S256.
 5. Confirm `/v3/me` and `get_me` return `connected_businesses`.
 6. Run one read tool, one non-destructive write tool, and one destructive tool against seeded review data.
 7. Revoke and reconnect OAuth, then confirm refresh-token reuse is rejected.
-8. Check Sentry/Worker logs contain only request id, tool name, operation id, status, and Nexus `error_code`.
+8. Check Sentry/Worker logs contain only request id, tool name, operation id, status, and Scalev API `error_code`.
 
 ## Production Verification
 
@@ -60,7 +60,7 @@ the live readiness checks to pass.
 The evidence redaction script scans reviewer evidence and submission files for
 actual bearer tokens, OAuth token fields, API keys, cookie headers, passwords,
 private keys, credential-bearing URLs, and JWTs. The workspace script checks
-that the sibling Nexus, OpenAPI, frontend, and docs artifacts required by this
+that the sibling Scalev API, OpenAPI, frontend, and docs artifacts required by this
 submission are present. The live script checks the same endpoints as the manual
 curl list below, plus the public docs/legal/support links,
 `https://scalev.com/claude`, required security headers, unauthenticated
@@ -99,7 +99,7 @@ Rollback order if the connector causes authorization, data-access, or tool-routi
 
 1. Disable the Claude OAuth application or revoke the reviewer/test installation if the risk is credential-scoped.
 2. Roll back the `nexus-mcp` Worker to the previous known-good deployment.
-3. If `/v3` behavior is faulty, roll back Nexus after confirming the previous OpenAPI/catalog version still matches the deployed Worker.
+3. If `/v3` behavior is faulty, roll back the Scalev API after confirming the previous OpenAPI/catalog version still matches the deployed Worker.
 4. Pause submission or notify the reviewer if the issue affects review credentials.
 5. Preserve request ids and timestamps for post-incident analysis; do not preserve raw bodies or tokens.
 

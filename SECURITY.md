@@ -30,10 +30,10 @@ https://mcp.scalev.com/.well-known/security.txt
 
 ## Security Model
 
-- The Worker accepts OAuth bearer tokens and forwards them unchanged to Nexus `/v3`.
-- Nexus owns token validation, selected-business resolution, authorization, audit logs, and rate limits.
+- The Worker accepts OAuth bearer tokens and forwards them unchanged to the Scalev API `/v3`.
+- The Scalev API owns token validation, selected-business resolution, authorization, audit logs, and rate limits.
 - The Worker does not store OAuth tokens or business data.
-- Logs must stay metadata-only: request id, tool name, operation id, status, and Nexus `error_code`.
+- Logs must stay metadata-only: request id, tool name, operation id, status, and Scalev API `error_code`.
 - Browser requests to `/mcp` are Origin-checked; server-to-server requests without an `Origin` header are allowed.
 
 ## Operational Response

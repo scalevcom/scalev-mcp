@@ -21,19 +21,19 @@ Prepared for the Anthropic Claude connector directory submission flow.
 
 | Tool | Purpose | Annotation Class |
 | --- | --- | --- |
-| `get_me` | Get authenticated token identity and connected businesses | Nexus read |
+| `get_me` | Get authenticated token identity and connected businesses | Scalev API read |
 | `get_docs` | Read bundled Scalev developer docs | Local read |
 | `search` | Search the local `/v3` endpoint catalog | Local read |
-| `get` | Run one read-only business-authenticated `/v3` GET operation | Nexus read |
+| `get` | Run one read-only business-authenticated `/v3` GET operation | Scalev API read |
 | `execute_safe` | Run one non-destructive non-GET `/v3` operation | Non-destructive write |
 | `execute_destructive` | Run one destructive non-GET `/v3` operation | Destructive write |
-| `list_landing_pages` | List landing pages | Nexus read |
-| `get_landing_page` | Fetch one landing page | Nexus read |
+| `list_landing_pages` | List landing pages | Scalev API read |
+| `get_landing_page` | Fetch one landing page | Scalev API read |
 | `create_landing_page` | Create a landing page or HTML Mode draft/published page | Non-destructive write |
 | `update_landing_page` | Update landing page metadata or publishing state | Non-destructive write |
 | `delete_landing_page` | Delete a landing page | Destructive write |
-| `list_orders` | List orders | Nexus read |
-| `get_order` | Fetch one order | Nexus read |
+| `list_orders` | List orders | Scalev API read |
+| `get_order` | Fetch one order | Scalev API read |
 | `create_order` | Create an order | Non-destructive write |
 | `update_order` | Update an order | Non-destructive write |
 | `change_order_status` | Change order or payment status | Non-destructive write |
@@ -41,9 +41,9 @@ Prepared for the Anthropic Claude connector directory submission flow.
 
 ## OAuth And Data Flow
 
-Claude connects to `mcp.scalev.com`, discovers the protected MCP resource, registers an OAuth client through DCR, redirects the merchant to Scalev OAuth, and receives an MCP-bound bearer token. The Worker forwards that bearer token unchanged to Nexus `/v3` APIs. Nexus owns token validation, business selection, scopes, business authorization, audit logging, and rate limits.
+Claude connects to `mcp.scalev.com`, discovers the protected MCP resource, registers an OAuth client through DCR, redirects the merchant to Scalev OAuth, and receives an MCP-bound bearer token. The Worker forwards that bearer token unchanged to the Scalev API `/v3`. The Scalev API owns token validation, business selection, scopes, business authorization, audit logging, and rate limits.
 
-For multi-business tokens, Claude must call `get_me`, choose one `connected_businesses[].unique_id`, and pass it as top-level `business_unique_id` for business-scoped tools. The Worker forwards that selector to Nexus as `b_uid`.
+For multi-business tokens, Claude must call `get_me`, choose one `connected_businesses[].unique_id`, and pass it as top-level `business_unique_id` for business-scoped tools. The Worker forwards that selector to the Scalev API as `b_uid`.
 
 ## Plain-English Scopes
 
@@ -141,8 +141,8 @@ Add final reviewer credentials and business unique id here after the production 
 - Claude-visible semantic tools stay focused on Landing Pages and Orders. Generic catalog tools are retained for broader approved `/v3` coverage and are guarded by generated `execution_tool` routing plus wrong-tool rejection.
 - OAuth billing, developer payout, and direct payment-gateway endpoints are excluded from the generated MCP catalog and blocked at the runtime transport boundary.
 - Write tools advise Claude to consult `search` metadata and `get_docs` before constructing request bodies.
-- All business behavior is enforced in Nexus; the Worker is a protocol boundary and bearer-token forwarder.
-- `wait_for_completion` is intentionally deferred until Nexus exposes a durable completion/status API for write operations; adding it in the Worker alone would be endpoint-specific guessing.
+- All business behavior is enforced in the Scalev API; the Worker is a protocol boundary and bearer-token forwarder.
+- `wait_for_completion` is intentionally deferred until the Scalev API exposes a durable completion/status API for write operations; adding it in the Worker alone would be endpoint-specific guessing.
 - Legal/support links returned `200` on 2026-05-22: `https://scalev.com/privacy`, `https://scalev.com/terms`, and `https://scalev.com/contact-us`.
 - `https://scalev.com/claude` returned `404` on 2026-05-22 before the Scalev-owned landing page was published. Use `submission/scalev-claude-landing-page.html` as the HTML Mode source for the Scalev business landing page; do not include the URL as a live reviewer link until the page is published.
 - The page contains the walkthrough placement and storyboard, but the final recorded production video remains pending.

@@ -18,7 +18,7 @@ export function healthResponse(env: Env, now = new Date()): Response {
         mcp_url: env.MCP_RESOURCE_URI,
         protected_resource_metadata_url: protectedResourceMetadataUrl,
         oauth_issuer: env.NEXUS_OAUTH_ISSUER,
-        nexus_api_base_url: env.NEXUS_API_BASE_URL,
+        scalev_api_base_url: env.NEXUS_API_BASE_URL,
         security_txt_url: securityTxtUrl,
         sentry_configured: Boolean(env.SENTRY_DSN),
         checked_at: now.toISOString()

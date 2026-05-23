@@ -4,28 +4,28 @@ Date: 2026-05-22
 
 ## Scope
 
-This memo covers the `nexus-mcp` Worker at `https://mcp.scalev.com/mcp` and the Nexus `/v3` API surfaces it calls for the Claude connector directory submission.
+This memo covers the connector Worker at `https://mcp.scalev.com/mcp` and the Scalev API `/v3` surfaces it calls for the Claude connector directory submission.
 
 ## Security Controls
 
-- HTTPS is required on the production MCP and Nexus hosts.
-- MCP and Nexus responses include HSTS with `includeSubDomains; preload`, `x-content-type-options: nosniff`, and `x-frame-options: DENY`.
+- HTTPS is required on the production MCP and Scalev API hosts.
+- MCP and Scalev API responses include HSTS with `includeSubDomains; preload`, `x-content-type-options: nosniff`, and `x-frame-options: DENY`.
 - Both hosts publish `/.well-known/security.txt` with contact, policy, language, canonical, and expiry fields.
 - `/mcp` validates browser `Origin` against a Claude plus ChatGPT/OpenAI allowlist while allowing missing `Origin` for server-to-server clients.
 - Unauthenticated `/mcp` returns `401` and a `WWW-Authenticate` header pointing at the protected-resource metadata URL.
 - OAuth uses DCR as the primary registration path and still supports Client ID Metadata Documents.
 - OAuth uses PKCE S256 and MCP `resource` binding.
 - Refresh tokens rotate on refresh; refresh reloads only active/enabled connected business installations.
-- Nexus owns token validation, scopes, business authorization, audit logging, and rate limits.
-- Worker logs contain only request id, tool name, operation id, status, and Nexus `error_code`.
-- Worker logs and Sentry events must not include bearer tokens, request bodies, customer data, order data, landing page payloads, or raw Nexus response payloads.
+- The Scalev API owns token validation, scopes, business authorization, audit logging, and rate limits.
+- Worker logs contain only request id, tool name, operation id, status, and Scalev API `error_code`.
+- Worker logs and Sentry events must not include bearer tokens, request bodies, customer data, order data, landing page payloads, or raw Scalev API response payloads.
 - Cloudflare Workers observability is enabled in `wrangler.toml`; `/health` is available for status checks after deployment.
 
 ## Tool Safety
 
 - Every public tool has a top-level `title` and matching `annotations.title`.
 - Local read tools set `readOnlyHint: true`, `destructiveHint: false`, `idempotentHint: true`, `openWorldHint: false`.
-- Nexus read tools set `readOnlyHint: true`, `destructiveHint: false`, `idempotentHint: true`, `openWorldHint: true`.
+- Scalev API read tools set `readOnlyHint: true`, `destructiveHint: false`, `idempotentHint: true`, `openWorldHint: true`.
 - Non-destructive writes set `readOnlyHint: false`, `destructiveHint: false`, `idempotentHint: false`, `openWorldHint: true`.
 - Destructive writes set `readOnlyHint: false`, `destructiveHint: true`, `idempotentHint: false`, `openWorldHint: true`.
 - Claude-visible semantic tools cover Landing Pages and Orders. Generic catalog tools cover approved business-authenticated `/v3` endpoints and are documented separately in `submission/catalog-surface-report.md`.
@@ -36,13 +36,13 @@ This memo covers the `nexus-mcp` Worker at `https://mcp.scalev.com/mcp` and the 
 
 ## Privacy Notes
 
-- The connector forwards the merchant OAuth bearer token to Nexus and does not persist tool request bodies.
+- The connector forwards the merchant OAuth bearer token to the Scalev API and does not persist tool request bodies.
 - `get_me` returns token identity and connected business summaries so Claude can ask the user to choose the correct business.
 - Business-scoped tools require top-level `business_unique_id` when a token is connected to multiple businesses.
-- Friendly error mapping avoids echoing raw Nexus payloads to Claude, and thrown MCP error objects keep only safe status plus Nexus `error_code` telemetry.
+- Friendly error mapping avoids echoing raw Scalev API payloads to Claude, and thrown MCP error objects keep only safe status plus Scalev API `error_code` telemetry.
 - OAuth billing, developer payout, and direct payment-gateway endpoints are excluded from the generated MCP catalog and blocked by runtime path checks.
 - Connector setup and reviewer prompts are documented in English and Indonesian README files.
-- The stretch `wait_for_completion` control is deferred until Nexus exposes a durable write-completion/status API. The Worker does not invent completion semantics from endpoint-specific guesses.
+- The stretch `wait_for_completion` control is deferred until the Scalev API exposes a durable write-completion/status API. The Worker does not invent completion semantics from endpoint-specific guesses.
 
 ## Current Verification Evidence
 
@@ -80,7 +80,7 @@ Live checks performed on 2026-05-22:
 
 ## Remaining Before Submission
 
-- Seed and verify the production reviewer business with non-sensitive test data using `submission/reviewer-data-seed-plan.md` and the Nexus `Util.ReviewerSeedAudit` one-off function from a production IEx session.
+- Seed and verify the production reviewer business with non-sensitive test data using `submission/reviewer-data-seed-plan.md` and the Scalev API `Util.ReviewerSeedAudit` one-off function from a production IEx session.
 - Import and publish `submission/scalev-claude-landing-page.html` as the Scalev-owned landing page so `https://scalev.com/claude` returns `200`.
 - Capture three Claude reviewer prompt transcripts or screenshots.
 - Run OAuth revoke and reconnect tests in Claude.

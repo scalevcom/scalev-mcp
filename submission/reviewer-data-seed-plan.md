@@ -93,7 +93,7 @@ The AWB cancellation fixture must not cancel a real shipment, charge a customer,
 
 ## Evidence Checklist
 
-Run the Nexus seed audit from a production IEx session after creating or resetting the reviewer business:
+Run the Scalev API seed audit from a production IEx session after creating or resetting the reviewer business:
 
 ```elixir
 Util.ReviewerSeedAudit.run("<business_unique_id>")

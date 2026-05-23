@@ -144,7 +144,7 @@ describe("nexusUrl", () => {
     ).rejects.toMatchObject({
       status: 422,
       message:
-        "Nexus rejected the request validation_failed (request_id: req_test): check operation_id, path_params, query, and body against search metadata and get_docs before retrying."
+        "Scalev API rejected the request validation_failed (request_id: req_test): check operation_id, path_params, query, and body against search metadata and get_docs before retrying."
     });
 
     await expect(
@@ -208,7 +208,7 @@ describe("nexusUrl", () => {
     ).rejects.toMatchObject({
       status: 400,
       message:
-        "Nexus rejected the request (request_id: req_test): check operation_id, path_params, query, and body against search metadata and get_docs before retrying."
+        "Scalev API rejected the request (request_id: req_test): check operation_id, path_params, query, and body against search metadata and get_docs before retrying."
     });
   });
 
@@ -234,7 +234,7 @@ describe("nexusUrl", () => {
     ).rejects.toMatchObject({
       status: 400,
       message:
-        "Nexus business_selection_required (request_id: req_selection): choose one business from get_me.connected_businesses and pass its unique_id as top-level business_unique_id."
+        "Scalev API business_selection_required (request_id: req_selection): choose one business from get_me.connected_businesses and pass its unique_id as top-level business_unique_id."
     });
   });
 
@@ -258,7 +258,7 @@ describe("nexusUrl", () => {
     await expect(
       nexusBusinessRequest(env, { token: "raw-oauth-token" }, { method: "PATCH", path: "/v3/orders/123", body: {} })
     ).rejects.toThrow(
-      "Nexus authorization failed insufficient_scope (request_id: req_forbidden): the OAuth token, selected business, or approved scopes do not allow this action. Use get_me to inspect connected businesses and scopes, then reconnect if a scope is missing."
+      "Scalev API authorization failed insufficient_scope (request_id: req_forbidden): the OAuth token, selected business, or approved scopes do not allow this action. Use get_me to inspect connected businesses and scopes, then reconnect if a scope is missing."
     );
 
     await expect(
@@ -271,31 +271,31 @@ describe("nexusUrl", () => {
       status: 401,
       errorCode: "invalid_token",
       expected:
-        "Nexus authentication failed invalid_token (request_id: req_status): the OAuth token is missing, expired, revoked, or not accepted for this connector. Reconnect Scalev in Claude and retry."
+        "Scalev API authentication failed invalid_token (request_id: req_status): the OAuth token is missing, expired, revoked, or not accepted for this connector. Reconnect Scalev in Claude and retry."
     },
     {
       status: 404,
       errorCode: "not_found",
       expected:
-        "Nexus resource not found not_found (request_id: req_status): the requested Scalev resource does not exist or is not visible to the selected business."
+        "Scalev API resource not found not_found (request_id: req_status): the requested Scalev resource does not exist or is not visible to the selected business."
     },
     {
       status: 409,
       errorCode: "state_conflict",
       expected:
-        "Nexus state conflict state_conflict (request_id: req_status): refresh the resource, confirm the latest state, and retry only if the requested change still applies."
+        "Scalev API state conflict state_conflict (request_id: req_status): refresh the resource, confirm the latest state, and retry only if the requested change still applies."
     },
     {
       status: 429,
       errorCode: "rate_limited",
       expected:
-        "Nexus rate limit reached rate_limited (request_id: req_status): wait before retrying this Scalev action."
+        "Scalev API rate limit reached rate_limited (request_id: req_status): wait before retrying this Scalev action."
     },
     {
       status: 500,
       errorCode: "server_error",
       expected:
-        "Nexus service error server_error (request_id: req_status): Scalev could not complete the request. Retry later or contact Scalev support with the request_id."
+        "Scalev API service error server_error (request_id: req_status): Scalev could not complete the request. Retry later or contact Scalev support with the request_id."
     }
   ])("maps Nexus $status responses without exposing raw payload data", async ({ status, errorCode, expected }) => {
     vi.stubGlobal(
@@ -366,7 +366,7 @@ describe("nexusUrl", () => {
       status,
       errorCode,
       message:
-        `Nexus ${errorCode} (request_id: req_business): the selected business_unique_id is not connected to this OAuth token or is no longer active.`
+        `Scalev API ${errorCode} (request_id: req_business): the selected business_unique_id is not connected to this OAuth token or is no longer active.`
     });
     expect((thrown as Error).message).not.toMatch(/buyer@example\.com|Store Secret/);
     expect(JSON.stringify(thrown)).not.toMatch(/buyer@example\.com|Store Secret/);

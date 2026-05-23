@@ -77,7 +77,7 @@ Minimum checks:
 
 Recommended alert routing:
 
-- Page Nexus/OAuth owner for `/v3/oauth` or `/v3/me` failures.
+- Page Scalev API/OAuth owner for `/v3/oauth` or `/v3/me` failures.
 - Page connector owner for Worker `/health`, protected-resource metadata, or
   Origin validation failures.
 - Keep reviewer-facing incident updates free of OAuth tokens, request bodies,

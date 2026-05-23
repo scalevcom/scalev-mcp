@@ -45,4 +45,4 @@ Final status: `PENDING_FINAL_CLAUDE_RUN`
 | Safe tool refuses destructive action | `execute_safe` refuses a generated destructive operation such as `deleteLandingPage` | Pending |
 | Destructive tool refuses safe action | `execute_destructive` refuses a generated safe write operation | Pending |
 | OAuth revoke and reconnect | Revoked connector stops working, reconnect creates a fresh working `get_me`, and old refresh reuse is rejected | Pending |
-| Response/log privacy | Evidence and logs contain request id, tool name, operation id, status, and Nexus `error_code` only | Pending |
+| Response/log privacy | Evidence and logs contain request id, tool name, operation id, status, and Scalev API `error_code` only | Pending |

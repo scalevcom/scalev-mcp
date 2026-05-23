@@ -49,7 +49,7 @@ describe("security", () => {
       mcp_url: "https://mcp.scalev.test/mcp",
       protected_resource_metadata_url: "https://mcp.scalev.test/.well-known/oauth-protected-resource/mcp",
       oauth_issuer: "https://api.scalev.test/v3/oauth",
-      nexus_api_base_url: "https://api.scalev.test",
+      scalev_api_base_url: "https://api.scalev.test",
       security_txt_url: "https://mcp.scalev.test/.well-known/security.txt",
       sentry_configured: true,
       checked_at: "2026-05-22T00:00:00.000Z"

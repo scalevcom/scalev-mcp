@@ -19,7 +19,7 @@ Sources checked on 2026-05-22:
 | --- | --- |
 | Remote MCP URL over HTTPS | Submission draft uses `https://mcp.scalev.com/mcp`; live protected-resource metadata check is recorded in `submission/live-checks-2026-05-22.md`. |
 | Formal submission path | Use the MCP directory submission form. `submission/pre-feedback-email.md` is only optional outreach/escalation prep because the current Anthropic page lists `mcp-review@anthropic.com` for form-access problems and review escalations. |
-| OAuth for authenticated services | `wrangler.toml`, `README.md`, and `submission/claude-connector-submission.md` document OAuth DCR primary with CIMD advertised. Nexus owns token validation and refresh rotation. |
+| OAuth for authenticated services | `wrangler.toml`, `README.md`, and `submission/claude-connector-submission.md` document OAuth DCR primary with CIMD advertised. The Scalev API owns token validation and refresh rotation. |
 | Origin-header validation | `src/origin.ts` validates browser `Origin` against Claude, ChatGPT/OpenAI, and configured local/test origins, and allows missing `Origin` for server-to-server clients. Covered by `test/security.test.ts`. |
 | Tool annotations | `src/toolAnnotations.ts` provides title, read-only, destructive, idempotent, and open-world hints for every tool class. `test/tools.test.ts` checks the public 17-tool list and annotation completeness. |
 | Separate read and write tools | `execute` is split into `get`, `execute_safe`, and `execute_destructive`; semantic write/delete tools are separate. `src/toolRuntime.ts`, `src/catalog.ts`, and tests reject wrong-tool calls. |
@@ -30,7 +30,7 @@ Sources checked on 2026-05-22:
 | Narrow descriptions | Tool descriptions in `src/tools.ts` and `src/semanticTools.ts` describe the specific Scalev action and required business selector. |
 | Prompt-injection and hidden Unicode scan | `scripts/check-submission-text.mjs` scans README files, SECURITY, CHANGELOG, submission docs, source, and generated catalogs for hidden/control Unicode and common prompt-injection phrases. |
 | Reviewer evidence redaction | `scripts/check-evidence-redaction.mjs` scans reviewer evidence and submission files for actual bearer tokens, OAuth token fields, API keys, cookie headers, passwords, private keys, credential-bearing URLs, and JWTs. |
-| No-PII logging | `src/logger.ts` logs request id, tool name, operation id, status, and Nexus `error_code` only. `scripts/check-logging-privacy.mjs` enforces central logging, Sentry `sendDefaultPii: false`, and the allowed log-field set. |
+| No-PII logging | `src/logger.ts` logs request id, tool name, operation id, status, and Scalev API `error_code` only. `scripts/check-logging-privacy.mjs` enforces central logging, Sentry `sendDefaultPii: false`, and the allowed log-field set. |
 | Public documentation | English and Indonesian docs are live: `https://docs.scalev.com/en/scalev-mcp-connector` and `https://docs.scalev.com/id/konektor-scalev-mcp` returned `200` on 2026-05-22. |
 | Legal and support links | `https://scalev.com/privacy`, `https://scalev.com/terms`, and `https://scalev.com/contact-us` returned `200` on 2026-05-22. |
 | Reviewer setup instructions | `submission/reviewer-test-account-instructions.md` provides the step-by-step custom connector setup path and points to the seeded evidence checks. |
@@ -41,14 +41,14 @@ Sources checked on 2026-05-22:
 | DNS and status-page setup | `submission/dns-and-status-page-plan.md` records CAA records, status monitor checks, and final evidence required before submission. |
 | Plain remote MCP screenshots | Plain remote MCP does not require MCP Apps carousel assets. Reviewer evidence screenshots are kept under `assets/reviewer-evidence/`. |
 | Allowed link URIs | Submission notes omit allowed link URIs because the connector does not expose `ui/open-link`; `scripts/check-submission-package.mjs` scans source/test/config files and fails if open-link support appears without updating the submission package. |
-| API ownership | `nexus-mcp` forwards to first-party Scalev Nexus `/v3` APIs only. |
-| No unsupported financial-transfer surface | The exposed semantic tools cover Landing Pages and Orders. The order tools do not transfer money or financial assets. `scripts/generate-v3-catalog.mjs`, `scripts/check-catalog-risk.mjs`, `src/nexusClient.ts`, and tests exclude OAuth billing, developer payout, and direct payment-gateway routes from generic catalog execution. |
+| API ownership | The connector Worker forwards to first-party Scalev API `/v3` only. |
+| No unsupported financial-transfer surface | The exposed semantic tools cover Landing Pages and Orders. The order tools do not transfer money or financial assets. The catalog generator, catalog-risk check, the Scalev API client wrapper, and tests exclude OAuth billing, developer payout, and direct payment-gateway routes from generic catalog execution. |
 
 ## Remaining Proof Before Final Submission
 
 | Requirement | Missing Proof |
 | --- | --- |
-| Fully populated test account | Production reviewer business still needs seeded orders, landing pages, customers, products, and final reviewer account details. Verify it from a production IEx session with Nexus `Util.ReviewerSeedAudit` before submission. |
+| Fully populated test account | Production reviewer business still needs seeded orders, landing pages, customers, products, and final reviewer account details. Verify it from a production IEx session with the Scalev API `Util.ReviewerSeedAudit` before submission. |
 | Final reviewer credentials | `submission/reviewer-test-account-instructions.md` still needs the reviewer account identifier, out-of-band password delivery channel, business unique ids, seed audit evidence, and reset timestamp. |
 | Every tool tested in Claude | Three Claude reviewer prompt transcripts or screenshots remain pending under `assets/reviewer-evidence/`. |
 | Every tool exercised through MCP Inspector or equivalent | `assets/reviewer-evidence/tool-exercise-matrix.md` now tracks all 17 tools and required negative checks. Local automated tests cover routing, annotations, origin, and safety. Final Inspector evidence should still be captured after deploy. |

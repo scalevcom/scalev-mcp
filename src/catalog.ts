@@ -325,7 +325,7 @@ function parseInputPath(
 ): { pathname: string; searchParams: URLSearchParams } {
   if (!path.startsWith("/v3/")) throw new Error(`${toolName} only supports /v3 paths: ${path}`);
 
-  const url = new URL(path, "https://nexus.local");
+  const url = new URL(path, "https://scalev.local");
   return { pathname: url.pathname, searchParams: url.searchParams };
 }
 
