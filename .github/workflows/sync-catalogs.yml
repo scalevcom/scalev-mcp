@@ -4,6 +4,12 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "17 * * * *"
+  # Fired by sibling repos (scalevcom/docs, scalevcom/api-openapi) when
+  # their main branch updates, via the notify-nexus-mcp workflow in each
+  # sibling. The dispatched event type is "sibling-source-updated" so
+  # changes propagate within seconds instead of waiting for the hourly cron.
+  repository_dispatch:
+    types: [sibling-source-updated]
 
 permissions:
   contents: write

@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: nexus-mcp-deploy
@@ -57,22 +57,59 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Check generated catalog sync
-        run: pnpm run check:catalogs
+      - name: Regenerate catalogs from sibling sources
+        run: pnpm run generate:catalogs
 
+      - name: Detect catalog drift
+        id: drift
+        run: |
+          if git diff --quiet -- src/generated/v3Catalog.ts src/generated/docsCatalog.ts; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::Generated catalogs were stale; will sync and skip deploy this run."
+          fi
+
+      # When drift is detected, verify the regenerated catalogs are healthy
+      # (typecheck + tests) before committing. If unhealthy, we fail fast
+      # so a broken catalog never reaches main.
+      - name: Typecheck regenerated catalogs
+        if: steps.drift.outputs.changed == 'true'
+        run: pnpm run typecheck
+
+      - name: Test regenerated catalogs
+        if: steps.drift.outputs.changed == 'true'
+        run: pnpm test
+
+      - name: Commit synced catalogs and stop (next push will deploy)
+        if: steps.drift.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/generated/v3Catalog.ts src/generated/docsCatalog.ts
+          git commit -m "Sync generated MCP catalogs (auto)"
+          git push
+          echo "::notice::Catalogs synced. A new Deploy run will follow from that push."
+
+      # Steps below only run when catalogs were already in sync.
       - name: Check submission text safety
+        if: steps.drift.outputs.changed != 'true'
         run: pnpm run check:submission-text
 
       - name: Check submission package
+        if: steps.drift.outputs.changed != 'true'
         run: pnpm run check:submission-package
 
       - name: Typecheck
+        if: steps.drift.outputs.changed != 'true'
         run: pnpm run typecheck
 
       - name: Test
+        if: steps.drift.outputs.changed != 'true'
         run: pnpm test
 
       - name: Deploy Worker
+        if: steps.drift.outputs.changed != 'true'
         run: pnpm run deploy
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
