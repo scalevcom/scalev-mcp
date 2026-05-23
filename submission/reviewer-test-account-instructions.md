@@ -1,19 +1,108 @@
 # Reviewer Test Account Instructions
 
-Final status: `PENDING_PRODUCTION_REVIEWER_ACCOUNT`
+Final status: `READY_FOR_REVIEW` (seeded and audited 2026-05-23T12:03:59Z; 0 warnings, 0 failures, 0 unlabeled records)
 
-Use this file as the reviewer-facing setup script after the production review
-business is seeded. Do not commit passwords, bearer tokens, refresh tokens,
-backup codes, raw customer data, raw order payloads, or landing-page HTML here.
+Use this file as the reviewer-facing setup script. Do not commit passwords,
+bearer tokens, refresh tokens, backup codes, raw customer data, raw order
+payloads, or landing-page HTML here.
 
-## Account Details To Fill Before Submission
+## Account Details
 
-- Reviewer account identifier: `TBD`
-- Password delivery channel: `TBD - send out of band`
-- Reviewer business unique id: `TBD`
-- Secondary selector-test business unique id: `TBD`
-- Seed audit evidence: `TBD - output from Util.ReviewerSeed.run("<business_unique_id>", format: :json)` and `Util.ReviewerSeedAudit.run("<business_unique_id>", format: :json)`
-- Last data reset timestamp: `TBD`
+- Reviewer account identifier: `tester@scalev.com`
+- Password delivery channel: 1Password share link (single-use, expires in 30 days), delivered via the submission form's reviewer-credentials notes field at submission time.
+- Reviewer business unique id: `NNY34GV8VWBL2KSH` (legal name `ICA Testing Account`, username `ica-testing-account`)
+- Secondary selector-test business unique id: `KJKODFJYD4RGFE9N`
+- Last data reset timestamp: `2026-05-23T12:03:59Z`
+
+### Seed Audit Evidence
+
+`Util.ReviewerSeedAudit.run("NNY34GV8VWBL2KSH", format: :json)` returned the
+following on 2026-05-23T12:03:59Z. Empty `warnings`, empty `failures`, and zero
+`unlabeled` records confirm the reviewer business contains review-only data.
+
+```json
+{
+  "stats": {
+    "orders": {
+      "total": 30,
+      "by_status": {
+        "canceled": 3,
+        "completed": 4,
+        "confirmed": 5,
+        "draft": 4,
+        "in_process": 4,
+        "pending": 6,
+        "shipped": 4
+      },
+      "covered_statuses": [
+        "draft",
+        "pending",
+        "confirmed",
+        "in_process",
+        "shipped",
+        "completed",
+        "canceled"
+      ]
+    },
+    "landing_pages": {
+      "total": 5,
+      "draft": 2,
+      "published": 3,
+      "html_mode": 2,
+      "html_mode_draft": 1,
+      "html_mode_published": 1
+    },
+    "products": {
+      "total": 10,
+      "active_variants": 10
+    },
+    "customers": {
+      "total": 5
+    },
+    "fixtures": {
+      "update_order": {
+        "status": "pending",
+        "valid": true,
+        "order_id": "CR212101",
+        "awb_status": "unavailable",
+        "awb_ca_status": "unavailable",
+        "present": true
+      },
+      "awb_cancel_order": {
+        "status": "confirmed",
+        "valid": true,
+        "order_id": "CR212103",
+        "awb_status": "created",
+        "awb_ca_status": "created",
+        "present": true
+      },
+      "status_order": {
+        "status": "pending",
+        "valid": true,
+        "order_id": "CR212102",
+        "awb_status": "unavailable",
+        "awb_ca_status": "unavailable",
+        "present": true
+      }
+    },
+    "unlabeled": {
+      "orders": 0,
+      "landing_pages": 0,
+      "products": 0,
+      "customers": 0
+    }
+  },
+  "warnings": [],
+  "business": {
+    "id": 2121,
+    "username": "ica-testing-account",
+    "unique_id": "NNY34GV8VWBL2KSH",
+    "legal_name": "ICA Testing Account"
+  },
+  "failures": [],
+  "checked_at": "2026-05-23T12:03:59Z"
+}
+```
 
 ## Setup Steps For Anthropic Reviewer
 

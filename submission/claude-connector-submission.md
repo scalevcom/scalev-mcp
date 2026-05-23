@@ -95,12 +95,12 @@ Production reviewer data still needs to be seeded before submission:
 - Use `submission/reviewer-data-seed-plan.md` for the exact seed-data contract and safety constraints.
 - Verify the seeded business from a production IEx session with `Util.ReviewerSeedAudit.run("<business_unique_id>", format: :json)`; keep the summary output in the private reviewer evidence bundle.
 
-Add final reviewer credentials and business unique id here after the production reviewer business is created:
+Final reviewer credentials and business unique ids:
 
-- Reviewer account: `TBD`
-- Reviewer business unique id: `TBD`
-- Secondary selector-test business unique id: `TBD`
-- Seed-data reset instructions: `TBD`
+- Reviewer account: `tester@scalev.com` (password delivered via single-use 1Password share link in the submission form's reviewer-credentials notes field at submission time)
+- Reviewer business unique id: `NNY34GV8VWBL2KSH` (legal name `ICA Testing Account`)
+- Secondary selector-test business unique id: `KJKODFJYD4RGFE9N`
+- Seed-data reset instructions: from a production IEx session run `Util.ReviewerSeed.run("NNY34GV8VWBL2KSH")` to reseed all 30 orders, 5 landing pages, 10 products, 5 customers, and the three named order fixtures (`CR212101` update, `CR212102` status, `CR212103` AWB cancel). Verify with `Util.ReviewerSeedAudit.run("NNY34GV8VWBL2KSH", format: :json)`; the audit should return zero warnings, zero failures, and zero unlabeled records.
 
 ## Evidence To Attach Or Keep Ready
 
