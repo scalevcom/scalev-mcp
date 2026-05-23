@@ -12,7 +12,7 @@ backup codes, raw customer data, raw order payloads, or landing-page HTML here.
 - Password delivery channel: `TBD - send out of band`
 - Reviewer business unique id: `TBD`
 - Secondary selector-test business unique id: `TBD`
-- Seed audit evidence: `TBD - output from Util.ReviewerSeedAudit.run("<business_unique_id>", format: :json)`
+- Seed audit evidence: `TBD - output from Util.ReviewerSeed.run("<business_unique_id>", format: :json)` and `Util.ReviewerSeedAudit.run("<business_unique_id>", format: :json)`
 - Last data reset timestamp: `TBD`
 
 ## Setup Steps For Anthropic Reviewer
@@ -51,4 +51,4 @@ backup codes, raw customer data, raw order payloads, or landing-page HTML here.
 - If Claude reports that a business selector is required, call `get_me`, choose the `unique_id` for the `Claude Review` business, and pass it as top-level `business_unique_id`.
 - If OAuth fails before consent, check that the connector URL is exactly `https://mcp.scalev.com/mcp`.
 - If write tools fail with validation errors, use `search` and `get_docs` to confirm the current `/v3` request body shape before retrying.
-- If the seeded destructive fixture has already been used, stop destructive testing and ask Scalev to reset the reviewer business.
+- If the seeded destructive fixture has already been used, stop destructive testing and ask Scalev to rerun `Util.ReviewerSeed.run("<business_unique_id>")` for the reviewer business.

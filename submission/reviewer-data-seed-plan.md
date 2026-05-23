@@ -93,14 +93,21 @@ The AWB cancellation fixture must not cancel a real shipment, charge a customer,
 
 ## Evidence Checklist
 
-Run the Scalev API seed audit from a production IEx session after creating or resetting the reviewer business:
+Run the Scalev API reviewer seeder from a production IEx session after creating or resetting the reviewer business. Use the business `unique_id` as the input:
+
+```elixir
+Util.ReviewerSeed.run("<business_unique_id>")
+Util.ReviewerSeed.run("<business_unique_id>", format: :json)
+```
+
+Then run the audit as the verifier:
 
 ```elixir
 Util.ReviewerSeedAudit.run("<business_unique_id>")
 Util.ReviewerSeedAudit.run("<business_unique_id>", format: :json)
 ```
 
-Save only the JSON summary or a redacted terminal transcript in the private submission evidence bundle. The audit reports counts, statuses, and named safe fixture ids; it does not print raw customer data, order payloads, bearer tokens, request bodies, landing-page HTML, or OAuth secrets.
+Save only the JSON summary or a redacted terminal transcript in the private submission evidence bundle. The seeder creates or updates only synthetic `Claude Review` records, and the audit reports counts, statuses, and named safe fixture ids; it does not print raw customer data, order payloads, bearer tokens, request bodies, landing-page HTML, or OAuth secrets.
 
 After seeding, record:
 
