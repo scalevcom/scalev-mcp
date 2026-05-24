@@ -76,15 +76,16 @@ Live checks performed on 2026-05-22:
 - Detailed live edge notes are in `submission/live-checks-2026-05-22.md`.
 - Anthropic connector-directory requirements are mapped to local evidence in `submission/anthropic-requirements-audit-2026-05-22.md`.
 - Post-deploy live verification is automated by `pnpm check:live-readiness`; `pnpm check:live-readiness:report` records current external gaps without failing the shell. The live check includes allowed/disallowed browser `Origin`, strict HSTS preload header checks, `status.scalev.com`, and effective CAA records for the connector/API hostnames.
-- Pending after deploy: `GET https://mcp.scalev.com/.well-known/security.txt` and `GET https://api.scalev.com/.well-known/security.txt`.
+- Both security.txt endpoints are live and verified by `pnpm check:live-readiness`: `https://mcp.scalev.com/.well-known/security.txt` and `https://api.scalev.com/.well-known/security.txt`.
 
-## Remaining Before Submission
+## Pre-Submission Verification (Complete)
 
-- Seed and verify the production reviewer business with non-sensitive test data using `submission/reviewer-data-seed-plan.md` and the Scalev API `Util.ReviewerSeedAudit` one-off function from a production IEx session.
-- Import and publish `submission/scalev-claude-landing-page.html` as the Scalev-owned landing page so `https://scalev.com/claude` returns `200`.
-- Capture three Claude reviewer prompt transcripts or screenshots.
-- Run OAuth revoke and reconnect tests in Claude.
-- Confirm final legal wording for privacy, terms, support, data residency, and subprocessors.
-- Add and verify DNS CAA records if CAA remains in the final hardening scope.
-- Wire `https://mcp.scalev.com/health` into `status.scalev.com` or the chosen production status monitor after deployment.
-- Submit through the MCP directory submission form. Optionally use `submission/pre-feedback-email.md` for early outreach or escalation prep, noting that the current Anthropic page lists `mcp-review@anthropic.com` for form-access problems and review escalations rather than as a guaranteed pre-review channel.
+- Reviewer business `NNY34GV8VWBL2KSH` (ICA Testing Account) seeded and audited with non-sensitive test data using `submission/reviewer-data-seed-plan.md` and the Scalev API `Util.ReviewerSeedAudit` one-off function. Audit JSON embedded in `submission/reviewer-test-account-instructions.md` (zero warnings, zero failures, zero unlabeled records).
+- `submission/scalev-claude-landing-page.html` and `submission/scalev-claude-landing-page-id.html` are published as the Scalev-owned landing pages at `https://scalev.com/claude` and `https://scalev.com/claude-id`.
+- Three Claude reviewer prompt transcripts captured and saved under `assets/reviewer-evidence/prompt-{1,2,3}-*.png`.
+- OAuth revoke and reconnect verified end-to-end; evidence at `assets/reviewer-evidence/negative-4-oauth-revoke-reconnect.png`.
+- Final legal wording for privacy, terms, support, data residency, and subprocessors confirmed at `https://scalev.com/privacy`, `https://scalev.com/terms`, `https://scalev.com/contact-us`.
+- DNS CAA records added on the `scalev.com` zone (Google Trust Services + Let's Encrypt for both `issue` and `issuewild`, plus an `iodef` mailto), verified by `pnpm check:live-readiness`.
+- `https://mcp.scalev.com/health` is monitored by `https://status.scalev.com`.
+- Pre-feedback email prepared at `submission/pre-feedback-email.md` for optional outreach to `mcp-review@anthropic.com`.
+- Submit through the MCP directory submission form at `https://claude.com/docs/connectors/building/submission` once outreach (if any) is complete.

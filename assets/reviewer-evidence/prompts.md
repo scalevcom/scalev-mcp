@@ -1,6 +1,6 @@
 # Reviewer Prompt Evidence
 
-Capture final Claude custom-connector screenshots or transcripts here before submission. These are reviewer evidence for a remote MCP connector, not MCP Apps carousel assets.
+Final status: captured 2026-05-24 — full Claude custom-connector transcripts and screenshots for all three reviewer prompts plus the five negative checks are stored alongside this file. These are reviewer evidence for a remote MCP connector, not MCP Apps carousel assets.
 
 ## Prompt 1
 
