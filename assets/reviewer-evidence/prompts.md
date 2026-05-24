@@ -29,13 +29,20 @@ Expected evidence:
 ## Prompt 3
 
 ```text
-Find pending review orders, fetch one order, update its notes, change its status to confirmed, and cancel AWB only on the seeded safe AWB test order.
+Use Scalev. On the ICA Testing Account business, find pending review orders, fetch one order, update its notes, change its status to confirmed, then show me my order statistics broken down by day.
 ```
 
 Expected evidence:
 
-- `list_orders`, `get_order`, `update_order`, and `change_order_status` complete successfully.
-- `cancel_order_awb` only runs on seeded review data and is treated as destructive.
+- `list_orders`, `get_order`, `update_order`, and `change_order_status` complete successfully against the seeded reviewer business.
+- `get_order_statistics` returns an aggregated response with the requested `breakdown_date: day` granularity, exercising the new merchant-dashboard surface.
+
+The earlier `cancel_order_awb` semantic tool was removed in 0.3.1 because
+AWB cancellation requires a connected courier-provider integration the
+reviewer business cannot have. The underlying `cancelOrderAwb` endpoint
+remains accessible to power users via the generic `execute_destructive`
+tool. The destructive-write annotation behavior is evidenced by
+`delete_landing_page` in Prompt 2.
 
 ## Negative Checks
 

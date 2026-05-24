@@ -93,7 +93,7 @@ Call `get_me` first. If `connected_businesses` has more than one entry, choose o
 | `create_order` | Non-destructive write | Creates a business order. |
 | `update_order` | Non-destructive write | Updates one business order. |
 | `change_order_status` | Non-destructive write | Changes order status or payment status after explicit user intent. |
-| `cancel_order_awb` | Destructive write | Cancels airway bills for orders. |
+| `get_order_statistics` | Read | Returns aggregated order statistics for the business (totals, revenue, optional time and dimensional breakdowns). |
 
 `search` returns `execution_tool` as `get`, `execute_safe`, or `execute_destructive`. Use that value. The Worker rejects safe/destructive mismatches.
 OAuth flow, storefront browser, OAuth billing, developer payout, and direct payment-gateway endpoints are intentionally excluded from the generated MCP catalog.
@@ -109,7 +109,7 @@ Scalev OAuth consent groups scopes by the business data or action they unlock:
 - `order:list` and `order:read`: view orders.
 - `order:create` and `order:update`: create or edit orders.
 - `order:change_status`: change order or payment status.
-- `order:create_awb`: generate or cancel shipment airway bills.
+- `order:statistics:list`: view aggregated order statistics (totals, revenue, breakdowns).
 
 The connector never grants more access than the merchant approved in Scalev. The Scalev API enforces scopes per selected business on every call.
 
@@ -119,7 +119,7 @@ Use a populated review business with at least 30 orders, 5 landing pages, 5 cust
 
 1. "Use Scalev to list my connected businesses, choose the review business, and summarize my landing pages."
 2. "Create a draft HTML Mode landing page called Claude Review Draft, update it to publish with `is_published: true`, fetch it, then delete it."
-3. "Find pending review orders, fetch one order, update its notes, change its status to confirmed, and cancel AWB only on the seeded safe AWB test order."
+3. "On the ICA Testing Account business, find pending review orders, fetch one order, update its notes, change its status to confirmed, then show me my order statistics broken down by day."
 
 Negative checks:
 

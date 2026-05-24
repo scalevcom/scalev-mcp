@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.3.1 - 2026-05-23
+
+- Replaced semantic `cancel_order_awb` with `get_order_statistics`. AWB
+  cancellation requires a connected courier-provider integration that the
+  reviewer business cannot have, so the destructive surface was swapped for a
+  read-only aggregate that is genuinely useful for merchant dashboards
+  (totals, revenue, optional time and dimensional breakdowns). The underlying
+  `cancelOrderAwb` endpoint remains accessible to power users through the
+  generic `execute_destructive` tool.
+- Net semantic-tool count unchanged at 11 (17 total); destructive semantic
+  tool count drops from 2 to 1 (`delete_landing_page` remains).
+- Updated reviewer Prompt 3 to exercise `get_order_statistics` instead of AWB
+  cancellation.
+
 ## 0.3.0 - 2026-05-22
 
 - Added full MCP tool annotations with titles, read-only/destructive hints, idempotency hints, and open-world hints.

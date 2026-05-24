@@ -37,7 +37,7 @@ Prepared for the Anthropic Claude connector directory submission flow.
 | `create_order` | Create an order | Non-destructive write |
 | `update_order` | Update an order | Non-destructive write |
 | `change_order_status` | Change order or payment status | Non-destructive write |
-| `cancel_order_awb` | Cancel order airway bill state | Destructive write |
+| `get_order_statistics` | Returns aggregated order statistics for the business (totals, revenue, optional time and dimensional breakdowns) | Scalev API read |
 
 ## OAuth And Data Flow
 
@@ -55,7 +55,7 @@ The connector asks only for the scopes needed by the exposed tool surface:
 Reviewer-facing scope names:
 
 - `page:list`, `page:read`, `page:create`, `page:update`, `page:delete`
-- `order:list`, `order:read`, `order:create`, `order:update`, `order:change_status`, `order:create_awb`
+- `order:list`, `order:read`, `order:create`, `order:update`, `order:change_status`, `order:statistics:list`
 
 ## Reviewer Prompts
 
@@ -74,7 +74,7 @@ Reviewer-facing scope names:
 3. Order workflow:
 
    ```text
-   List recent review-tagged orders, fetch one safe seeded order, update its review note, change its status as instructed in the seed data, then cancel the AWB for the seeded cancellation order.
+   List recent review-tagged orders, fetch one safe seeded order, update its review note, change its status as instructed in the seed data, then show me my order statistics broken down by day.
    ```
 
 Negative tests:

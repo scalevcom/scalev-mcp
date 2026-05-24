@@ -662,7 +662,7 @@
             </div>
             <div class="tool-list">
               <div class="tool-item"><strong>Landing pages</strong><span>list, create, publish, delete</span></div>
-              <div class="tool-item"><strong>Orders</strong><span>list, update, change status, cancel AWB</span></div>
+              <div class="tool-item"><strong>Orders</strong><span>list, update, change status, statistics</span></div>
               <div class="tool-item"><strong>Catalog escape hatch</strong><span>search, get, execute_safe</span></div>
               <div class="tool-item"><strong>Identity</strong><span>get_me, get_docs</span></div>
             </div>
@@ -703,7 +703,7 @@
                 <li>create_order <span class="kind write">write</span></li>
                 <li>update_order <span class="kind write">write</span></li>
                 <li>change_order_status <span class="kind write">write</span></li>
-                <li>cancel_order_awb <span class="kind destr">destructive</span></li>
+                <li>get_order_statistics <span class="kind">read</span></li>
               </ul>
             </div>
             <div class="cap">
@@ -763,8 +763,8 @@
               <div class="prompt-no">03</div>
               <blockquote>
                 Find pending review orders, fetch one order, update its notes,
-                change its status to confirmed, and cancel AWB only on the seeded
-                safe AWB test order.
+                change its status to confirmed, then show me my order statistics
+                broken down by day.
               </blockquote>
               <h4>Tools Claude will call</h4>
               <ul>
@@ -773,7 +773,7 @@
                 <li>get_order</li>
                 <li>update_order</li>
                 <li>change_order_status</li>
-                <li>cancel_order_awb</li>
+                <li>get_order_statistics</li>
               </ul>
             </div>
           </div>

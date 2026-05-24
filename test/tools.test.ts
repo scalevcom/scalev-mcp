@@ -43,7 +43,7 @@ describe("Scalev MCP tools", () => {
       "create_order",
       "update_order",
       "change_order_status",
-      "cancel_order_awb"
+      "get_order_statistics"
     ]);
   });
 
@@ -457,11 +457,11 @@ describe("Scalev MCP tools", () => {
           body: { ids: [456], status: "confirmed" }
         },
         {
-          tool: "cancel_order_awb",
-          input: { business_unique_id: "BIZ123", body: { ids: [456] } },
-          method: "POST",
-          url: "https://api.scalev.test/v3/orders/cancel-awb?b_uid=BIZ123",
-          body: { ids: [456] }
+          tool: "get_order_statistics",
+          input: { business_unique_id: "BIZ123", breakdown_date: "day", is_breakdown_status: true },
+          method: "GET",
+          url: "https://api.scalev.test/v3/orders/statistics?breakdown_date=day&is_breakdown_status=true&b_uid=BIZ123",
+          body: null
         }
       ];
 

@@ -87,9 +87,20 @@ Required named order fixtures:
 | --- | --- | --- |
 | Claude Review Update Order | pending or confirmed | Update a harmless note field |
 | Claude Review Status Order | pending | Change status to confirmed |
-| Claude Review AWB Cancel Order | AWB present, safe cancellation state | Run `cancel_order_awb` |
 
-The AWB cancellation fixture must not cancel a real shipment, charge a customer, notify a real courier recipient, or mutate a live merchant fulfillment flow. If that cannot be guaranteed in production, omit AWB cancellation from the reviewer prompt and explain the limitation in the submission notes.
+Order statistics evidence for Prompt 3 uses the existing seeded order set
+and does not require a dedicated fixture: `get_order_statistics` aggregates
+across the same orders that `list_orders` returns, so any reviewer run with
+a `breakdown_date` filter produces a non-trivial response.
+
+The earlier `Claude Review AWB Cancel Order` (`CR212103`) fixture may still
+appear in seed runs but is no longer required for reviewer evidence. The
+`cancel_order_awb` semantic tool was removed in 0.3.1 because AWB
+cancellation requires a connected courier-provider integration the
+reviewer business cannot have. The underlying `cancelOrderAwb` endpoint
+remains accessible to power users via the generic `execute_destructive`
+tool. Destructive-write annotation behavior is evidenced through
+`delete_landing_page` in Prompt 2.
 
 ## Evidence Checklist
 

@@ -30,7 +30,7 @@
     "create_order",
     "update_order",
     "change_order_status",
-    "cancel_order_awb"
+    "get_order_statistics"
   ],
   "reviewer_test_data": {
     "minimum_orders": 30,

@@ -133,7 +133,7 @@ following on 2026-05-23T12:03:59Z. Empty `warnings`, empty `failures`, and zero
 - Named safe order fixtures:
   - `Claude Review Update Order`
   - `Claude Review Status Order`
-  - `Claude Review AWB Cancel Order`
+- `get_order_statistics` aggregates across the existing seeded orders; no dedicated fixture is required.
 
 ## Troubleshooting Notes
 

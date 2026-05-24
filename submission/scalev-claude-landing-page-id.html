@@ -602,7 +602,7 @@
             </div>
             <div class="tool-list">
               <div class="tool-item"><strong>Landing page</strong><span>list, create, publish, delete</span></div>
-              <div class="tool-item"><strong>Order</strong><span>list, update, change status, cancel AWB</span></div>
+              <div class="tool-item"><strong>Order</strong><span>list, update, change status, statistik</span></div>
               <div class="tool-item"><strong>Tool generik</strong><span>search, get, execute_safe</span></div>
               <div class="tool-item"><strong>Identitas</strong><span>get_me, get_docs</span></div>
             </div>
@@ -644,7 +644,7 @@
                 <li>create_order <span class="kind write">tulis</span></li>
                 <li>update_order <span class="kind write">tulis</span></li>
                 <li>change_order_status <span class="kind write">tulis</span></li>
-                <li>cancel_order_awb <span class="kind destr">destruktif</span></li>
+                <li>get_order_statistics <span class="kind">baca</span></li>
               </ul>
             </div>
             <div class="cap">
@@ -704,8 +704,8 @@
               <div class="prompt-no">03</div>
               <blockquote>
                 Cari order review yang pending, ambil satu order, ubah catatannya,
-                ubah statusnya menjadi confirmed, dan cancel AWB hanya untuk
-                seeded safe AWB test order.
+                ubah statusnya menjadi confirmed, lalu tampilkan statistik order
+                saya dengan breakdown per hari.
               </blockquote>
               <h4>Tool yang Claude panggil</h4>
               <ul>
@@ -714,7 +714,7 @@
                 <li>get_order</li>
                 <li>update_order</li>
                 <li>change_order_status</li>
-                <li>cancel_order_awb</li>
+                <li>get_order_statistics</li>
               </ul>
             </div>
           </div>

@@ -21,7 +21,7 @@ const EXPECTED_TOOLS = [
   "create_order",
   "update_order",
   "change_order_status",
-  "cancel_order_awb"
+  "get_order_statistics"
 ];
 
 const REQUIRED_PROMPT_SNIPPETS = [
@@ -30,7 +30,7 @@ const REQUIRED_PROMPT_SNIPPETS = [
   "## Prompt 3",
   "list my connected businesses",
   "Create a draft HTML Mode landing page",
-  "Find pending review orders",
+  "find pending review orders",
   "## Negative Checks",
   "execute_safe",
   "business_unique_id",

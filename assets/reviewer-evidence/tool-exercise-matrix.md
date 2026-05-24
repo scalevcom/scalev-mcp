@@ -35,7 +35,7 @@ Final status: `PENDING_FINAL_CLAUDE_RUN`
 | `create_order` | MCP Inspector | Synthetic customer/product fixture | Creates a synthetic review order or a disposable draft order | Pending |
 | `update_order` | Claude prompt 3 | `Claude Review Update Order` | Updates a harmless review note or metadata field | Pending |
 | `change_order_status` | Claude prompt 3 | `Claude Review Status Order` | Changes only the seeded status fixture as instructed | Pending |
-| `cancel_order_awb` | Claude prompt 3 | `Claude Review AWB Cancel Order` | Cancels only the seeded safe AWB fixture and prompts as destructive | Pending |
+| `get_order_statistics` | Claude prompt 3 | Seeded reviewer business orders | Returns aggregated order statistics with the requested `breakdown_date` granularity; respects `business_unique_id` selection | Pending |
 
 ## Negative Evidence
 

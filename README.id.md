@@ -68,7 +68,7 @@ sebagai `business_unique_id` tingkat atas ke tool bisnis.
 | `create_order` | Tulis non-destruktif | Membuat order bisnis. |
 | `update_order` | Tulis non-destruktif | Mengubah satu order. |
 | `change_order_status` | Tulis non-destruktif | Mengubah status order atau pembayaran setelah ada instruksi eksplisit. |
-| `cancel_order_awb` | Tulis destruktif | Membatalkan AWB order. |
+| `get_order_statistics` | Baca | Menampilkan statistik order bisnis (total, revenue, breakdown opsional per waktu atau dimensi). |
 
 `search` mengembalikan `execution_tool` berupa `get`, `execute_safe`, atau
 `execute_destructive`. Gunakan nilai itu. Worker akan menolak jika tool aman dan
@@ -88,7 +88,7 @@ connector. Refresh daftar tool connector dan gunakan `execute_safe` atau
 - `order:list` dan `order:read`: melihat order.
 - `order:create` dan `order:update`: membuat atau mengubah order.
 - `order:change_status`: mengubah status order atau pembayaran.
-- `order:create_awb`: membuat atau membatalkan AWB pengiriman.
+- `order:statistics:list`: melihat statistik order (total, revenue, breakdown).
 
 Connector tidak memberi akses melebihi persetujuan merchant di Scalev. Scalev API
 memeriksa scope per bisnis yang dipilih pada setiap request.
@@ -100,7 +100,7 @@ dan 10 produk.
 
 1. "Gunakan Scalev untuk menampilkan bisnis saya yang terhubung, pilih bisnis review, lalu ringkas landing page saya."
 2. "Buat draft HTML Mode landing page bernama Claude Review Draft, publish dengan `is_published: true`, ambil lagi datanya, lalu hapus."
-3. "Cari order review yang pending, ambil satu order, ubah catatannya, ubah statusnya menjadi confirmed, dan cancel AWB hanya untuk seeded safe AWB test order."
+3. "Pada bisnis ICA Testing Account, cari order review yang pending, ambil satu order, ubah catatannya, ubah statusnya menjadi confirmed, lalu tampilkan statistik order saya dengan breakdown per hari."
 
 Pemeriksaan negatif:
 

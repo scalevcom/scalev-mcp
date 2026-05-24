@@ -21,7 +21,7 @@ const EXPECTED_TOOLS = [
   "create_order",
   "update_order",
   "change_order_status",
-  "cancel_order_awb"
+  "get_order_statistics"
 ];
 
 const REQUIRED_FILES = [

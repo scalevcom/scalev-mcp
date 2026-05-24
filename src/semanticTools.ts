@@ -280,23 +280,52 @@ export function registerSemanticTools(server: McpServer, env: Env): void {
   );
 
   server.registerTool(
-    "cancel_order_awb",
+    "get_order_statistics",
     {
-      title: "Cancel order AWB",
+      title: "Get order statistics",
       description:
-        "Cancel airway bills for one or more orders using Scalev API v3 cancelOrderAwb. This is destructive because it cancels shipment/AWB state.",
+        "Retrieves aggregated order statistics for the selected business from Scalev API v3: total orders, total revenue, and aggregate counts with optional time and dimensional breakdowns. Useful for merchant performance summaries and answering questions like 'how did sales do last week broken down by city'. Requires the order:statistics:list scope.",
       inputSchema: {
         business_unique_id: businessUniqueIdSchema,
-        body: bodySchema.describe("CancelOrderAwbRequestBody from the public OpenAPI contract.")
+        breakdown_date: z
+          .enum(["off", "day", "week", "month"])
+          .optional()
+          .describe("Time breakdown granularity. Defaults to 'off' (single aggregate)."),
+        custom_breakdown_key: z
+          .enum(["off", "handler_id", "advertiser_id", "page_id", "city", "province"])
+          .optional()
+          .describe("Optional dimensional breakdown (e.g. by city, province, or landing page)."),
+        datetime_type: z
+          .string()
+          .optional()
+          .describe(
+            "Which order timestamp to aggregate on. Examples: created_at, pending_time, confirmed_time, shipped_time, completed_time. Defaults to created_at."
+          ),
+        is_breakdown_status: z
+          .boolean()
+          .optional()
+          .describe("Include per-status counts alongside the aggregate totals."),
+        status: z.string().optional().describe("Optional order status filter (same values as list_orders)."),
+        payment_status: z.string().optional().describe("Optional payment status filter."),
+        query: querySchema
+          .optional()
+          .describe("Additional documented query parameters for getOrderStatistics (e.g. date range filters).")
       },
-      annotations: toolAnnotations("Cancel order AWB", "destructive_write")
+      annotations: toolAnnotations("Get order statistics", "nexus_read")
     },
     async (input) =>
-      runCatalogTool(env, "cancel_order_awb", "cancelOrderAwb", () =>
-        buildExecuteDestructiveRequest({
-          operation_id: "cancelOrderAwb",
+      runCatalogTool(env, "get_order_statistics", "getOrderStatistics", () =>
+        buildGetRequest({
+          operation_id: "getOrderStatistics",
           business_unique_id: input.business_unique_id,
-          body: input.body
+          query: queryWith(input.query, {
+            breakdown_date: input.breakdown_date,
+            custom_breakdown_key: input.custom_breakdown_key,
+            datetime_type: input.datetime_type,
+            is_breakdown_status: input.is_breakdown_status,
+            status: input.status,
+            payment_status: input.payment_status
+          })
         })
       )
   );
