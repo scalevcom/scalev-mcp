@@ -71,7 +71,7 @@ Claude -> mcp.scalev.com/mcp -> api.scalev.com/v3 -> Scalev business data
 - The Worker receives the token and forwards it unchanged to the Scalev API `/v3`.
 - For business-scoped tools, `business_unique_id` is forwarded to the Scalev API as `b_uid`.
 
-Call `get_me` first. If `connected_businesses` has more than one entry, choose one `connected_businesses[].unique_id` and pass it as top-level `business_unique_id` to business tools.
+Call `get_me` first. It returns active connected businesses only. If `connected_businesses` has more than one entry, choose one `connected_businesses[].unique_id` and pass it as top-level `business_unique_id` to business tools.
 
 ## Tools
 

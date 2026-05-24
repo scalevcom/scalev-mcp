@@ -63,7 +63,7 @@ export function createScalevMcpServer(env: Env): McpServer {
     {
       title: "Get Scalev identity",
       description:
-        "Returns token-level Scalev identity for the current MCP OAuth token: authenticated user, OAuth application, auth method, and connected_businesses. For tokens with more than one connected business, business-scoped tools require the chosen connected_businesses[].unique_id as the top-level business_unique_id argument.",
+        "Returns token-level Scalev identity for the current MCP OAuth token: authenticated user, OAuth application, auth method, and active connected_businesses. For tokens with more than one connected business, business-scoped tools require the chosen connected_businesses[].unique_id as the top-level business_unique_id argument.",
       inputSchema: {},
       annotations: toolAnnotations("Get Scalev identity", "nexus_read")
     },
