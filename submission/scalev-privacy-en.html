@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Privacy Policy — Scalev</title>
+    <meta
+      name="description"
+      content="Scalev's Privacy Policy. Covers the collection, use, and protection of personal data, including AI assistant and MCP connector integrations."
+    />
+    <link rel="alternate" hreflang="id" href="/privacy" />
+    <link rel="alternate" hreflang="en" href="/privacy-en" />
+    <link rel="canonical" href="/privacy-en" />
+    <style>
+      :root {
+        --cyan: #05adeb;
+        --cyan-deep: #047fb5;
+        --ink: #1d2868;
+        --ink-soft: #40509a;
+        --ink-muted: #6a73a3;
+        --paper: #f5f9ff;
+        --paper-warm: #faf9f5;
+        --line: #d9e4f5;
+        --line-strong: #b9c8e3;
+        --lime: #c9f269;
+        --white: #ffffff;
+        --display: "Aptos Display", "Segoe UI", sans-serif;
+        --sans: "Aptos", "Segoe UI", sans-serif;
+        --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--paper-warm);
+        font-family: var(--sans);
+        line-height: 1.65;
+        font-size: 16px;
+      }
+      a { color: var(--cyan-deep); text-decoration: underline; text-underline-offset: 2px; }
+      a:hover { color: var(--cyan); }
+      strong { color: var(--ink); }
+      code {
+        font-family: var(--mono);
+        font-size: 0.9em;
+        background: var(--paper);
+        padding: 2px 6px;
+        border-radius: 3px;
+        color: var(--ink);
+      }
+
+      .shell {
+        width: min(800px, calc(100% - 40px));
+        margin: 0 auto;
+      }
+
+      .nav {
+        background: var(--white);
+        border-bottom: 1px solid var(--line);
+      }
+      .nav-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 0;
+      }
+      .brand {
+        font-family: var(--display);
+        font-size: 28px;
+        font-weight: 800;
+        color: var(--ink);
+        text-decoration: none;
+      }
+      .lang-switch {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 14px;
+        border: 1px solid var(--line-strong);
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        color: var(--ink);
+        background: var(--white);
+        transition: background 120ms ease;
+      }
+      .lang-switch:hover { background: var(--paper); color: var(--ink); }
+      .lang-switch::before {
+        content: "🌐";
+        font-size: 14px;
+      }
+
+      header.page-header {
+        padding: 56px 0 32px;
+      }
+      header.page-header h1 {
+        margin: 0;
+        font-family: var(--display);
+        font-size: clamp(36px, 5vw, 56px);
+        line-height: 1.05;
+        color: var(--ink);
+      }
+      header.page-header .updated {
+        margin: 16px 0 0;
+        color: var(--ink-muted);
+        font-size: 14px;
+      }
+      header.page-header .updated strong {
+        color: var(--ink-soft);
+        font-weight: 700;
+      }
+      header.page-header .legal-entity {
+        margin: 8px 0 0;
+        color: var(--ink-muted);
+        font-size: 14px;
+      }
+      header.page-header .translation-note {
+        margin: 16px 0 0;
+        padding: 12px 16px;
+        background: var(--paper);
+        border-left: 3px solid var(--cyan);
+        border-radius: 0 4px 4px 0;
+        font-size: 13px;
+        color: var(--ink-soft);
+      }
+
+      .toc {
+        margin: 24px 0 48px;
+        padding: 24px;
+        background: var(--white);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+      }
+      .toc h2 {
+        margin: 0 0 12px;
+        font-family: var(--display);
+        font-size: 18px;
+        color: var(--ink);
+      }
+      .toc ol {
+        margin: 0;
+        padding-left: 22px;
+        counter-reset: toc;
+      }
+      .toc li {
+        padding: 3px 0;
+        font-size: 14.5px;
+      }
+      .toc a { text-decoration: none; color: var(--cyan-deep); }
+      .toc a:hover { text-decoration: underline; }
+
+      main { padding-bottom: 64px; }
+      section.policy {
+        margin: 40px 0;
+        scroll-margin-top: 24px;
+      }
+      section.policy h2 {
+        margin: 0 0 18px;
+        font-family: var(--display);
+        font-size: clamp(22px, 3vw, 30px);
+        line-height: 1.2;
+        color: var(--ink);
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--cyan);
+      }
+      section.policy h2 .num {
+        color: var(--cyan-deep);
+        font-weight: 800;
+        margin-right: 10px;
+      }
+      section.policy h3 {
+        margin: 28px 0 10px;
+        font-family: var(--display);
+        font-size: 18px;
+        color: var(--ink);
+      }
+      section.policy p { margin: 12px 0; }
+      section.policy ul, section.policy ol {
+        margin: 14px 0;
+        padding-left: 24px;
+      }
+      section.policy li {
+        padding: 4px 0;
+      }
+      section.policy li::marker { color: var(--cyan-deep); }
+      .callout {
+        margin: 18px 0;
+        padding: 16px 20px;
+        background: var(--paper);
+        border-left: 4px solid var(--cyan);
+        border-radius: 0 6px 6px 0;
+        font-size: 15px;
+      }
+      .callout strong { color: var(--cyan-deep); }
+
+      .definition-table {
+        width: 100%;
+        margin: 18px 0;
+        border-collapse: collapse;
+        font-size: 14.5px;
+      }
+      .definition-table th,
+      .definition-table td {
+        text-align: left;
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--line);
+        vertical-align: top;
+      }
+      .definition-table th {
+        background: var(--paper);
+        color: var(--ink);
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      .definition-table tr:last-child td { border-bottom: none; }
+
+      footer {
+        background: var(--ink);
+        color: rgba(255,255,255,0.78);
+        padding: 40px 0;
+        font-size: 14px;
+      }
+      footer h3 {
+        margin: 0 0 8px;
+        color: var(--white);
+        font-family: var(--display);
+        font-size: 18px;
+      }
+      footer a { color: var(--lime); }
+      footer .legal {
+        border-top: 1px solid rgba(255,255,255,0.12);
+        margin-top: 24px;
+        padding-top: 18px;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        font-size: 12px;
+        color: rgba(255,255,255,0.5);
+      }
+      footer .legal a { color: rgba(255,255,255,0.65); }
+
+      @media (max-width: 600px) {
+        header.page-header { padding: 36px 0 24px; }
+        .toc { padding: 18px; }
+        footer .legal { flex-direction: column; }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="nav">
+      <div class="shell nav-inner">
+        <a class="brand" href="/">Scalev</a>
+        <a class="lang-switch" href="/privacy" hreflang="id" lang="id">Bahasa Indonesia</a>
+      </div>
+    </nav>
+
+    <main>
+      <div class="shell">
+        <header class="page-header">
+          <h1>Privacy Policy</h1>
+          <p class="updated">Last updated: <strong>May 24, 2026</strong></p>
+          <p class="legal-entity">Published by PT Interna Cipta Asia (&ldquo;Scalev&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;).</p>
+          <p class="translation-note">
+            This English version is provided for convenience. In the event of any conflict between this translation and the <a href="/privacy">Indonesian original</a>, the Indonesian version governs to the extent required by Indonesian law.
+          </p>
+        </header>
+
+        <nav class="toc" aria-label="Table of Contents">
+          <h2>Contents</h2>
+          <ol>
+            <li><a href="#s1">Collection of Personal Data</a></li>
+            <li><a href="#s2">Use and Processing of Personal Data</a></li>
+            <li><a href="#s3">Sharing of Personal Data with Third Parties</a></li>
+            <li><a href="#s4">Subprocessors and Service Providers</a></li>
+            <li><a href="#s5">Cookies and Third-Party Services</a></li>
+            <li><a href="#s6">AI Assistant Integrations and MCP Connectors</a></li>
+            <li><a href="#s7">Cross-Border Data Transfers</a></li>
+            <li><a href="#s8">Security and Technical Practices</a></li>
+            <li><a href="#s9">Your Rights and Transparency</a></li>
+            <li><a href="#s10">Retention, Deletion, and Destruction of Personal Data</a></li>
+            <li><a href="#s11">Limitations of Liability</a></li>
+            <li><a href="#s12">Miscellaneous</a></li>
+            <li><a href="#s13">Contact Us</a></li>
+          </ol>
+        </nav>
+
+        <section class="policy" id="s1">
+          <h2><span class="num">1.</span>Collection of Personal Data</h2>
+          <p>
+            PT Interna Cipta Asia (&ldquo;Scalev&rdquo;, &ldquo;we&rdquo;) collects Personal Data when you register, access the Platform, or use features of the Service. The Personal Data we collect includes:
+          </p>
+          <ul>
+            <li>Basic information: full name, email address, phone number, password.</li>
+            <li>Company data: business registration documents, tax identification numbers, and related legal records.</li>
+            <li>Payment and financial information: bank account details, payment methods, provider references, payment tokens or instructions, and transaction records. Scalev does not directly store full card numbers or CVV codes.</li>
+            <li>Usage data: transaction history, device information, IP address, user agent, cookies, and activity logs.</li>
+            <li>Location and delivery data: billing addresses, shipping addresses, and approximate geolocation where required for specific features.</li>
+            <li>Device and security logs: timestamps, application activity records, and security events.</li>
+            <li>Information you voluntarily provide through forms, reviews, support messages, or other communications.</li>
+          </ul>
+          <p>
+            You warrant that the Personal Data you provide is accurate, belongs to you, or was lawfully obtained with appropriate consent from the data subject.
+          </p>
+        </section>
+
+        <section class="policy" id="s2">
+          <h2><span class="num">2.</span>Use and Processing of Personal Data</h2>
+          <p>Scalev processes Personal Data for the following purposes:</p>
+          <ul>
+            <li>Account management and Service delivery.</li>
+            <li>Facilitating transactions, processing orders, and surfacing product recommendations.</li>
+            <li>Communications about Platform usage, feature updates, and promotions.</li>
+            <li>Security monitoring, abuse detection, and fraud investigation.</li>
+            <li>Service improvement, product development, and aggregate analytics.</li>
+            <li>Compliance with applicable legal obligations in the Republic of Indonesia.</li>
+          </ul>
+          <p>
+            In certain cases, Scalev may process Personal Data without your explicit consent where required for legal compliance, Platform security, or fraud prevention.
+          </p>
+        </section>
+
+        <section class="policy" id="s3">
+          <h2><span class="num">3.</span>Sharing of Personal Data with Third Parties</h2>
+          <p>
+            Scalev may share your Personal Data with Selected Third Parties for operational purposes, including payment processors, logistics partners, communications providers, and technology infrastructure providers.
+          </p>
+          <h3>Merchant-enabled applications and webhooks</h3>
+          <p>
+            If you authorize a third-party application through OAuth or configure a webhook endpoint, Scalev may send data to that application or endpoint according to the scopes, business, and events you approved. Once the data is received by that application or endpoint, its processing is governed by the recipient's privacy policy, security settings, and legal obligations.
+          </p>
+          <p>
+            We cannot guarantee the security of your Personal Data on Third-Party systems. We encourage you to review the privacy policies of relevant Third Parties before enabling integrations.
+          </p>
+          <p>Scalev may disclose your Personal Data in order to:</p>
+          <ol>
+            <li>Comply with court orders, subpoenas, or other legal obligations.</li>
+            <li>Respond to lawful requests from law enforcement authorities.</li>
+            <li>Prevent, investigate, or act against fraud and policy violations.</li>
+            <li>Protect the rights, property, or reputation of Scalev and Service users.</li>
+          </ol>
+          <p>
+            Aggregate and anonymized data that cannot be used to identify individuals may be shared with Third Parties for development and research purposes.
+          </p>
+        </section>
+
+        <section class="policy" id="s4">
+          <h2><span class="num">4.</span>Subprocessors and Service Providers</h2>
+          <p>
+            To operate the Service, Scalev uses service providers and integrations that may process Personal Data. Some providers act as Scalev subprocessors, while others are active only when a merchant enables a particular feature, channel, payment gateway, courier, webhook, or application. Use of each provider depends on region, business configuration, and enabled features.
+          </p>
+          <ul>
+            <li><strong>Core providers:</strong> DigitalOcean for production compute and database services in Singapore; Cloudflare for DNS, CDN, WAF, Workers, R2, and TLS; Sentry for error monitoring; Better Stack and status pages for monitoring and service status; Crisp for customer support; AWS SES and Mailgun for email; Google services; and Firebase Cloud Messaging for notifications.</li>
+            <li><strong>Payment, financial, and KYC:</strong> Xendit, Duitku, iPaymu, Midtrans, Moota, VIDA, and Iluma, depending on the payment, verification, or reconciliation flow used.</li>
+            <li><strong>Tax:</strong> KlikPajak/Mekari as a subprocessor for tax invoices issued by Scalev.</li>
+            <li><strong>Logistics:</strong> Ninja Van/Ninja Xpress, Lincah, Everpro, RajaOngkir/Komerce, Mengantar, and selected couriers such as JNE, J&amp;T, and SiCepat, depending on the merchant's or buyer's shipping choice.</li>
+            <li><strong>Communications and marketing:</strong> Meta/Facebook/WhatsApp Business Platform, TikTok, Kwai/SnackVideo, Birdsend, Mailketing, Woowa, Starsender, Telegram, and Google Tag Manager and Google Analytics, where the related feature or pixel is enabled.</li>
+            <li><strong>Developer, docs, and community:</strong> ReadMe, ProductLift, and Discourse, where those services are active for documentation, product feedback, or community features.</li>
+          </ul>
+          <p>
+            Scalev applies appropriate contractual, technical, and organizational safeguards where applicable. Integrations you enable yourself, or providers selected by a merchant, may also be governed by the provider's own terms and privacy policy.
+          </p>
+        </section>
+
+        <section class="policy" id="s5">
+          <h2><span class="num">5.</span>Cookies and Third-Party Services</h2>
+          <p>
+            The Platform uses cookies and similar technologies to record your preferences, maintain login sessions, and improve the user experience. You may disable cookies through your browser settings; however, this may limit some Platform functionality.
+          </p>
+          <p>
+            We use Third-Party analytics services including Google Analytics to understand aggregate usage patterns. Data processed by Third-Party analytics services is subject to those providers' respective privacy policies.
+          </p>
+          <p>
+            Merchants may enable additional analytics or marketing services such as Google Tag Manager, Meta/Facebook pixels, TikTok pixels, or Kwai/SnackVideo pixels on channels they control. Collection by those services depends on merchant configuration and is subject to the relevant provider's policies.
+          </p>
+        </section>
+
+        <section class="policy" id="s6">
+          <h2><span class="num">6.</span>AI Assistant Integrations and MCP Connectors</h2>
+          <p>
+            Scalev provides an official <em>Model Context Protocol</em> (MCP) connector that allows third-party AI assistants &mdash; such as Anthropic Claude, OpenAI ChatGPT, and other MCP clients &mdash; to access the Scalev API on your behalf through an authorized OAuth connection.
+          </p>
+
+          <h3>6.1 Consent and scope of access</h3>
+          <p>
+            When you connect an AI assistant or MCP client, you approve an OAuth connection in Scalev, select the business to authorize, and review the requested scopes (permissions). Once you approve, Scalev issues an OAuth bearer token bound to the MCP connector, the scopes you approved, and the business(es) you selected. The AI assistant stores that token on its own infrastructure and uses it to request data or actions from the Scalev API. The Scalev API validates the token, scopes, and business on every call.
+          </p>
+
+          <h3>6.2 Data the AI assistant can access</h3>
+          <p>
+            An AI assistant can only access data covered by the scopes you approved at OAuth time. Scopes are granular and split per data domain (e.g., <code>page:list</code>, <code>order:read</code>, <code>order:update</code>). You can review active scopes at any time through your Scalev settings.
+          </p>
+          <p>
+            The MCP connector does <strong>not</strong> grant access to the following, regardless of requested scopes:
+          </p>
+          <ul>
+            <li>Your password or login credentials.</li>
+            <li>OAuth, internal administrative, or dashboard-only routes.</li>
+            <li>Direct payment-gateway routes or developer payout routes.</li>
+          </ul>
+
+          <h3>6.3 Audit logging</h3>
+          <p>
+            The MCP connector logs operational metadata &mdash; request id, tool name, operation id, status, and error code &mdash; but <strong>does not</strong> record the bearer token, request body, or response payload in MCP connector logs. The Scalev API also logs machine-to-machine calls made with OAuth and API keys. Scalev API logs may include metadata and sanitized request and response bodies; bearer tokens, credentials, and sensitive fields are redacted before storage. These machine API logs are subject to retention controls and a two-week retention partition.
+          </p>
+
+          <h3>6.4 Revoking access</h3>
+          <p>You can revoke AI assistant access at any time through either of the following:</p>
+          <ul>
+            <li><strong>From Scalev:</strong> through the Apps settings in Scalev.</li>
+            <li><strong>From the AI assistant:</strong> through the connection management UI of the relevant AI assistant or MCP client.</li>
+          </ul>
+          <p>
+            After revocation, the OAuth token is no longer valid for the affected business. The AI assistant must complete the OAuth flow again to regain access.
+          </p>
+
+          <h3>6.5 AI assistant privacy policies</h3>
+          <div class="callout">
+            <strong>Important:</strong> Once you approve an OAuth connection, Anthropic Claude, OpenAI ChatGPT, or another MCP client you use processes the Scalev data it accesses according to its own privacy policy and data-handling practices. Review the privacy policy of your AI assistant provider or MCP client before enabling the integration. Scalev is not responsible for data processing by AI assistants outside the boundaries of the Scalev Platform after data is received by that party.
+          </div>
+        </section>
+
+        <section class="policy" id="s7">
+          <h2><span class="num">7.</span>Cross-Border Data Transfers</h2>
+          <p>
+            Scalev's processing of Personal Data may occur in Indonesia, Singapore, the United States, and other provider jurisdictions depending on infrastructure, core providers, and enabled integrations. For example, Scalev production compute and database services are in Singapore, while some observability, communications, analytics, AI, payment, or marketing providers may process data in other jurisdictions.
+          </p>
+          <p>Concrete examples:</p>
+          <ul>
+            <li>The Claude AI assistant is operated by Anthropic, PBC. When you use the Scalev MCP connector through Claude, request and response data may transit Anthropic's infrastructure.</li>
+            <li>ChatGPT is operated by OpenAI, and other MCP clients have their own processing locations and rules under their respective policies.</li>
+            <li>Payment gateways, KYC providers, messaging platforms, analytics services, or webhook endpoints you enable may process data in locations determined by those providers.</li>
+          </ul>
+          <p>
+            By enabling an integration, you consent to the cross-border transfer of Personal Data that is necessary for the integration to function. Scalev applies reasonable safeguards including encryption in transit, but the level of protection after data reaches Third-Party infrastructure is subject to that Third Party's policies and legal obligations.
+          </p>
+        </section>
+
+        <section class="policy" id="s8">
+          <h2><span class="num">8.</span>Security and Technical Practices</h2>
+          <p>
+            Scalev applies reasonable technical and organizational security measures to protect Personal Data, including encryption in transit, access controls, OAuth authorization for third-party integrations, rate limiting and abuse detection, audit logs with sensitive-data redaction, and vulnerability-reporting processes.
+          </p>
+          <p>
+            These measures may vary depending on the service, host, integration, and relevant risk. For security reports, see <a href="https://mcp.scalev.com/.well-known/security.txt"><code>mcp.scalev.com/.well-known/security.txt</code></a> and <a href="https://api.scalev.com/.well-known/security.txt"><code>api.scalev.com/.well-known/security.txt</code></a>.
+          </p>
+          <p>
+            Although we apply these measures, no system is entirely risk-free. You are responsible for the security of your own passwords, devices, and credentials.
+          </p>
+        </section>
+
+        <section class="policy" id="s9">
+          <h2><span class="num">9.</span>Your Rights and Transparency</h2>
+          <p>As a Personal Data subject, you have the right to:</p>
+          <ul>
+            <li>Access and view the Personal Data we hold about you.</li>
+            <li>Update or correct inaccurate Personal Data.</li>
+            <li>Request deletion of your Personal Data, subject to applicable legal retention obligations.</li>
+            <li>Request an export of your Personal Data in a machine-readable format (e.g., JSON or CSV).</li>
+            <li>Opt out of marketing communications without affecting your access to the core Service.</li>
+            <li>Withdraw your consent, understanding that doing so may limit or terminate your access to the Service.</li>
+            <li>Review and revoke active OAuth authorizations at any time through the Apps settings in Scalev.</li>
+          </ul>
+          <p>
+            To exercise these rights, send a written request to <a href="mailto:cs@scalev.com">cs@scalev.com</a>. We will respond within a reasonable time in accordance with applicable legal obligations.
+          </p>
+        </section>
+
+        <section class="policy" id="s10">
+          <h2><span class="num">10.</span>Retention, Deletion, and Destruction of Personal Data</h2>
+          <p>
+            Scalev retains your Personal Data for as long as your account is active and as required to provide the Service, comply with legal obligations, resolve disputes, and enforce agreements.
+          </p>
+          <p>
+            If you request account deletion, send a written request to <a href="mailto:cs@scalev.com">cs@scalev.com</a>. Some Personal Data may be retained as required by applicable law (e.g., transaction records for tax and audit obligations) or as needed to protect Scalev's legitimate interests (e.g., fraud case records).
+          </p>
+          <p>
+            Scalev may delete or deactivate accounts that violate the Terms of Service, engage in fraudulent activity, or are subject to a court order.
+          </p>
+        </section>
+
+        <section class="policy" id="s11">
+          <h2><span class="num">11.</span>Limitations of Liability</h2>
+          <p>
+            You are responsible for the confidentiality of your account credentials and the security of devices you use to access the Service. Scalev is not liable for data leaks caused by user negligence, compromised devices, or unauthorized access by Third Parties outside of our control.
+          </p>
+          <p>
+            Scalev is not responsible for the processing of Personal Data by AI assistants, Third-Party applications, or webhook endpoints after you approve a connection, enable an integration, or direct data outside Scalev infrastructure. Review the Third Party's privacy policy before enabling an integration.
+          </p>
+        </section>
+
+        <section class="policy" id="s12">
+          <h2><span class="num">12.</span>Miscellaneous</h2>
+          <p>
+            This Privacy Policy may be amended from time to time. Changes will be announced on the Platform and are deemed effective from the publication date. We encourage you to review the Privacy Policy periodically.
+          </p>
+          <p>
+            In the event of merger, acquisition, corporate restructuring, or bankruptcy, your Personal Data may be transferred to the successor entity under protection obligations at least equivalent to this Privacy Policy.
+          </p>
+          <p>
+            If any provision of this Privacy Policy is deemed invalid by a competent authority, the remaining provisions remain in full force.
+          </p>
+        </section>
+
+        <section class="policy" id="s13">
+          <h2><span class="num">13.</span>Contact Us</h2>
+          <p>For questions, data rights requests, or security reports related to this Privacy Policy, contact:</p>
+          <table class="definition-table">
+            <tbody>
+              <tr><th>General email</th><td><a href="mailto:cs@scalev.com">cs@scalev.com</a></td></tr>
+              <tr><th>Phone</th><td>+62 821 2578 4683</td></tr>
+              <tr><th>Hours</th><td>Monday&ndash;Friday, 09:00&ndash;17:00 WIB (UTC+7)</td></tr>
+              <tr><th>Security reports</th><td><a href="https://mcp.scalev.com/.well-known/security.txt">mcp.scalev.com/.well-known/security.txt</a> / <a href="https://api.scalev.com/.well-known/security.txt">api.scalev.com/.well-known/security.txt</a></td></tr>
+              <tr><th>Service status</th><td><a href="https://status.scalev.com">status.scalev.com</a></td></tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      <div class="shell">
+        <h3>Scalev</h3>
+        <p>Published by PT Interna Cipta Asia. For more information, see <a href="/terms">Terms of Service</a> and <a href="/contact-us">Contact Us</a>.</p>
+        <div class="legal">
+          <span>&copy; Scalev. All rights reserved.</span>
+          <span><a href="/privacy">Versi Bahasa Indonesia</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

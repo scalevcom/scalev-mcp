@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "7750f3979abc4edbf1a638bc4d5ef8bac6961c96408dd2b4e12fd8bf00677a26";
+export const V3_CATALOG_SOURCE_SHA256 = "599b10ee4fd880d00738b7bdfa9f56588eba3a4efde00a2a691ee967ec6f594b";
 
 export const V3_ENDPOINTS = [
   {
@@ -6880,6 +6880,300 @@ export const V3_ENDPOINTS = [
         "variants"
       ]
     }
+  },
+  {
+    "operationId": "listBusinessStores",
+    "method": "GET",
+    "path": "/v3/stores",
+    "summary": "List business stores",
+    "description": "Requires the `store:list` scope.",
+    "tags": [
+      "Business Stores"
+    ],
+    "scopes": [
+      "store:list"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [
+      {
+        "name": "domain",
+        "in": "query",
+        "required": false,
+        "description": "Filter by custom domain URL.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "has_domain",
+        "in": "query",
+        "required": false,
+        "description": "Filter stores that have or do not have a custom domain.",
+        "schema": {
+          "type": "boolean"
+        }
+      },
+      {
+        "name": "next_cursor",
+        "in": "query",
+        "required": false,
+        "description": "Opaque cursor for the next page.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "page_size",
+        "in": "query",
+        "required": false,
+        "description": "Number of items per page.",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      {
+        "name": "previous_cursor",
+        "in": "query",
+        "required": false,
+        "description": "Opaque cursor for the previous page.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "product_id",
+        "in": "query",
+        "required": false,
+        "description": "Filter stores attached to a product ID.",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      {
+        "name": "search",
+        "in": "query",
+        "required": false,
+        "description": "Filter by store name.",
+        "schema": {
+          "type": "string"
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "createBusinessStore",
+    "method": "POST",
+    "path": "/v3/stores",
+    "summary": "Create a business store",
+    "description": "Requires the `store:create` scope.",
+    "tags": [
+      "Business Stores"
+    ],
+    "scopes": [
+      "store:create"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [],
+    "requestBody": {
+      "required": true,
+      "contentTypes": [
+        "application/json"
+      ],
+      "schemaRef": "BusinessStoreCreateRequest",
+      "requiredFields": [
+        "name"
+      ],
+      "properties": [
+        "custom_domain_id",
+        "name"
+      ]
+    }
+  },
+  {
+    "operationId": "getBusinessStore",
+    "method": "GET",
+    "path": "/v3/stores/{id}",
+    "summary": "Get a business store",
+    "description": "Requires the `store:read` scope.",
+    "tags": [
+      "Business Stores"
+    ],
+    "scopes": [
+      "store:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Numeric Scalev store database ID.",
+        "schema": {
+          "type": "integer"
+        }
+      }
+    ],
+    "queryParams": []
+  },
+  {
+    "operationId": "updateBusinessStore",
+    "method": "PATCH",
+    "path": "/v3/stores/{id}",
+    "summary": "Update a business store",
+    "description": "Requires the `store:update` scope. Use `is_public` instead of legacy `visibility`.",
+    "tags": [
+      "Business Stores"
+    ],
+    "scopes": [
+      "store:update"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Numeric Scalev store database ID.",
+        "schema": {
+          "type": "integer"
+        }
+      }
+    ],
+    "queryParams": [],
+    "requestBody": {
+      "required": true,
+      "contentTypes": [
+        "application/json"
+      ],
+      "schemaRef": "BusinessStoreUpdateRequest",
+      "requiredFields": [],
+      "properties": [
+        "auto_expire_days",
+        "auto_other_income",
+        "blocked_message",
+        "capi_purchase_value_type",
+        "cod_purchase_triggers",
+        "custom_domain_id",
+        "days_of_payment_processing",
+        "digital_only_complete_type",
+        "dynamic_other_income_cod_default_amount",
+        "dynamic_other_income_cod_default_percentage",
+        "dynamic_other_income_cod_type",
+        "dynamic_other_income_epayment_default_amount",
+        "dynamic_other_income_epayment_default_percentage",
+        "dynamic_other_income_epayment_type",
+        "email_notification_statuses",
+        "email_reply_to_assignment",
+        "email_reply_to_id",
+        "fixed_auto_other_income",
+        "greeting_message",
+        "inactivity_period",
+        "is_advanced_validation",
+        "is_auto_expire",
+        "is_courier_required",
+        "is_customer_otp_required",
+        "is_customer_spam_filter",
+        "is_discount_editable",
+        "is_dropshipping_allowed",
+        "is_email_new_order",
+        "is_email_notifications",
+        "is_fuc_bundle_enabled",
+        "is_fuc_product_enabled",
+        "is_greeting_message_enabled",
+        "is_ip_spam_filter",
+        "is_manual_shipping_cost",
+        "is_moota_enabled",
+        "is_order_hard_filter",
+        "is_postal_code",
+        "is_public",
+        "is_show_download_invoice",
+        "is_show_whatsapp",
+        "is_spam_filter",
+        "is_transferproof_required",
+        "is_unique_code",
+        "is_use_waba",
+        "is_whatsapp_link_download",
+        "is_whatsapp_new_order",
+        "is_whatsapp_payment_d1_fu",
+        "is_whatsapp_payment_d2_fu",
+        "is_whatsapp_payment_last_fu",
+        "logo",
+        "max_per_ip",
+        "max_per_phone",
+        "max_unique_code_amount",
+        "min_address_length",
+        "min_name_length",
+        "name",
+        "non_cod_purchase_triggers",
+        "other_income_name",
+        "postal_code_requirement",
+        "store_courier_other_incomes",
+        "store_custom_audiences",
+        "store_method_other_incomes",
+        "store_sales_people",
+        "waba_account_id",
+        "warehouse_id",
+        "whatsapp_notification_statuses"
+      ]
+    }
+  },
+  {
+    "operationId": "deleteBusinessStore",
+    "method": "DELETE",
+    "path": "/v3/stores/{id}",
+    "summary": "Delete a business store",
+    "description": "Requires the `store:delete` scope.",
+    "tags": [
+      "Business Stores"
+    ],
+    "scopes": [
+      "store:delete"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": true,
+    "pathParams": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Numeric Scalev store database ID.",
+        "schema": {
+          "type": "integer"
+        }
+      }
+    ],
+    "queryParams": []
   },
   {
     "operationId": "attachBusinessStoreBundlePriceOptions",

@@ -2,11 +2,11 @@
 
 Generated from `src/generated/v3Catalog.ts`.
 
-- Source OpenAPI SHA-256: `7750f3979abc4edbf1a638bc4d5ef8bac6961c96408dd2b4e12fd8bf00677a26`
-- Total catalog endpoints: 218
-- Read-only GET endpoints: 96
-- Non-destructive write/action endpoints: 92
-- Destructive write/action endpoints: 30
+- Source OpenAPI SHA-256: `599b10ee4fd880d00738b7bdfa9f56588eba3a4efde00a2a691ee967ec6f594b`
+- Total catalog endpoints: 223
+- Read-only GET endpoints: 98
+- Non-destructive write/action endpoints: 94
+- Destructive write/action endpoints: 31
 
 ## Submission Posture
 
@@ -28,10 +28,10 @@ Generated from `src/generated/v3Catalog.ts`.
 | Analytics Setup | 12 |
 | Business Customers | 7 |
 | Landing Pages | 7 |
+| Business Stores | 5 |
 | Storefront Setup | 4 |
 | WhatsApp Integrations | 4 |
 | Shipping | 3 |
-| Business Stores | 2 |
 
 ## Destructive Endpoints
 
@@ -56,6 +56,7 @@ Generated from `src/generated/v3Catalog.ts`.
 | DELETE | `/v3/products/{product_id}/follow-up-chats/{id}` | `deleteProductFollowUpChat` | Delete a product follow-up chat |
 | DELETE | `/v3/products/{product_id}/knowledge-items/{id}` | `deleteProductKnowledgeItem` | Delete a product knowledge item |
 | DELETE | `/v3/products/{product_id}/partners/{id}` | `deleteProductPartner` | Remove a product partner |
+| DELETE | `/v3/stores/{id}` | `deleteBusinessStore` | Delete a business store |
 | DELETE | `/v3/stores/{store_id}/bundle-price-options/{id}` | `detachBusinessStoreBundlePriceOption` | Remove a bundle price option from a business store |
 | DELETE | `/v3/stores/{store_id}/public-api-keys/{id}` | `revokeStorefrontPublicApiKey` | Revoke a storefront public API key |
 | DELETE | `/v3/stores/{store_id}/storefront/allowed-origins/{id}` | `revokeStorefrontAllowedOrigin` | Revoke a storefront allowed origin |
