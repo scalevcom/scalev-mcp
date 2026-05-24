@@ -119,7 +119,7 @@ Use a populated review business with at least 30 orders, 5 landing pages, 5 cust
 
 1. "Use Scalev to list my connected businesses, choose the review business, and summarize my landing pages."
 2. "Create a draft HTML Mode landing page called Claude Review Draft, update it to publish with `is_published: true`, fetch it, then delete it."
-3. "On the ICA Testing Account business, find pending review orders, fetch one order, update its notes, change its status to confirmed, then show me my order statistics broken down by day."
+3. "On the ICA Testing Account business, find pending orders, fetch one order, update its notes, change its status to confirmed, then show me my order statistics broken down by day."
 
 Negative checks:
 

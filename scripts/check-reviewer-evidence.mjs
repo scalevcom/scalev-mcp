@@ -30,7 +30,7 @@ const REQUIRED_PROMPT_SNIPPETS = [
   "## Prompt 3",
   "list my connected businesses",
   "Create a draft HTML Mode landing page",
-  "find pending review orders",
+  "find pending orders",
   "## Negative Checks",
   "execute_safe",
   "business_unique_id",

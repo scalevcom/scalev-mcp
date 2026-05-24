@@ -100,7 +100,7 @@ dan 10 produk.
 
 1. "Gunakan Scalev untuk menampilkan bisnis saya yang terhubung, pilih bisnis review, lalu ringkas landing page saya."
 2. "Buat draft HTML Mode landing page bernama Claude Review Draft, publish dengan `is_published: true`, ambil lagi datanya, lalu hapus."
-3. "Pada bisnis ICA Testing Account, cari order review yang pending, ambil satu order, ubah catatannya, ubah statusnya menjadi confirmed, lalu tampilkan statistik order saya dengan breakdown per hari."
+3. "Pada bisnis ICA Testing Account, cari order yang pending, ambil satu order, ubah catatannya, ubah statusnya menjadi confirmed, lalu tampilkan statistik order saya dengan breakdown per hari."
 
 Pemeriksaan negatif:
 

@@ -29,7 +29,7 @@ Expected evidence:
 ## Prompt 3
 
 ```text
-Use Scalev. On the ICA Testing Account business, find pending review orders, fetch one order, update its notes, change its status to confirmed, then show me my order statistics broken down by day.
+Use Scalev. On the ICA Testing Account business, find pending orders, fetch one order, update its notes, change its status to confirmed, then show me my order statistics broken down by day.
 ```
 
 Expected evidence:
