@@ -84,10 +84,18 @@ Call `get_me` first. It returns active connected businesses only. If `connected_
 | `execute_safe` | Non-destructive write | Runs one non-destructive non-GET catalog operation. |
 | `execute_destructive` | Destructive write | Runs one destructive catalog operation such as delete, cancel, revoke, remove, or disconnect. |
 | `list_landing_pages` | Read | Lists business landing pages. |
+| `list_landing_page_tags` | Read | Lists landing page tags visible to the business. |
 | `get_landing_page` | Read | Gets one business landing page. |
+| `get_landing_page_public_view` | Read | Gets authenticated public rendering data for one landing page. |
 | `create_landing_page` | Non-destructive write | Creates a landing page. For HTML Mode publish-in-one-call, include `is_published: true` with `page_display`. |
 | `update_landing_page` | Non-destructive write | Updates landing page metadata or publishing state. |
+| `update_landing_page_tags` | Non-destructive write | Replaces tags assigned to a landing page. |
 | `delete_landing_page` | Destructive write | Soft-deletes a landing page. |
+| `list_landing_page_displays` | Read | Lists saved display versions for a landing page. |
+| `create_landing_page_display` | Non-destructive write | Creates a new display version with HTML/CSS/JS, pixels, or checkout form data. |
+| `validate_landing_page_display` | Non-destructive write | Validates a display payload without saving it. |
+| `get_landing_page_display` | Read | Gets one saved landing page display. |
+| `delete_landing_page_display` | Destructive write | Deletes one saved landing page display. |
 | `list_orders` | Read | Lists business orders with filters and cursor pagination. |
 | `get_order` | Read | Gets one business order. |
 | `create_order` | Non-destructive write | Creates a business order. |
@@ -207,3 +215,4 @@ pnpm check:live-readiness:report
 - Terms: https://scalev.com/terms
 - Support: https://scalev.com/contact-us
 - Security Contact: https://mcp.scalev.com/.well-known/security.txt
+- Security Commitments: https://scalev.com/security

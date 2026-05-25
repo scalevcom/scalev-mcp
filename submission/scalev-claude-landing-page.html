@@ -661,7 +661,7 @@
               <div class="flow-pill">Scalev API /v3</div>
             </div>
             <div class="tool-list">
-              <div class="tool-item"><strong>Landing pages</strong><span>list, create, publish, delete</span></div>
+              <div class="tool-item"><strong>Landing pages</strong><span>list, display versions, publish, delete</span></div>
               <div class="tool-item"><strong>Orders</strong><span>list, update, change status, statistics</span></div>
               <div class="tool-item"><strong>Catalog escape hatch</strong><span>search, get, execute_safe</span></div>
               <div class="tool-item"><strong>Identity</strong><span>get_me, get_docs</span></div>
@@ -677,10 +677,10 @@
           <p class="section-kicker">What Claude can do</p>
           <h2>Two domains. Real merchant workflows.</h2>
           <p class="lead">
-            Scalev exposes 11 hand-picked semantic tools for Landing Pages and Orders, plus
+            Scalev exposes 20 hand-picked semantic tools for Landing Pages and Orders, plus
             6 generic tools (<code>search</code>, <code>get</code>, <code>execute_safe</code>,
             <code>execute_destructive</code>, <code>get_me</code>, <code>get_docs</code>) as an
-            escape hatch into the rest of the 237-endpoint Scalev API.
+            escape hatch into the rest of the 223-endpoint Scalev API.
           </p>
           <div class="cap-grid">
             <div class="cap">
@@ -688,10 +688,16 @@
               <p>Draft, publish, and clean up HTML Mode pages without leaving Claude.</p>
               <ul>
                 <li>list_landing_pages <span class="kind">read</span></li>
+                <li>list_landing_page_tags <span class="kind">read</span></li>
                 <li>get_landing_page <span class="kind">read</span></li>
+                <li>get_landing_page_public_view <span class="kind">read</span></li>
                 <li>create_landing_page <span class="kind write">write</span></li>
                 <li>update_landing_page <span class="kind write">write</span></li>
+                <li>update_landing_page_tags <span class="kind write">write</span></li>
+                <li>create_landing_page_display <span class="kind write">write</span></li>
+                <li>validate_landing_page_display <span class="kind write">write</span></li>
                 <li>delete_landing_page <span class="kind destr">destructive</span></li>
+                <li>delete_landing_page_display <span class="kind destr">destructive</span></li>
               </ul>
             </div>
             <div class="cap">
@@ -747,13 +753,14 @@
               <div class="prompt-no">02</div>
               <blockquote>
                 Create a draft HTML Mode landing page called Claude Review Draft,
-                update it to publish with is_published: true, fetch it, then delete it.
+                create a new display version, publish it, fetch it, then delete it.
               </blockquote>
               <h4>Tools Claude will call</h4>
               <ul>
                 <li>get_me</li>
                 <li>get_docs (landing_pages_api)</li>
                 <li>create_landing_page</li>
+                <li>create_landing_page_display</li>
                 <li>update_landing_page</li>
                 <li>get_landing_page</li>
                 <li>delete_landing_page</li>
@@ -930,6 +937,7 @@
           <ul>
             <li><a href="/privacy">Privacy policy</a></li>
             <li><a href="/terms">Terms of service</a></li>
+            <li><a href="/security">Security commitments</a></li>
             <li><a href="https://mcp.scalev.com/.well-known/security.txt">security.txt</a></li>
             <li><a href="https://status.scalev.com">status.scalev.com</a></li>
           </ul>

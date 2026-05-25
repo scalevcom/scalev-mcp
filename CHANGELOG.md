@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.3.3 - 2026-05-25
+
+- Removed `list_landing_pages_simplified` semantic tool. The underlying
+  `listLandingPagesSimplified` endpoint remains in the generated `/v3`
+  catalog and is still reachable through the generic `get` tool, but the
+  semantic wrapper added negligible value over `list_landing_pages` and was
+  dropped to keep the headline tool surface tight. Total semantic Landing
+  Pages tools: 13. Total tools: 25.
+
+## 0.3.2 - 2026-05-25
+
+- Added direct semantic tools for the full public Landing Pages operation set,
+  including simplified lists, tags, public-view payloads, page-display
+  list/create/validate/get/delete, and tag updates.
+- Regenerated bundled developer docs so `get_docs` reflects the expanded
+  landing-page tool surface.
+- Updated submission/package checks and reviewer evidence tracking for 26
+  total tools.
+
 ## 0.3.1 - 2026-05-23
 
 - Replaced semantic `cancel_order_awb` with `get_order_statistics`. AWB

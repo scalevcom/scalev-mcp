@@ -617,10 +617,10 @@
           <p class="section-kicker">Yang bisa Claude lakukan</p>
           <h2>Dua domain. Workflow merchant nyata.</h2>
           <p class="lead">
-            Scalev menyediakan 11 semantic tool pilihan untuk Landing Page dan Order,
+            Scalev menyediakan 20 semantic tool pilihan untuk Landing Page dan Order,
             plus 6 tool generik (<code>search</code>, <code>get</code>,
             <code>execute_safe</code>, <code>execute_destructive</code>,
-            <code>get_me</code>, <code>get_docs</code>) sebagai jalur ke 237 endpoint
+            <code>get_me</code>, <code>get_docs</code>) sebagai jalur ke 223 endpoint
             lainnya di Scalev API.
           </p>
           <div class="cap-grid">
@@ -629,10 +629,16 @@
               <p>Buat draft, publish, dan rapikan halaman HTML Mode tanpa keluar dari Claude.</p>
               <ul>
                 <li>list_landing_pages <span class="kind">baca</span></li>
+                <li>list_landing_page_tags <span class="kind">baca</span></li>
                 <li>get_landing_page <span class="kind">baca</span></li>
+                <li>get_landing_page_public_view <span class="kind">baca</span></li>
                 <li>create_landing_page <span class="kind write">tulis</span></li>
                 <li>update_landing_page <span class="kind write">tulis</span></li>
+                <li>update_landing_page_tags <span class="kind write">tulis</span></li>
+                <li>create_landing_page_display <span class="kind write">tulis</span></li>
+                <li>validate_landing_page_display <span class="kind write">tulis</span></li>
                 <li>delete_landing_page <span class="kind destr">destruktif</span></li>
+                <li>delete_landing_page_display <span class="kind destr">destruktif</span></li>
               </ul>
             </div>
             <div class="cap">
@@ -688,13 +694,14 @@
               <div class="prompt-no">02</div>
               <blockquote>
                 Buat draft HTML Mode landing page bernama Claude Review Draft,
-                publish dengan is_published: true, ambil lagi datanya, lalu hapus.
+                buat versi display baru, publish, ambil lagi datanya, lalu hapus.
               </blockquote>
               <h4>Tool yang Claude panggil</h4>
               <ul>
                 <li>get_me</li>
                 <li>get_docs (landing_pages_api)</li>
                 <li>create_landing_page</li>
+                <li>create_landing_page_display</li>
                 <li>update_landing_page</li>
                 <li>get_landing_page</li>
                 <li>delete_landing_page</li>
@@ -872,6 +879,7 @@
           <ul>
             <li><a href="/privacy">Kebijakan privasi</a></li>
             <li><a href="/terms">Syarat layanan</a></li>
+            <li><a href="/security">Komitmen keamanan</a></li>
             <li><a href="https://mcp.scalev.com/.well-known/security.txt">security.txt</a></li>
             <li><a href="https://status.scalev.com">status.scalev.com</a></li>
           </ul>

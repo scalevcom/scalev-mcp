@@ -19,6 +19,7 @@ describe("security", () => {
     expect(response.headers.get("cache-control")).toBe("public, max-age=86400");
     expect(body).toContain("Contact: https://scalev.com/contact-us");
     expect(body).toContain("Policy: https://scalev.com/privacy");
+    expect(body).toContain("Policy: https://scalev.com/security");
     expect(body).toContain("Preferred-Languages: en, id");
     expect(body).toContain("Canonical: https://mcp.scalev.test/.well-known/security.txt");
     expect(body).toContain("Expires: 2027-05-22T00:00:00.000Z");
@@ -52,6 +53,7 @@ describe("security", () => {
       oauth_issuer: "https://api.scalev.test/v3/oauth",
       scalev_api_base_url: "https://api.scalev.test",
       security_txt_url: "https://mcp.scalev.test/.well-known/security.txt",
+      security_policy_url: "https://scalev.com/security",
       sentry_configured: true,
       checked_at: "2026-05-22T00:00:00.000Z"
     });

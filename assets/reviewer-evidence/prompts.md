@@ -23,6 +23,7 @@ Create a draft HTML Mode landing page called Claude Review Draft, update it to p
 Expected evidence:
 
 - `create_landing_page` uses the documented LandingPageCreateRequestBody.
+- `create_landing_page_display` or `validate_landing_page_display` is used for display-version HTML/CSS/JS work instead of generic `execute_safe`.
 - `update_landing_page` includes `is_published: true`.
 - `delete_landing_page` is treated as destructive.
 

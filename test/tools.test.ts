@@ -25,7 +25,7 @@ const env: Env = {
 };
 
 describe("Scalev MCP tools", () => {
-  it("exposes only the generic MCP tools", () => {
+  it("exposes the expected MCP tools", () => {
     expect([...SCALEV_TOOL_NAMES]).toEqual([
       "get_me",
       "get_docs",
@@ -34,10 +34,18 @@ describe("Scalev MCP tools", () => {
       "execute_safe",
       "execute_destructive",
       "list_landing_pages",
+      "list_landing_page_tags",
       "get_landing_page",
+      "get_landing_page_public_view",
       "create_landing_page",
       "update_landing_page",
+      "update_landing_page_tags",
       "delete_landing_page",
+      "list_landing_page_displays",
+      "create_landing_page_display",
+      "validate_landing_page_display",
+      "get_landing_page_display",
+      "delete_landing_page_display",
       "list_orders",
       "get_order",
       "create_order",
@@ -122,6 +130,29 @@ describe("Scalev MCP tools", () => {
     expect(createLandingPage?.docs_url).toBe("https://docs.scalev.com/en/landing-pages-api");
     expect(createLandingPage?.docs_topic).toBe("landing_pages_api");
     expect(createLandingPage?.docs_hint).toMatch(/Landing Pages API/);
+
+    const landingPageOperations = searchEndpoints({ tag: "Landing Pages", limit: 50 }).data.map(
+      (endpoint) => endpoint.operation_id
+    );
+    expect(landingPageOperations).toHaveLength(14);
+    expect(landingPageOperations).toEqual(
+      expect.arrayContaining([
+        "listLandingPages",
+        "createLandingPage",
+        "listLandingPagesSimplified",
+        "listLandingPageTags",
+        "getLandingPage",
+        "updateLandingPage",
+        "deleteLandingPage",
+        "getLandingPagePublicView",
+        "updateLandingPageTags",
+        "listLandingPageDisplays",
+        "createLandingPageDisplay",
+        "getLandingPageDisplay",
+        "deleteLandingPageDisplay",
+        "validateLandingPageDisplay"
+      ])
+    );
 
     const cancelAwb = searchEndpoints({ query: "cancel awb", method: "POST", limit: 10 });
     const cancelOrderAwb = cancelAwb.data.find((endpoint) => endpoint.operation_id === "cancelOrderAwb");
@@ -342,6 +373,69 @@ describe("Scalev MCP tools", () => {
     expect(buildExecuteDestructiveRequest({ operation_id: "deleteLandingPage", path_params: { id: 123 } }).request)
       .toMatchObject({ method: "DELETE", path: "/v3/pages/123" });
 
+    expect(buildGetRequest({ operation_id: "listLandingPagesSimplified", query: { page_size: 5 } }).request).toEqual({
+      method: "GET",
+      path: "/v3/pages/simplified?page_size=5"
+    });
+
+    expect(buildGetRequest({ operation_id: "listLandingPageTags" }).request).toEqual({
+      method: "GET",
+      path: "/v3/pages/tags"
+    });
+
+    expect(buildGetRequest({ operation_id: "getLandingPagePublicView", path_params: { id: 123 } }).request).toEqual({
+      method: "GET",
+      path: "/v3/pages/123/public"
+    });
+
+    expect(
+      buildExecuteSafeRequest({ operation_id: "updateLandingPageTags", path_params: { id: 123 }, body: { tags: ["Review"] } })
+        .request
+    ).toEqual({ method: "POST", path: "/v3/pages/123/update-tags", body: { tags: ["Review"] } });
+
+    expect(
+      buildGetRequest({ operation_id: "listLandingPageDisplays", path_params: { page_id: 123 }, query: { page_size: 5 } })
+        .request
+    ).toEqual({ method: "GET", path: "/v3/pages/123/page-displays?page_size=5" });
+
+    expect(
+      buildExecuteSafeRequest({
+        operation_id: "createLandingPageDisplay",
+        path_params: { page_id: 123 },
+        body: { render_mode: "html_mode" }
+      }).request
+    ).toEqual({
+      method: "POST",
+      path: "/v3/pages/123/page-displays",
+      body: { render_mode: "html_mode" }
+    });
+
+    expect(
+      buildExecuteSafeRequest({
+        operation_id: "validateLandingPageDisplay",
+        path_params: { page_id: 123 },
+        body: { render_mode: "html_mode" }
+      }).request
+    ).toEqual({
+      method: "POST",
+      path: "/v3/pages/123/page-displays/validate",
+      body: { render_mode: "html_mode" }
+    });
+
+    expect(
+      buildGetRequest({ operation_id: "getLandingPageDisplay", path_params: { page_id: 123, display_id: 987 } }).request
+    ).toEqual({
+      method: "GET",
+      path: "/v3/pages/123/page-displays/987"
+    });
+
+    expect(
+      buildExecuteDestructiveRequest({
+        operation_id: "deleteLandingPageDisplay",
+        path_params: { page_id: 123, display_id: 987 }
+      }).request
+    ).toMatchObject({ method: "DELETE", path: "/v3/pages/123/page-displays/987" });
+
     expect(buildGetRequest({ operation_id: "listOrders", query: { status: "pending" } }).request).toEqual({
       method: "GET",
       path: "/v3/orders?status=pending"
@@ -398,10 +492,22 @@ describe("Scalev MCP tools", () => {
           url: "https://api.scalev.test/v3/pages?status=draft&page_size=10&b_uid=BIZ123"
         },
         {
+          tool: "list_landing_page_tags",
+          input: { business_unique_id: "BIZ123" },
+          method: "GET",
+          url: "https://api.scalev.test/v3/pages/tags?b_uid=BIZ123"
+        },
+        {
           tool: "get_landing_page",
           input: { business_unique_id: "BIZ123", id: 123, include: "current_page_display", preview: true },
           method: "GET",
           url: "https://api.scalev.test/v3/pages/123?include=current_page_display&preview=true&b_uid=BIZ123"
+        },
+        {
+          tool: "get_landing_page_public_view",
+          input: { business_unique_id: "BIZ123", id: 123 },
+          method: "GET",
+          url: "https://api.scalev.test/v3/pages/123/public?b_uid=BIZ123"
         },
         {
           tool: "create_landing_page",
@@ -418,10 +524,49 @@ describe("Scalev MCP tools", () => {
           body: { is_published: false }
         },
         {
+          tool: "update_landing_page_tags",
+          input: { business_unique_id: "BIZ123", id: 123, tags: ["Review", "Promo"] },
+          method: "POST",
+          url: "https://api.scalev.test/v3/pages/123/update-tags?b_uid=BIZ123",
+          body: { tags: ["Review", "Promo"] }
+        },
+        {
           tool: "delete_landing_page",
           input: { business_unique_id: "BIZ123", id: 123 },
           method: "DELETE",
           url: "https://api.scalev.test/v3/pages/123?b_uid=BIZ123"
+        },
+        {
+          tool: "list_landing_page_displays",
+          input: { business_unique_id: "BIZ123", page_id: 123, page_size: 10 },
+          method: "GET",
+          url: "https://api.scalev.test/v3/pages/123/page-displays?page_size=10&b_uid=BIZ123"
+        },
+        {
+          tool: "create_landing_page_display",
+          input: { business_unique_id: "BIZ123", page_id: 123, body: { render_mode: "html_mode" } },
+          method: "POST",
+          url: "https://api.scalev.test/v3/pages/123/page-displays?b_uid=BIZ123",
+          body: { render_mode: "html_mode" }
+        },
+        {
+          tool: "validate_landing_page_display",
+          input: { business_unique_id: "BIZ123", page_id: 123, body: { render_mode: "html_mode" } },
+          method: "POST",
+          url: "https://api.scalev.test/v3/pages/123/page-displays/validate?b_uid=BIZ123",
+          body: { render_mode: "html_mode" }
+        },
+        {
+          tool: "get_landing_page_display",
+          input: { business_unique_id: "BIZ123", page_id: 123, display_id: 987 },
+          method: "GET",
+          url: "https://api.scalev.test/v3/pages/123/page-displays/987?b_uid=BIZ123"
+        },
+        {
+          tool: "delete_landing_page_display",
+          input: { business_unique_id: "BIZ123", page_id: 123, display_id: 987 },
+          method: "DELETE",
+          url: "https://api.scalev.test/v3/pages/123/page-displays/987?b_uid=BIZ123"
         },
         {
           tool: "list_orders",

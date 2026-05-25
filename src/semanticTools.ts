@@ -20,8 +20,10 @@ const businessUniqueIdSchema = z
   .string()
   .optional()
   .describe(
-    "Top-level business selector. Copy one value from get_me.connected_businesses[].unique_id when the OAuth token is connected to more than one business."
+    "Top-level business selector. Copy one value from get_me.connected_businesses[].unique_id when the OAuth token is connected to more than one business. If this exact key is accidentally placed in this tool's body or query object, the connector recovers it and forwards it to the Scalev API as b_uid."
   );
+const landingPageIdSchema = z.union([z.string(), z.number()]).describe("Landing page id.");
+const landingPageDisplayIdSchema = z.union([z.string(), z.number()]).describe("Landing page display id.");
 
 const paginationSchema = {
   page_size: z.number().int().min(1).max(25).optional().describe("Number of records to return. Scalev caps this at 25."),
@@ -58,6 +60,26 @@ export function registerSemanticTools(server: McpServer, env: Env): void {
   );
 
   server.registerTool(
+    "list_landing_page_tags",
+    {
+      title: "List landing page tags",
+      description:
+        "Lists landing page tags visible to the selected business. Use with update_landing_page_tags when assigning or replacing page tags.",
+      inputSchema: {
+        business_unique_id: businessUniqueIdSchema
+      },
+      annotations: toolAnnotations("List landing page tags", "nexus_read")
+    },
+    async (input) =>
+      runCatalogTool(env, "list_landing_page_tags", "listLandingPageTags", () =>
+        buildGetRequest({
+          operation_id: "listLandingPageTags",
+          business_unique_id: input.business_unique_id
+        })
+      )
+  );
+
+  server.registerTool(
     "get_landing_page",
     {
       title: "Get landing page",
@@ -65,7 +87,7 @@ export function registerSemanticTools(server: McpServer, env: Env): void {
         "Gets one business landing page from Scalev API v3, including the current published display when one is selected. The landing_pages_api docs topic describes display fields.",
       inputSchema: {
         business_unique_id: businessUniqueIdSchema,
-        id: z.union([z.string(), z.number()]).describe("Landing page id."),
+        id: landingPageIdSchema,
         include: z
           .union([z.string(), z.array(z.string())])
           .optional()
@@ -82,6 +104,28 @@ export function registerSemanticTools(server: McpServer, env: Env): void {
           business_unique_id: input.business_unique_id,
           path_params: { id: input.id },
           query: queryWith(input.query, { include: input.include, preview: input.preview })
+        })
+      )
+  );
+
+  server.registerTool(
+    "get_landing_page_public_view",
+    {
+      title: "Get landing page public view",
+      description:
+        "Gets the authenticated public rendering payload for one landing page. Use this to inspect what the published page view needs without using the generic get tool.",
+      inputSchema: {
+        business_unique_id: businessUniqueIdSchema,
+        id: landingPageIdSchema
+      },
+      annotations: toolAnnotations("Get landing page public view", "nexus_read")
+    },
+    async (input) =>
+      runCatalogTool(env, "get_landing_page_public_view", "getLandingPagePublicView", () =>
+        buildGetRequest({
+          operation_id: "getLandingPagePublicView",
+          business_unique_id: input.business_unique_id,
+          path_params: { id: input.id }
         })
       )
   );
@@ -116,7 +160,7 @@ export function registerSemanticTools(server: McpServer, env: Env): void {
         "Update landing page metadata or publishing state using the Scalev API v3 updateLandingPage body. Send is_published: true with current_page_display_id to publish a display, or is_published: false with current_page_display_id: null to unpublish.",
       inputSchema: {
         business_unique_id: businessUniqueIdSchema,
-        id: z.union([z.string(), z.number()]).describe("Landing page id."),
+        id: landingPageIdSchema,
         body: bodySchema.describe("LandingPageUpdateRequestBody from the public OpenAPI contract.")
       },
       annotations: toolAnnotations("Update landing page", "safe_write")
@@ -133,6 +177,30 @@ export function registerSemanticTools(server: McpServer, env: Env): void {
   );
 
   server.registerTool(
+    "update_landing_page_tags",
+    {
+      title: "Update landing page tags",
+      description:
+        "Replaces the tags assigned to one business landing page. Pass the complete desired tag list in tags.",
+      inputSchema: {
+        business_unique_id: businessUniqueIdSchema,
+        id: landingPageIdSchema,
+        tags: z.array(z.string()).describe("Complete tag list to assign to the landing page.")
+      },
+      annotations: toolAnnotations("Update landing page tags", "safe_write")
+    },
+    async (input) =>
+      runCatalogTool(env, "update_landing_page_tags", "updateLandingPageTags", () =>
+        buildExecuteSafeRequest({
+          operation_id: "updateLandingPageTags",
+          business_unique_id: input.business_unique_id,
+          path_params: { id: input.id },
+          body: { tags: input.tags }
+        })
+      )
+  );
+
+  server.registerTool(
     "delete_landing_page",
     {
       title: "Delete landing page",
@@ -140,7 +208,7 @@ export function registerSemanticTools(server: McpServer, env: Env): void {
         "Soft-delete one business landing page using Scalev API v3 deleteLandingPage. This removes the page from the business landing page list.",
       inputSchema: {
         business_unique_id: businessUniqueIdSchema,
-        id: z.union([z.string(), z.number()]).describe("Landing page id.")
+        id: landingPageIdSchema
       },
       annotations: toolAnnotations("Delete landing page", "destructive_write")
     },
@@ -150,6 +218,129 @@ export function registerSemanticTools(server: McpServer, env: Env): void {
           operation_id: "deleteLandingPage",
           business_unique_id: input.business_unique_id,
           path_params: { id: input.id }
+        })
+      )
+  );
+
+  server.registerTool(
+    "list_landing_page_displays",
+    {
+      title: "List landing page displays",
+      description:
+        "Lists saved displays for one landing page, including draft and published display versions. Use before selecting a display to publish with update_landing_page.",
+      inputSchema: {
+        business_unique_id: businessUniqueIdSchema,
+        page_id: landingPageIdSchema,
+        ...paginationSchema,
+        query: querySchema.optional().describe("Additional documented query parameters for listLandingPageDisplays.")
+      },
+      annotations: toolAnnotations("List landing page displays", "nexus_read")
+    },
+    async (input) =>
+      runCatalogTool(env, "list_landing_page_displays", "listLandingPageDisplays", () =>
+        buildGetRequest({
+          operation_id: "listLandingPageDisplays",
+          business_unique_id: input.business_unique_id,
+          path_params: { page_id: input.page_id },
+          query: queryWith(input.query, {
+            page_size: input.page_size,
+            next_cursor: input.next_cursor,
+            previous_cursor: input.previous_cursor
+          })
+        })
+      )
+  );
+
+  server.registerTool(
+    "create_landing_page_display",
+    {
+      title: "Create landing page display",
+      description:
+        "Creates a new display version for an existing landing page. Use this direct tool to update HTML/CSS/JS, analytics pixels, or checkout form_display data; then publish the returned display id with update_landing_page and current_page_display_id.",
+      inputSchema: {
+        business_unique_id: businessUniqueIdSchema,
+        page_id: landingPageIdSchema,
+        body: bodySchema.describe("LandingPageDisplayRequestBody from the public OpenAPI contract.")
+      },
+      annotations: toolAnnotations("Create landing page display", "safe_write")
+    },
+    async (input) =>
+      runCatalogTool(env, "create_landing_page_display", "createLandingPageDisplay", () =>
+        buildExecuteSafeRequest({
+          operation_id: "createLandingPageDisplay",
+          business_unique_id: input.business_unique_id,
+          path_params: { page_id: input.page_id },
+          body: input.body
+        })
+      )
+  );
+
+  server.registerTool(
+    "validate_landing_page_display",
+    {
+      title: "Validate landing page display",
+      description:
+        "Validates a landing page display payload without saving it. Use before create_landing_page_display when checking HTML Mode display fields or checkout form_display data.",
+      inputSchema: {
+        business_unique_id: businessUniqueIdSchema,
+        page_id: landingPageIdSchema,
+        body: bodySchema.describe("LandingPageDisplayRequestBody from the public OpenAPI contract.")
+      },
+      annotations: toolAnnotations("Validate landing page display", "safe_write")
+    },
+    async (input) =>
+      runCatalogTool(env, "validate_landing_page_display", "validateLandingPageDisplay", () =>
+        buildExecuteSafeRequest({
+          operation_id: "validateLandingPageDisplay",
+          business_unique_id: input.business_unique_id,
+          path_params: { page_id: input.page_id },
+          body: input.body
+        })
+      )
+  );
+
+  server.registerTool(
+    "get_landing_page_display",
+    {
+      title: "Get landing page display",
+      description:
+        "Gets one saved display for a landing page. Use this direct tool to inspect HTML Mode code, pixels, and checkout form_display fields for a specific display id.",
+      inputSchema: {
+        business_unique_id: businessUniqueIdSchema,
+        page_id: landingPageIdSchema,
+        display_id: landingPageDisplayIdSchema
+      },
+      annotations: toolAnnotations("Get landing page display", "nexus_read")
+    },
+    async (input) =>
+      runCatalogTool(env, "get_landing_page_display", "getLandingPageDisplay", () =>
+        buildGetRequest({
+          operation_id: "getLandingPageDisplay",
+          business_unique_id: input.business_unique_id,
+          path_params: { page_id: input.page_id, display_id: input.display_id }
+        })
+      )
+  );
+
+  server.registerTool(
+    "delete_landing_page_display",
+    {
+      title: "Delete landing page display",
+      description:
+        "Deletes one saved landing page display. This is destructive and cannot delete the page's current published display.",
+      inputSchema: {
+        business_unique_id: businessUniqueIdSchema,
+        page_id: landingPageIdSchema,
+        display_id: landingPageDisplayIdSchema
+      },
+      annotations: toolAnnotations("Delete landing page display", "destructive_write")
+    },
+    async (input) =>
+      runCatalogTool(env, "delete_landing_page_display", "deleteLandingPageDisplay", () =>
+        buildExecuteDestructiveRequest({
+          operation_id: "deleteLandingPageDisplay",
+          business_unique_id: input.business_unique_id,
+          path_params: { page_id: input.page_id, display_id: input.display_id }
         })
       )
   );

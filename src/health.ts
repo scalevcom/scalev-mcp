@@ -20,6 +20,7 @@ export function healthResponse(env: Env, now = new Date()): Response {
         oauth_issuer: env.NEXUS_OAUTH_ISSUER,
         scalev_api_base_url: env.NEXUS_API_BASE_URL,
         security_txt_url: securityTxtUrl,
+        security_policy_url: "https://scalev.com/security",
         sentry_configured: Boolean(env.SENTRY_DSN),
         checked_at: now.toISOString()
       },

@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Security Commitments — Scalev</title>
+    <meta
+      name="description"
+      content="Scalev's technical security commitments: TLS, OAuth 2.1, PKCE, HSTS, CAA, audit logging, and vulnerability disclosure path."
+    />
+    <link rel="alternate" hreflang="id" href="/security" />
+    <link rel="alternate" hreflang="en" href="/security-en" />
+    <link rel="canonical" href="/security-en" />
+    <style>
+      :root {
+        --cyan: #05adeb;
+        --cyan-deep: #047fb5;
+        --ink: #1d2868;
+        --ink-soft: #40509a;
+        --ink-muted: #6a73a3;
+        --paper: #f5f9ff;
+        --paper-warm: #faf9f5;
+        --line: #d9e4f5;
+        --line-strong: #b9c8e3;
+        --lime: #c9f269;
+        --white: #ffffff;
+        --display: "Aptos Display", "Segoe UI", sans-serif;
+        --sans: "Aptos", "Segoe UI", sans-serif;
+        --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--paper-warm);
+        font-family: var(--sans);
+        line-height: 1.65;
+        font-size: 16px;
+      }
+      a { color: var(--cyan-deep); text-decoration: underline; text-underline-offset: 2px; }
+      a:hover { color: var(--cyan); }
+      strong { color: var(--ink); }
+      code {
+        font-family: var(--mono);
+        font-size: 0.9em;
+        background: var(--paper);
+        padding: 2px 6px;
+        border-radius: 3px;
+        color: var(--ink);
+      }
+      .shell { width: min(800px, calc(100% - 40px)); margin: 0 auto; }
+      .nav { background: var(--white); border-bottom: 1px solid var(--line); }
+      .nav-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 0;
+      }
+      .brand {
+        font-family: var(--display);
+        font-size: 28px;
+        font-weight: 800;
+        color: var(--ink);
+        text-decoration: none;
+      }
+      .lang-switch {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 14px;
+        border: 1px solid var(--line-strong);
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        color: var(--ink);
+        background: var(--white);
+      }
+      .lang-switch:hover { background: var(--paper); color: var(--ink); }
+      .lang-switch::before { content: "🌐"; font-size: 14px; }
+      header.page-header { padding: 56px 0 32px; }
+      header.page-header h1 {
+        margin: 0;
+        font-family: var(--display);
+        font-size: clamp(36px, 5vw, 56px);
+        line-height: 1.05;
+        color: var(--ink);
+      }
+      header.page-header .updated {
+        margin: 16px 0 0;
+        color: var(--ink-muted);
+        font-size: 14px;
+      }
+      header.page-header .updated strong { color: var(--ink-soft); font-weight: 700; }
+      header.page-header .scope {
+        margin: 8px 0 0;
+        color: var(--ink-muted);
+        font-size: 14px;
+      }
+      .toc {
+        margin: 24px 0 48px;
+        padding: 24px;
+        background: var(--white);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+      }
+      .toc h2 {
+        margin: 0 0 12px;
+        font-family: var(--display);
+        font-size: 18px;
+        color: var(--ink);
+      }
+      .toc ol { margin: 0; padding-left: 22px; }
+      .toc li { padding: 3px 0; font-size: 14.5px; }
+      .toc a { text-decoration: none; color: var(--cyan-deep); }
+      .toc a:hover { text-decoration: underline; }
+      main { padding-bottom: 64px; }
+      section.policy { margin: 40px 0; scroll-margin-top: 24px; }
+      section.policy h2 {
+        margin: 0 0 18px;
+        font-family: var(--display);
+        font-size: clamp(22px, 3vw, 30px);
+        line-height: 1.2;
+        color: var(--ink);
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--cyan);
+      }
+      section.policy h2 .num {
+        color: var(--cyan-deep);
+        font-weight: 800;
+        margin-right: 10px;
+      }
+      section.policy h3 {
+        margin: 28px 0 10px;
+        font-family: var(--display);
+        font-size: 18px;
+        color: var(--ink);
+      }
+      section.policy p { margin: 12px 0; }
+      section.policy ul, section.policy ol { margin: 14px 0; padding-left: 24px; }
+      section.policy li { padding: 4px 0; }
+      section.policy li::marker { color: var(--cyan-deep); }
+      .control-table {
+        width: 100%;
+        margin: 14px 0;
+        border-collapse: collapse;
+        font-size: 14.5px;
+      }
+      .control-table th, .control-table td {
+        text-align: left;
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--line);
+        vertical-align: top;
+      }
+      .control-table th {
+        background: var(--paper);
+        color: var(--ink);
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      .control-table tr:last-child td { border-bottom: none; }
+      .definition-table {
+        width: 100%;
+        margin: 18px 0;
+        border-collapse: collapse;
+        font-size: 14.5px;
+      }
+      .definition-table th, .definition-table td {
+        text-align: left;
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--line);
+        vertical-align: top;
+      }
+      .definition-table th {
+        background: var(--paper);
+        color: var(--ink);
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      .definition-table tr:last-child td { border-bottom: none; }
+      .callout {
+        margin: 18px 0;
+        padding: 16px 20px;
+        background: var(--paper);
+        border-left: 4px solid var(--cyan);
+        border-radius: 0 6px 6px 0;
+        font-size: 15px;
+      }
+      .callout strong { color: var(--cyan-deep); }
+      footer {
+        background: var(--ink);
+        color: rgba(255,255,255,0.78);
+        padding: 40px 0;
+        font-size: 14px;
+      }
+      footer h3 {
+        margin: 0 0 8px;
+        color: var(--white);
+        font-family: var(--display);
+        font-size: 18px;
+      }
+      footer a { color: var(--lime); }
+      footer .legal {
+        border-top: 1px solid rgba(255,255,255,0.12);
+        margin-top: 24px;
+        padding-top: 18px;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        font-size: 12px;
+        color: rgba(255,255,255,0.5);
+      }
+      footer .legal a { color: rgba(255,255,255,0.65); }
+      @media (max-width: 600px) {
+        header.page-header { padding: 36px 0 24px; }
+        .toc { padding: 18px; }
+        footer .legal { flex-direction: column; }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="nav">
+      <div class="shell nav-inner">
+        <a class="brand" href="/">Scalev</a>
+        <a class="lang-switch" href="/security" hreflang="id" lang="id">Bahasa Indonesia</a>
+      </div>
+    </nav>
+
+    <main>
+      <div class="shell">
+        <header class="page-header">
+          <h1>Security Commitments</h1>
+          <p class="updated">Last updated: <strong>May 24, 2026</strong></p>
+          <p class="scope">Scope: Scalev web platform, Scalev API, and the Scalev MCP connector.</p>
+        </header>
+
+        <nav class="toc" aria-label="Contents">
+          <h2>Contents</h2>
+          <ol>
+            <li><a href="#s1">Transport Security</a></li>
+            <li><a href="#s2">Authorization and OAuth</a></li>
+            <li><a href="#s3">HTTP Security Headers</a></li>
+            <li><a href="#s4">Audit Logging and Telemetry</a></li>
+            <li><a href="#s5">Rate Limiting and Abuse Protection</a></li>
+            <li><a href="#s6">Data Protection</a></li>
+            <li><a href="#s7">Subprocessor Security</a></li>
+            <li><a href="#s8">Vulnerability Disclosure</a></li>
+            <li><a href="#s9">Security Contact</a></li>
+          </ol>
+        </nav>
+
+        <section class="policy" id="s1">
+          <h2><span class="num">1.</span>Transport Security</h2>
+          <p>
+            All HTTP traffic to Scalev production domains uses HTTPS with TLS 1.2 or higher. <em>HTTP Strict Transport Security</em> (HSTS) is enabled with <code>max-age=31536000</code>, <code>includeSubDomains</code>, and <code>preload</code>, and Scalev domains are registered on the major browser preload lists.
+          </p>
+          <table class="control-table">
+            <thead>
+              <tr><th>Host</th><th>TLS</th><th>HSTS</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>scalev.com</code></td><td>TLS 1.2+</td><td>preload</td></tr>
+              <tr><td><code>app.scalev.com</code></td><td>TLS 1.2+</td><td>preload</td></tr>
+              <tr><td><code>api.scalev.com</code></td><td>TLS 1.2+</td><td>preload</td></tr>
+              <tr><td><code>mcp.scalev.com</code></td><td>TLS 1.2+</td><td>preload</td></tr>
+            </tbody>
+          </table>
+          <p>
+            Certificate issuance is restricted by DNS <em>Certificate Authority Authorization</em> (CAA) records to only permit approved certificate authorities (e.g., Google Trust Services and Let&rsquo;s Encrypt). Issuance from any other CA is rejected at the DNS level.
+          </p>
+        </section>
+
+        <section class="policy" id="s2">
+          <h2><span class="num">2.</span>Authorization and OAuth</h2>
+          <p>
+            Third-party integrations, including the Scalev MCP connector for AI assistants, use OAuth 2.1 with the following controls:
+          </p>
+          <ul>
+            <li><strong>Dynamic Client Registration</strong> (RFC 7591) and <strong>Client ID Metadata Document</strong> (RFC 8414) are supported for securely registering third-party clients.</li>
+            <li><strong>Proof Key for Code Exchange</strong> (PKCE) with the <code>S256</code> method is required on every authorization flow.</li>
+            <li><strong>Refresh token rotation:</strong> each refresh-token use issues a new refresh token and invalidates the previous one; reuse of a rotated token is detected and refused.</li>
+            <li><strong>Per-business consent:</strong> users choose the business(es) to authorize on the consent screen; tokens are issued bound to the approved scopes and businesses.</li>
+            <li><strong>Per-request scope enforcement:</strong> the Scalev API validates the token, scope, and business access on every API call; requests outside the approved scopes are rejected.</li>
+            <li><strong>Revocation:</strong> users can revoke third-party access at any time from Scalev settings or via the AI assistant's own connection management UI.</li>
+          </ul>
+          <p>
+            <em>Protected Resource Metadata</em> (RFC 9728) is published at <code>mcp.scalev.com/.well-known/oauth-protected-resource/mcp</code>, and <em>Authorization Server Metadata</em> (RFC 8414) at <code>api.scalev.com/v3/oauth/.well-known/oauth-authorization-server</code>.
+          </p>
+        </section>
+
+        <section class="policy" id="s3">
+          <h2><span class="num">3.</span>HTTP Security Headers</h2>
+          <p>
+            All HTTP responses from Scalev domains include the following security headers:
+          </p>
+          <table class="control-table">
+            <thead><tr><th>Header</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td><code>Strict-Transport-Security</code></td><td><code>max-age=31536000; includeSubDomains; preload</code></td></tr>
+              <tr><td><code>X-Content-Type-Options</code></td><td><code>nosniff</code></td></tr>
+              <tr><td><code>X-Frame-Options</code></td><td><code>DENY</code> (clickjacking protection)</td></tr>
+            </tbody>
+          </table>
+          <p>
+            Unauthenticated MCP responses include a <code>WWW-Authenticate</code> header with a link to the protected-resource metadata per the OAuth 2.1 standard.
+          </p>
+        </section>
+
+        <section class="policy" id="s4">
+          <h2><span class="num">4.</span>Audit Logging and Telemetry</h2>
+          <p>
+            Scalev logs public API calls for audit, abuse detection, and incident investigation. Logging practices:
+          </p>
+          <ul>
+            <li><strong>MCP connector:</strong> only operational metadata (request id, tool name, operation id, status, error code, duration). Bearer tokens, request bodies, and response bodies are <strong>not</strong> logged by the MCP connector.</li>
+            <li><strong>Scalev API:</strong> machine-to-machine calls (OAuth and API key) are logged with metadata and sanitized request/response bodies. Bearer tokens, credentials, and sensitive fields are masked before storage.</li>
+            <li><strong>Retention:</strong> machine API logs are subject to a two-week retention partition to minimize the historical data surface.</li>
+            <li><strong>Access:</strong> logs are available to merchant business owners through the dashboard for independent audit.</li>
+          </ul>
+        </section>
+
+        <section class="policy" id="s5">
+          <h2><span class="num">5.</span>Rate Limiting and Abuse Protection</h2>
+          <p>
+            The Scalev public API enforces per-credential rate limits to prevent abuse and protect shared resources. Clients exceeding the limit receive <code>429 Too Many Requests</code> responses with appropriate retry information. Additional Cloudflare WAF and anomaly detection operate at the edge to block malicious traffic before it reaches the application.
+          </p>
+        </section>
+
+        <section class="policy" id="s6">
+          <h2><span class="num">6.</span>Data Protection</h2>
+          <ul>
+            <li><strong>Encryption in transit:</strong> TLS 1.2+ on all client-server communication.</li>
+            <li><strong>Encryption at rest:</strong> data is encrypted at the storage layer at our infrastructure provider (DigitalOcean) according to the provider's default standards.</li>
+            <li><strong>No direct card storage:</strong> Scalev does not directly store full card numbers or CVV; card processing is delegated to licensed payment gateways.</li>
+            <li><strong>Log sanitization:</strong> sensitive fields (tokens, credentials, payment payloads) are masked in logs before storage.</li>
+          </ul>
+        </section>
+
+        <section class="policy" id="s7">
+          <h2><span class="num">7.</span>Subprocessor Security</h2>
+          <p>
+            Scalev engages trusted service providers that process Personal Data on our behalf under contracts requiring a level of protection equivalent to these commitments. The primary subprocessor list is available in the <a href="/privacy-en#s4">Privacy Policy &sect;4</a>. Material changes to the subprocessor list are announced on the Platform.
+          </p>
+        </section>
+
+        <section class="policy" id="s8">
+          <h2><span class="num">8.</span>Vulnerability Disclosure</h2>
+          <p>
+            We welcome responsible security vulnerability reports. The official reporting path is the <code>security.txt</code> file:
+          </p>
+          <ul>
+            <li><a href="https://mcp.scalev.com/.well-known/security.txt"><code>mcp.scalev.com/.well-known/security.txt</code></a></li>
+            <li><a href="https://api.scalev.com/.well-known/security.txt"><code>api.scalev.com/.well-known/security.txt</code></a></li>
+          </ul>
+          <p>
+            <strong>Response commitment:</strong> we acknowledge security reports within two business days and target resolution of critical vulnerabilities (token, authentication, or data exposure) before public disclosure.
+          </p>
+          <div class="callout">
+            <strong>Please do not</strong> perform penetration testing against other users' production accounts, access data that does not belong to you, or interfere with Service availability. Limited testing against your own test accounts is welcome.
+          </div>
+        </section>
+
+        <section class="policy" id="s9">
+          <h2><span class="num">9.</span>Security Contact</h2>
+          <table class="definition-table">
+            <tbody>
+              <tr><th>Vulnerability reports</th><td><a href="https://mcp.scalev.com/.well-known/security.txt">security.txt</a></td></tr>
+              <tr><th>General inquiries</th><td><a href="mailto:cs@scalev.com">cs@scalev.com</a></td></tr>
+              <tr><th>Service status</th><td><a href="https://status.scalev.com">status.scalev.com</a></td></tr>
+              <tr><th>Privacy Policy</th><td><a href="/privacy-en">scalev.com/privacy-en</a></td></tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      <div class="shell">
+        <h3>Scalev</h3>
+        <p>Published by PT Interna Cipta Asia. See <a href="/privacy-en">Privacy Policy</a>, <a href="/terms">Terms of Service</a>, and <a href="/contact-us">Contact Us</a>.</p>
+        <div class="legal">
+          <span>&copy; Scalev. All rights reserved.</span>
+          <span><a href="/security">Versi Bahasa Indonesia</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

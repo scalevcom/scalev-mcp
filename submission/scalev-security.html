@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Komitmen Keamanan — Scalev</title>
+    <meta
+      name="description"
+      content="Komitmen keamanan teknis Scalev: TLS, OAuth 2.1, PKCE, HSTS, CAA, audit log, dan jalur pelaporan kerentanan."
+    />
+    <link rel="alternate" hreflang="id" href="/security" />
+    <link rel="alternate" hreflang="en" href="/security-en" />
+    <link rel="canonical" href="/security" />
+    <style>
+      :root {
+        --cyan: #05adeb;
+        --cyan-deep: #047fb5;
+        --ink: #1d2868;
+        --ink-soft: #40509a;
+        --ink-muted: #6a73a3;
+        --paper: #f5f9ff;
+        --paper-warm: #faf9f5;
+        --line: #d9e4f5;
+        --line-strong: #b9c8e3;
+        --lime: #c9f269;
+        --white: #ffffff;
+        --display: "Aptos Display", "Segoe UI", sans-serif;
+        --sans: "Aptos", "Segoe UI", sans-serif;
+        --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--paper-warm);
+        font-family: var(--sans);
+        line-height: 1.65;
+        font-size: 16px;
+      }
+      a { color: var(--cyan-deep); text-decoration: underline; text-underline-offset: 2px; }
+      a:hover { color: var(--cyan); }
+      strong { color: var(--ink); }
+      code {
+        font-family: var(--mono);
+        font-size: 0.9em;
+        background: var(--paper);
+        padding: 2px 6px;
+        border-radius: 3px;
+        color: var(--ink);
+      }
+      .shell { width: min(800px, calc(100% - 40px)); margin: 0 auto; }
+      .nav { background: var(--white); border-bottom: 1px solid var(--line); }
+      .nav-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 0;
+      }
+      .brand {
+        font-family: var(--display);
+        font-size: 28px;
+        font-weight: 800;
+        color: var(--ink);
+        text-decoration: none;
+      }
+      .lang-switch {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 14px;
+        border: 1px solid var(--line-strong);
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        color: var(--ink);
+        background: var(--white);
+      }
+      .lang-switch:hover { background: var(--paper); color: var(--ink); }
+      .lang-switch::before { content: "🌐"; font-size: 14px; }
+      header.page-header { padding: 56px 0 32px; }
+      header.page-header h1 {
+        margin: 0;
+        font-family: var(--display);
+        font-size: clamp(36px, 5vw, 56px);
+        line-height: 1.05;
+        color: var(--ink);
+      }
+      header.page-header .updated {
+        margin: 16px 0 0;
+        color: var(--ink-muted);
+        font-size: 14px;
+      }
+      header.page-header .updated strong { color: var(--ink-soft); font-weight: 700; }
+      header.page-header .scope {
+        margin: 8px 0 0;
+        color: var(--ink-muted);
+        font-size: 14px;
+      }
+      .toc {
+        margin: 24px 0 48px;
+        padding: 24px;
+        background: var(--white);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+      }
+      .toc h2 {
+        margin: 0 0 12px;
+        font-family: var(--display);
+        font-size: 18px;
+        color: var(--ink);
+      }
+      .toc ol { margin: 0; padding-left: 22px; }
+      .toc li { padding: 3px 0; font-size: 14.5px; }
+      .toc a { text-decoration: none; color: var(--cyan-deep); }
+      .toc a:hover { text-decoration: underline; }
+      main { padding-bottom: 64px; }
+      section.policy { margin: 40px 0; scroll-margin-top: 24px; }
+      section.policy h2 {
+        margin: 0 0 18px;
+        font-family: var(--display);
+        font-size: clamp(22px, 3vw, 30px);
+        line-height: 1.2;
+        color: var(--ink);
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--cyan);
+      }
+      section.policy h2 .num {
+        color: var(--cyan-deep);
+        font-weight: 800;
+        margin-right: 10px;
+      }
+      section.policy h3 {
+        margin: 28px 0 10px;
+        font-family: var(--display);
+        font-size: 18px;
+        color: var(--ink);
+      }
+      section.policy p { margin: 12px 0; }
+      section.policy ul, section.policy ol { margin: 14px 0; padding-left: 24px; }
+      section.policy li { padding: 4px 0; }
+      section.policy li::marker { color: var(--cyan-deep); }
+      .control-table {
+        width: 100%;
+        margin: 14px 0;
+        border-collapse: collapse;
+        font-size: 14.5px;
+      }
+      .control-table th, .control-table td {
+        text-align: left;
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--line);
+        vertical-align: top;
+      }
+      .control-table th {
+        background: var(--paper);
+        color: var(--ink);
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      .control-table tr:last-child td { border-bottom: none; }
+      .definition-table {
+        width: 100%;
+        margin: 18px 0;
+        border-collapse: collapse;
+        font-size: 14.5px;
+      }
+      .definition-table th, .definition-table td {
+        text-align: left;
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--line);
+        vertical-align: top;
+      }
+      .definition-table th {
+        background: var(--paper);
+        color: var(--ink);
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      .definition-table tr:last-child td { border-bottom: none; }
+      .callout {
+        margin: 18px 0;
+        padding: 16px 20px;
+        background: var(--paper);
+        border-left: 4px solid var(--cyan);
+        border-radius: 0 6px 6px 0;
+        font-size: 15px;
+      }
+      .callout strong { color: var(--cyan-deep); }
+      footer {
+        background: var(--ink);
+        color: rgba(255,255,255,0.78);
+        padding: 40px 0;
+        font-size: 14px;
+      }
+      footer h3 {
+        margin: 0 0 8px;
+        color: var(--white);
+        font-family: var(--display);
+        font-size: 18px;
+      }
+      footer a { color: var(--lime); }
+      footer .legal {
+        border-top: 1px solid rgba(255,255,255,0.12);
+        margin-top: 24px;
+        padding-top: 18px;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        font-size: 12px;
+        color: rgba(255,255,255,0.5);
+      }
+      footer .legal a { color: rgba(255,255,255,0.65); }
+      @media (max-width: 600px) {
+        header.page-header { padding: 36px 0 24px; }
+        .toc { padding: 18px; }
+        footer .legal { flex-direction: column; }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="nav">
+      <div class="shell nav-inner">
+        <a class="brand" href="/">Scalev</a>
+        <a class="lang-switch" href="/security-en" hreflang="en" lang="en">English</a>
+      </div>
+    </nav>
+
+    <main>
+      <div class="shell">
+        <header class="page-header">
+          <h1>Komitmen Keamanan</h1>
+          <p class="updated">Terakhir diperbarui: <strong>24 Mei 2026</strong></p>
+          <p class="scope">Cakupan: platform web Scalev, Scalev API, dan konektor Scalev MCP.</p>
+        </header>
+
+        <nav class="toc" aria-label="Daftar Isi">
+          <h2>Daftar Isi</h2>
+          <ol>
+            <li><a href="#s1">Keamanan Transport</a></li>
+            <li><a href="#s2">Otorisasi dan OAuth</a></li>
+            <li><a href="#s3">Header Keamanan HTTP</a></li>
+            <li><a href="#s4">Audit Log dan Telemetri</a></li>
+            <li><a href="#s5">Rate Limiting dan Anti-Penyalahgunaan</a></li>
+            <li><a href="#s6">Perlindungan Data</a></li>
+            <li><a href="#s7">Keamanan Subprocessor</a></li>
+            <li><a href="#s8">Pelaporan Kerentanan</a></li>
+            <li><a href="#s9">Kontak Keamanan</a></li>
+          </ol>
+        </nav>
+
+        <section class="policy" id="s1">
+          <h2><span class="num">1.</span>Keamanan Transport</h2>
+          <p>
+            Seluruh trafik HTTP ke domain produksi Scalev menggunakan HTTPS dengan TLS 1.2 atau lebih tinggi. <em>HTTP Strict Transport Security</em> (HSTS) diaktifkan dengan <code>max-age=31536000</code>, <code>includeSubDomains</code>, dan <code>preload</code>, dan domain Scalev terdaftar pada daftar preload utama browser modern.
+          </p>
+          <table class="control-table">
+            <thead>
+              <tr><th>Domain</th><th>TLS</th><th>HSTS</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>scalev.com</code></td><td>TLS 1.2+</td><td>preload</td></tr>
+              <tr><td><code>app.scalev.com</code></td><td>TLS 1.2+</td><td>preload</td></tr>
+              <tr><td><code>api.scalev.com</code></td><td>TLS 1.2+</td><td>preload</td></tr>
+              <tr><td><code>mcp.scalev.com</code></td><td>TLS 1.2+</td><td>preload</td></tr>
+            </tbody>
+          </table>
+          <p>
+            Penerbitan sertifikat dibatasi oleh DNS <em>Certificate Authority Authorization</em> (CAA) untuk hanya mengizinkan otoritas sertifikat yang disetujui (mis. Google Trust Services dan Let&rsquo;s Encrypt). Penerbitan oleh CA lain akan ditolak pada tingkat DNS.
+          </p>
+        </section>
+
+        <section class="policy" id="s2">
+          <h2><span class="num">2.</span>Otorisasi dan OAuth</h2>
+          <p>
+            Integrasi pihak ketiga, termasuk konektor Scalev MCP untuk asisten AI, menggunakan OAuth 2.1 dengan kontrol-kontrol berikut:
+          </p>
+          <ul>
+            <li><strong>Dynamic Client Registration</strong> (RFC 7591) dan <strong>Client ID Metadata Document</strong> (RFC 8414) didukung untuk mendaftarkan klien pihak ketiga secara aman.</li>
+            <li><strong>Proof Key for Code Exchange</strong> (PKCE) dengan metode <code>S256</code> wajib pada setiap alur otorisasi.</li>
+            <li><strong>Rotasi refresh token:</strong> setiap penggunaan refresh token menerbitkan refresh token baru dan menonaktifkan yang lama; penggunaan ulang token yang sudah dirotasi terdeteksi dan ditolak.</li>
+            <li><strong>Persetujuan per-bisnis:</strong> pengguna memilih bisnis yang akan diotorisasi pada layar consent; token diterbitkan dengan ikatan ke scope dan bisnis yang disetujui.</li>
+            <li><strong>Penegakan scope per-request:</strong> Scalev API memvalidasi token, scope, dan akses bisnis pada setiap panggilan API; permintaan di luar scope yang disetujui ditolak.</li>
+            <li><strong>Pencabutan:</strong> pengguna dapat mencabut akses pihak ketiga kapan saja dari pengaturan Scalev atau melalui antarmuka asisten AI mereka.</li>
+          </ul>
+          <p>
+            <em>Protected Resource Metadata</em> (RFC 9728) dipublikasikan pada <code>mcp.scalev.com/.well-known/oauth-protected-resource/mcp</code>, dan <em>Authorization Server Metadata</em> (RFC 8414) pada <code>api.scalev.com/v3/oauth/.well-known/oauth-authorization-server</code>.
+          </p>
+        </section>
+
+        <section class="policy" id="s3">
+          <h2><span class="num">3.</span>Header Keamanan HTTP</h2>
+          <p>
+            Seluruh respons HTTP dari domain Scalev menyertakan header keamanan berikut:
+          </p>
+          <table class="control-table">
+            <thead><tr><th>Header</th><th>Nilai</th></tr></thead>
+            <tbody>
+              <tr><td><code>Strict-Transport-Security</code></td><td><code>max-age=31536000; includeSubDomains; preload</code></td></tr>
+              <tr><td><code>X-Content-Type-Options</code></td><td><code>nosniff</code></td></tr>
+              <tr><td><code>X-Frame-Options</code></td><td><code>DENY</code> (clickjacking protection)</td></tr>
+            </tbody>
+          </table>
+          <p>
+            Respons MCP otentikasi yang gagal mengirimkan header <code>WWW-Authenticate</code> dengan tautan ke metadata protected resource sesuai standar OAuth 2.1.
+          </p>
+        </section>
+
+        <section class="policy" id="s4">
+          <h2><span class="num">4.</span>Audit Log dan Telemetri</h2>
+          <p>
+            Scalev mencatat panggilan API publik untuk tujuan audit, deteksi penyalahgunaan, dan investigasi insiden. Praktik logging:
+          </p>
+          <ul>
+            <li><strong>Konektor MCP:</strong> hanya metadata operasional (request id, tool name, operation id, status, kode error, durasi). Bearer token, request body, dan response body <strong>tidak</strong> dicatat oleh konektor MCP.</li>
+            <li><strong>Scalev API:</strong> mencatat panggilan machine-to-machine (OAuth dan API key) dengan metadata serta request/response body yang sudah disanitasi. Token bearer, kredensial, dan field sensitif disamarkan sebelum penyimpanan.</li>
+            <li><strong>Retensi:</strong> log machine API tunduk pada partisi retensi dua minggu untuk meminimalkan permukaan data historis.</li>
+            <li><strong>Akses:</strong> log tersedia bagi merchant pemilik bisnis melalui dashboard untuk audit independen.</li>
+          </ul>
+        </section>
+
+        <section class="policy" id="s5">
+          <h2><span class="num">5.</span>Rate Limiting dan Anti-Penyalahgunaan</h2>
+          <p>
+            API publik Scalev menerapkan batas laju per-kredensial untuk mencegah penyalahgunaan dan melindungi sumber daya bersama. Klien yang melebihi batas menerima respons <code>429 Too Many Requests</code> dengan informasi retry yang sesuai. Cloudflare WAF dan deteksi anomali tambahan beroperasi di tingkat edge untuk memblokir trafik berbahaya sebelum mencapai aplikasi.
+          </p>
+        </section>
+
+        <section class="policy" id="s6">
+          <h2><span class="num">6.</span>Perlindungan Data</h2>
+          <ul>
+            <li><strong>Enkripsi dalam transit:</strong> TLS 1.2+ pada seluruh komunikasi klien-server.</li>
+            <li><strong>Enkripsi saat istirahat:</strong> data terenkripsi pada tingkat storage di penyedia infrastruktur (DigitalOcean) sesuai standar default penyedia.</li>
+            <li><strong>Tidak menyimpan kartu penuh:</strong> Scalev tidak menyimpan nomor kartu lengkap atau CVV secara langsung; pemrosesan kartu didelegasikan kepada payment gateway berlisensi.</li>
+            <li><strong>Sanitasi log:</strong> field sensitif (token, kredensial, payload pembayaran) disamarkan dalam log sebelum penyimpanan.</li>
+          </ul>
+        </section>
+
+        <section class="policy" id="s7">
+          <h2><span class="num">7.</span>Keamanan Subprocessor</h2>
+          <p>
+            Scalev menggunakan penyedia layanan tepercaya yang memproses Data Pribadi atas nama Kami berdasarkan kontrak yang mewajibkan tingkat perlindungan setara dengan komitmen ini. Daftar subprocessor utama tersedia pada <a href="/privacy#s4">Kebijakan Privasi &sect;4</a>. Perubahan material pada daftar subprocessor diumumkan pada Platform.
+          </p>
+        </section>
+
+        <section class="policy" id="s8">
+          <h2><span class="num">8.</span>Pelaporan Kerentanan</h2>
+          <p>
+            Kami menyambut laporan kerentanan keamanan yang bertanggung jawab. Jalur pelaporan resmi adalah file <code>security.txt</code>:
+          </p>
+          <ul>
+            <li><a href="https://mcp.scalev.com/.well-known/security.txt"><code>mcp.scalev.com/.well-known/security.txt</code></a></li>
+            <li><a href="https://api.scalev.com/.well-known/security.txt"><code>api.scalev.com/.well-known/security.txt</code></a></li>
+          </ul>
+          <p>
+            <strong>Komitmen tanggapan:</strong> Kami mengakui laporan keamanan dalam waktu dua hari kerja dan menargetkan resolusi kerentanan kritis (token, autentikasi, atau paparan data) sebelum pengungkapan publik.
+          </p>
+          <div class="callout">
+            <strong>Mohon untuk tidak</strong> melakukan pengujian penetrasi terhadap akun produksi pengguna lain, mengakses data yang bukan milik Anda, atau mengganggu ketersediaan Layanan. Pengujian terbatas pada akun pengujian milik sendiri dipersilakan.
+          </div>
+        </section>
+
+        <section class="policy" id="s9">
+          <h2><span class="num">9.</span>Kontak Keamanan</h2>
+          <table class="definition-table">
+            <tbody>
+              <tr><th>Laporan kerentanan</th><td><a href="https://mcp.scalev.com/.well-known/security.txt">security.txt</a></td></tr>
+              <tr><th>Pertanyaan umum</th><td><a href="mailto:cs@scalev.com">cs@scalev.com</a></td></tr>
+              <tr><th>Status layanan</th><td><a href="https://status.scalev.com">status.scalev.com</a></td></tr>
+              <tr><th>Kebijakan Privasi</th><td><a href="/privacy">scalev.com/privacy</a></td></tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      <div class="shell">
+        <h3>Scalev</h3>
+        <p>Diterbitkan oleh PT Interna Cipta Asia. Lihat <a href="/privacy">Kebijakan Privasi</a>, <a href="/terms">Syarat Layanan</a>, dan <a href="/contact-us">Hubungi Kami</a>.</p>
+        <div class="legal">
+          <span>&copy; Scalev. Hak cipta dilindungi.</span>
+          <span><a href="/security-en">English version</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

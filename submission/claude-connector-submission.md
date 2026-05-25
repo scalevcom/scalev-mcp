@@ -28,10 +28,18 @@ Prepared for the Anthropic Claude connector directory submission flow.
 | `execute_safe` | Run one non-destructive non-GET `/v3` operation | Non-destructive write |
 | `execute_destructive` | Run one destructive non-GET `/v3` operation | Destructive write |
 | `list_landing_pages` | List landing pages | Scalev API read |
+| `list_landing_page_tags` | List landing page tags | Scalev API read |
 | `get_landing_page` | Fetch one landing page | Scalev API read |
+| `get_landing_page_public_view` | Fetch landing page public rendering data | Scalev API read |
 | `create_landing_page` | Create a landing page or HTML Mode draft/published page | Non-destructive write |
 | `update_landing_page` | Update landing page metadata or publishing state | Non-destructive write |
+| `update_landing_page_tags` | Replace landing page tags | Non-destructive write |
 | `delete_landing_page` | Delete a landing page | Destructive write |
+| `list_landing_page_displays` | List saved display versions for a landing page | Scalev API read |
+| `create_landing_page_display` | Create a new page display version | Non-destructive write |
+| `validate_landing_page_display` | Validate a page display payload without saving | Non-destructive write |
+| `get_landing_page_display` | Fetch one saved page display version | Scalev API read |
+| `delete_landing_page_display` | Delete one saved page display version | Destructive write |
 | `list_orders` | List orders | Scalev API read |
 | `get_order` | Fetch one order | Scalev API read |
 | `create_order` | Create an order | Non-destructive write |
@@ -50,7 +58,7 @@ For multi-business tokens, Claude must call `get_me`, choose one `connected_busi
 The connector asks only for the scopes needed by the exposed tool surface:
 
 - Landing pages: list, read, create, update, and delete landing pages.
-- Orders: list, read, create, update, change status, and request/cancel shipment pickup state.
+- Orders: list, read, create, update, change status, and order statistics.
 
 Reviewer-facing scope names:
 
@@ -68,7 +76,7 @@ Reviewer-facing scope names:
 2. Landing page write workflow:
 
    ```text
-   Create a review HTML Mode landing page draft named Claude Review HTML Mode, update it to publish the draft, fetch it back, then delete it.
+   Create a review HTML Mode landing page draft named Claude Review HTML Mode, create or validate a new page display version directly, update it to publish the display, fetch it back, then delete it.
    ```
 
 3. Order workflow:
@@ -138,7 +146,7 @@ Final reviewer credentials and business unique ids:
 - The generic tools are retained for catalog coverage, but `execute_safe` and `execute_destructive` are split by generated `isDestructive` metadata and reject wrong-tool calls.
 - `execute_safe` is a non-destructive write/action tool. It is not described as read-only or risk-free.
 - The generated catalog snapshot currently contains 218 approved business-authenticated `/v3` endpoints: 96 read-only GET endpoints, 92 non-destructive write/action endpoints, and 30 destructive write/action endpoints. Keep `submission/catalog-surface-report.md` attached or ready for reviewer questions about breadth.
-- Claude-visible semantic tools stay focused on Landing Pages and Orders. Generic catalog tools are retained for broader approved `/v3` coverage and are guarded by generated `execution_tool` routing plus wrong-tool rejection.
+- Claude-visible semantic tools cover the full public Landing Pages operation set plus the focused Orders review workflow. Generic catalog tools are retained for broader approved `/v3` coverage and are guarded by generated `execution_tool` routing plus wrong-tool rejection.
 - OAuth billing, developer payout, and direct payment-gateway endpoints are excluded from the generated MCP catalog and blocked at the runtime transport boundary.
 - Write tools advise Claude to consult `search` metadata and `get_docs` before constructing request bodies.
 - All business behavior is enforced in the Scalev API; the Worker is a protocol boundary and bearer-token forwarder.

@@ -59,10 +59,18 @@ sebagai `business_unique_id` tingkat atas ke tool bisnis.
 | `execute_safe` | Tulis non-destruktif | Menjalankan operasi non-GET yang tidak destruktif. |
 | `execute_destructive` | Tulis destruktif | Menjalankan operasi seperti delete, cancel, revoke, remove, atau disconnect. |
 | `list_landing_pages` | Baca | Melihat daftar landing page bisnis. |
+| `list_landing_page_tags` | Baca | Melihat tag landing page yang tersedia untuk bisnis. |
 | `get_landing_page` | Baca | Mengambil satu landing page. |
+| `get_landing_page_public_view` | Baca | Mengambil data render publik terautentikasi untuk satu landing page. |
 | `create_landing_page` | Tulis non-destruktif | Membuat landing page. Untuk publish HTML Mode dalam satu panggilan, kirim `is_published: true` dengan `page_display`. |
 | `update_landing_page` | Tulis non-destruktif | Mengubah metadata atau status publish landing page. |
+| `update_landing_page_tags` | Tulis non-destruktif | Mengganti tag yang terpasang pada landing page. |
 | `delete_landing_page` | Tulis destruktif | Menghapus landing page secara soft-delete. |
+| `list_landing_page_displays` | Baca | Melihat versi display tersimpan untuk satu landing page. |
+| `create_landing_page_display` | Tulis non-destruktif | Membuat versi display baru dengan HTML/CSS/JS, pixel, atau data form checkout. |
+| `validate_landing_page_display` | Tulis non-destruktif | Memvalidasi payload display tanpa menyimpannya. |
+| `get_landing_page_display` | Baca | Mengambil satu display landing page yang tersimpan. |
+| `delete_landing_page_display` | Tulis destruktif | Menghapus satu display landing page yang tersimpan. |
 | `list_orders` | Baca | Melihat daftar order dengan filter dan cursor pagination. |
 | `get_order` | Baca | Mengambil satu order. |
 | `create_order` | Tulis non-destruktif | Membuat order bisnis. |
@@ -126,3 +134,4 @@ workspace lintas repo, typecheck TypeScript, test Vitest, dan Wrangler dry-run.
 - Terms: https://scalev.com/terms
 - Support: https://scalev.com/contact-us
 - Security Contact: https://mcp.scalev.com/.well-known/security.txt
+- Komitmen Keamanan: https://scalev.com/security

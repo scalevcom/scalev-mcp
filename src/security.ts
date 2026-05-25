@@ -18,6 +18,7 @@ export function securityTxt(env: Env, now = new Date()): Response {
   const body = [
     "Contact: https://scalev.com/contact-us",
     "Policy: https://scalev.com/privacy",
+    "Policy: https://scalev.com/security",
     "Preferred-Languages: en, id",
     `Canonical: ${canonical}`,
     `Expires: ${expires}`,

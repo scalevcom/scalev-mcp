@@ -24,7 +24,7 @@ Connector details:
 - Auth: OAuth Dynamic Client Registration primary, Client ID Metadata Document fallback
 - Protected resource: `https://mcp.scalev.com/mcp`
 - OAuth issuer: `https://api.scalev.com/v3/oauth`
-- Tool count: 17 total, with 6 generic tools and 11 semantic tools for Landing Pages and Orders
+- Tool count: 26 total, with 6 generic tools and 20 semantic tools for Landing Pages and Orders
 - Generic catalog snapshot: 218 approved business-authenticated `/v3` endpoints, with 96 read-only GET endpoints, 92 non-destructive write/action endpoints, and 30 destructive write/action endpoints
 - Legal: `https://scalev.com/privacy`, `https://scalev.com/terms`
 - Support: `https://scalev.com/contact-us`
@@ -36,7 +36,7 @@ Review-risk mitigations already implemented:
 - `execute_safe` and `execute_destructive` are split by generated `isDestructive` metadata; wrong-tool calls are refused before any Scalev API request is sent.
 - `search` returns the required execution tool for each catalog entry, plus docs hints for request shaping.
 - OAuth flow, storefront browser, OAuth billing, developer payout, and direct payment-gateway routes are excluded from the generated catalog and blocked again at runtime.
-- The 11 semantic tools cover the intended first-review workflows for Landing Pages and Orders; the generic tools are retained for broader approved `/v3` coverage.
+- The semantic tools cover the full public Landing Pages operation set plus the intended first-review Orders workflows; the generic tools are retained for broader approved `/v3` coverage.
 - Every tool has `title`, `readOnlyHint`, `destructiveHint`, `idempotentHint`, and `openWorldHint` annotations.
 - Worker/Sentry logs are restricted to request id, tool name, operation id, status, and Scalev API `error_code`; tokens, request bodies, customer data, order data, and landing page payloads are not logged.
 
