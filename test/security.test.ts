@@ -46,7 +46,7 @@ describe("security", () => {
     expect(body).toEqual({
       service: "scalev-claude-connector",
       status: "ok",
-      version: "0.3.0",
+      version: "0.3.4",
       transport: "streamable_http",
       mcp_url: "https://mcp.scalev.test/mcp",
       protected_resource_metadata_url: "https://mcp.scalev.test/.well-known/oauth-protected-resource/mcp",
@@ -54,6 +54,7 @@ describe("security", () => {
       scalev_api_base_url: "https://api.scalev.test",
       security_txt_url: "https://mcp.scalev.test/.well-known/security.txt",
       security_policy_url: "https://scalev.com/security",
+      source_repository_url: "https://github.com/scalevcom/scalev-mcp",
       sentry_configured: true,
       checked_at: "2026-05-22T00:00:00.000Z"
     });

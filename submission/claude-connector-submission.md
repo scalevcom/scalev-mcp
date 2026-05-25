@@ -137,21 +137,20 @@ Final reviewer credentials and business unique ids:
 - Catalog surface report: `submission/catalog-surface-report.md`
 - DNS and status-page setup: `submission/dns-and-status-page-plan.md`
 - Submission form draft: `submission/submission-form-draft.json`
-- Draft `scalev.com/claude` HTML Mode page: `submission/scalev-claude-landing-page.html`
-- Draft landing-page browser QA screenshots: `assets/reviewer-evidence/scalev-claude-landing-page-desktop.jpg` and `assets/reviewer-evidence/scalev-claude-landing-page-mobile.jpg`
-- Local HTML Mode landing-page browser QA screenshot: `assets/reviewer-evidence/scalev-claude-route-desktop.jpg`
+- Live `scalev.com/claude` (EN) source: `submission/scalev-claude-landing-page.html`
+- Live `scalev.com/claude-id` (ID) source: `submission/scalev-claude-landing-page-id.html`
 
 ## Submission Notes For Review Risk
 
 - The generic tools are retained for catalog coverage, but `execute_safe` and `execute_destructive` are split by generated `isDestructive` metadata and reject wrong-tool calls.
 - `execute_safe` is a non-destructive write/action tool. It is not described as read-only or risk-free.
-- The generated catalog snapshot currently contains 218 approved business-authenticated `/v3` endpoints: 96 read-only GET endpoints, 92 non-destructive write/action endpoints, and 30 destructive write/action endpoints. Keep `submission/catalog-surface-report.md` attached or ready for reviewer questions about breadth.
+- The generated catalog snapshot currently contains 223 approved business-authenticated `/v3` endpoints: 98 read-only GET endpoints, 94 non-destructive write/action endpoints, and 31 destructive write/action endpoints. Keep `submission/catalog-surface-report.md` attached or ready for reviewer questions about breadth.
 - Claude-visible semantic tools cover the full public Landing Pages operation set plus the focused Orders review workflow. Generic catalog tools are retained for broader approved `/v3` coverage and are guarded by generated `execution_tool` routing plus wrong-tool rejection.
 - OAuth billing, developer payout, and direct payment-gateway endpoints are excluded from the generated MCP catalog and blocked at the runtime transport boundary.
 - Write tools advise Claude to consult `search` metadata and `get_docs` before constructing request bodies.
 - All business behavior is enforced in the Scalev API; the Worker is a protocol boundary and bearer-token forwarder.
 - `wait_for_completion` is intentionally deferred until the Scalev API exposes a durable completion/status API for write operations; adding it in the Worker alone would be endpoint-specific guessing.
-- Legal/support links returned `200` on 2026-05-22: `https://scalev.com/privacy`, `https://scalev.com/terms`, and `https://scalev.com/contact-us`.
-- `https://scalev.com/claude` returned `404` on 2026-05-22 before the Scalev-owned landing page was published. Use `submission/scalev-claude-landing-page.html` as the HTML Mode source for the Scalev business landing page; do not include the URL as a live reviewer link until the page is published.
-- The page contains the walkthrough placement and storyboard, but the final recorded production video remains pending.
+- Legal/support links return `200` on the latest `pnpm check:live-readiness` run: `https://scalev.com/privacy`, `https://scalev.com/privacy-en`, `https://scalev.com/terms`, `https://scalev.com/contact-us`, plus the dedicated security commitments at `https://scalev.com/security` and `https://scalev.com/security-en`.
+- Both marketing landing pages are live and return `200`: `https://scalev.com/claude` (EN) and `https://scalev.com/claude-id` (ID). Source HTML is kept at `submission/scalev-claude-landing-page.html` and `submission/scalev-claude-landing-page-id.html` for reviewer reference; reviewers verify the live URLs directly.
+- Plain remote MCP review does not require a walkthrough video; reviewer evidence consists of static screenshots in `assets/reviewer-evidence/` covering 6 reviewer prompts, the OAuth flow, and the 5 negative checks.
 - Scalev stores and processes merchant data primarily for Indonesian businesses; include the current data-residency wording from legal before final submission.

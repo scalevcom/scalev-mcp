@@ -135,3 +135,4 @@ workspace lintas repo, typecheck TypeScript, test Vitest, dan Wrangler dry-run.
 - Support: https://scalev.com/contact-us
 - Security Contact: https://mcp.scalev.com/.well-known/security.txt
 - Komitmen Keamanan: https://scalev.com/security
+- Kode Sumber: https://github.com/scalevcom/scalev-mcp

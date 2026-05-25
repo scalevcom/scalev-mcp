@@ -1,6 +1,6 @@
 # Reviewer Test Account Instructions
 
-Final status: `READY_FOR_REVIEW` (seeded and audited 2026-05-23T12:03:59Z; 0 warnings, 0 failures, 0 unlabeled records)
+Final status: `READY_FOR_REVIEW` (last audited 2026-05-25T08:37:54Z; 0 warnings, 0 failures, 0 unlabeled records)
 
 Use this file as the reviewer-facing setup script. Do not commit passwords,
 bearer tokens, refresh tokens, backup codes, raw customer data, raw order
@@ -12,28 +12,23 @@ payloads, or landing-page HTML here.
 - Password delivery channel: 1Password share link (single-use, expires in 30 days), delivered via the submission form's reviewer-credentials notes field at submission time.
 - Reviewer business unique id: `NNY34GV8VWBL2KSH` (legal name `ICA Testing Account`, username `ica-testing-account`)
 - Secondary selector-test business unique id: `KJKODFJYD4RGFE9N`
-- Last data reset timestamp: `2026-05-23T12:03:59Z`
+- Last data reset timestamp: `2026-05-25T08:37:54Z`
 
 ### Seed Audit Evidence
 
 `Util.ReviewerSeedAudit.run("NNY34GV8VWBL2KSH", format: :json)` returned the
-following on 2026-05-23T12:03:59Z. Empty `warnings`, empty `failures`, and zero
-`unlabeled` records confirm the reviewer business contains review-only data.
+following on 2026-05-25T08:37:54Z, after the reviewer-evidence capture runs.
+Empty `warnings`, empty `failures`, and zero `unlabeled` records confirm the
+reviewer business contains review-only data. `landing_pages.tags: 6` reflects
+the two synthetic review tags (`claude-review`, `mcp-evidence`) added during
+Prompt 6's `update_landing_page_tags` capture; the original four tags are
+still present and `landing_pages.total` is unchanged.
 
 ```json
 {
   "stats": {
     "orders": {
       "total": 30,
-      "by_status": {
-        "canceled": 3,
-        "completed": 4,
-        "confirmed": 5,
-        "draft": 4,
-        "in_process": 4,
-        "pending": 6,
-        "shipped": 4
-      },
       "covered_statuses": [
         "draft",
         "pending",
@@ -42,10 +37,20 @@ following on 2026-05-23T12:03:59Z. Empty `warnings`, empty `failures`, and zero
         "shipped",
         "completed",
         "canceled"
-      ]
+      ],
+      "by_status": {
+        "canceled": 3,
+        "completed": 4,
+        "confirmed": 5,
+        "draft": 4,
+        "in_process": 4,
+        "pending": 6,
+        "shipped": 4
+      }
     },
     "landing_pages": {
       "total": 5,
+      "tags": 6,
       "draft": 2,
       "published": 3,
       "html_mode": 2,
@@ -100,7 +105,7 @@ following on 2026-05-23T12:03:59Z. Empty `warnings`, empty `failures`, and zero
     "legal_name": "ICA Testing Account"
   },
   "failures": [],
-  "checked_at": "2026-05-23T12:03:59Z"
+  "checked_at": "2026-05-25T08:37:54Z"
 }
 ```
 

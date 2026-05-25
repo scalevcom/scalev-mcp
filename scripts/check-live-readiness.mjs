@@ -40,10 +40,16 @@ const checks = [
     expectText: ["Contact:", "Policy:", "Canonical:", "Expires:"]
   },
   {
-    name: "Scalev Claude landing page",
+    name: "Scalev Claude landing page (EN)",
     url: "https://scalev.com/claude",
     expectStatus: 200,
     expectText: ["Scalev Claude Connector", "https://mcp.scalev.com/mcp", "Add to Claude"]
+  },
+  {
+    name: "Scalev Claude landing page (ID)",
+    url: "https://scalev.com/claude-id",
+    expectStatus: 200,
+    expectText: ["https://mcp.scalev.com/mcp"]
   },
   {
     name: "English connector docs",
@@ -58,8 +64,23 @@ const checks = [
     expectText: ["Scalev MCP", "https://mcp.scalev.com/mcp"]
   },
   {
-    name: "Privacy policy",
+    name: "Privacy policy (ID)",
     url: "https://scalev.com/privacy",
+    expectStatus: 200
+  },
+  {
+    name: "Privacy policy (EN)",
+    url: "https://scalev.com/privacy-en",
+    expectStatus: 200
+  },
+  {
+    name: "Security commitments (ID)",
+    url: "https://scalev.com/security",
+    expectStatus: 200
+  },
+  {
+    name: "Security commitments (EN)",
+    url: "https://scalev.com/security-en",
     expectStatus: 200
   },
   {

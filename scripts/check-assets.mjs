@@ -4,27 +4,9 @@ import { join } from "node:path";
 const ROOT = process.cwd();
 
 const imageExpectations = [
-  { path: "assets/logo-256.png", format: "png", width: 256, height: 256 },
-  { path: "assets/logo-1024.png", format: "png", width: 1024, height: 1024 },
-  { path: "assets/favicon.png", format: "png", width: 64, height: 64 },
-  {
-    path: "assets/reviewer-evidence/scalev-claude-landing-page-desktop.jpg",
-    format: "jpeg",
-    width: 1280,
-    height: 720
-  },
-  {
-    path: "assets/reviewer-evidence/scalev-claude-landing-page-mobile.jpg",
-    format: "jpeg",
-    width: 390,
-    height: 844
-  },
-  {
-    path: "assets/reviewer-evidence/scalev-claude-route-desktop.jpg",
-    format: "jpeg",
-    width: 1280,
-    height: 720
-  }
+  { path: "assets/logo-256.png", width: 256, height: 256 },
+  { path: "assets/logo-1024.png", width: 1024, height: 1024 },
+  { path: "assets/favicon.png", width: 64, height: 64 }
 ];
 
 const errors = [];
@@ -33,8 +15,7 @@ checkSvg();
 
 for (const expected of imageExpectations) {
   const buffer = readFileSync(join(ROOT, expected.path));
-  const actual =
-    expected.format === "png" ? pngDimensions(buffer, expected.path) : jpegDimensions(buffer, expected.path);
+  const actual = pngDimensions(buffer, expected.path);
 
   if (actual.width !== expected.width || actual.height !== expected.height) {
     errors.push(
@@ -86,45 +67,3 @@ function pngDimensions(buffer, path) {
   };
 }
 
-function jpegDimensions(buffer, path) {
-  if (buffer[0] !== 0xff || buffer[1] !== 0xd8) {
-    throw new Error(`${path} is not a JPEG file`);
-  }
-
-  let offset = 2;
-
-  while (offset < buffer.length) {
-    while (buffer[offset] !== 0xff && offset < buffer.length) offset += 1;
-    while (buffer[offset] === 0xff) offset += 1;
-
-    const marker = buffer[offset];
-    offset += 1;
-
-    if (marker === 0xda || marker === 0xd9) break;
-    if (marker === 0x01 || (marker >= 0xd0 && marker <= 0xd7)) continue;
-    if (offset + 2 > buffer.length) break;
-
-    const segmentLength = buffer.readUInt16BE(offset);
-    const dataOffset = offset + 2;
-
-    if (isStartOfFrameMarker(marker)) {
-      return {
-        height: buffer.readUInt16BE(dataOffset + 1),
-        width: buffer.readUInt16BE(dataOffset + 3)
-      };
-    }
-
-    offset = dataOffset + segmentLength - 2;
-  }
-
-  throw new Error(`${path} is missing a JPEG size marker`);
-}
-
-function isStartOfFrameMarker(marker) {
-  return (
-    (marker >= 0xc0 && marker <= 0xc3) ||
-    (marker >= 0xc5 && marker <= 0xc7) ||
-    (marker >= 0xc9 && marker <= 0xcb) ||
-    (marker >= 0xcd && marker <= 0xcf)
-  );
-}

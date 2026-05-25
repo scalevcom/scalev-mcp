@@ -5,7 +5,7 @@ tool before final submission. Do not store bearer tokens, refresh tokens, raw
 request bodies, customer private data, full order payloads, or landing-page
 HTML in this file.
 
-Current status: 17 previously captured tools and 5 negative checks were evidenced on 2026-05-24. The 9 new direct landing-page helper tools need post-deploy recapture before final submission.
+Current status: all 25 tools and 5 negative checks are evidenced. 17 tools and 5 negative checks were captured 2026-05-24; the 8 new direct Landing Pages helper tools added in 0.3.2 were captured 2026-05-25 via reviewer Prompts 4, 5, and 6 against the deployed 0.3.3 Worker.
 
 ## Evidence Rules
 
@@ -26,18 +26,18 @@ Current status: 17 previously captured tools and 5 negative checks were evidence
 | `execute_safe` | MCP Inspector | Non-destructive update against seeded review data | Runs one safe non-GET operation and refuses a destructive operation | Captured 2026-05-24 |
 | `execute_destructive` | MCP Inspector | Seeded review landing page or AWB cancellation fixture | Runs one destructive operation and refuses a safe operation | Captured 2026-05-24 |
 | `list_landing_pages` | Claude prompt 1 | At least five Claude Review landing pages | Lists seeded landing pages with published/draft coverage | Captured 2026-05-24 |
-| `list_landing_page_tags` | MCP Inspector | Seeded Claude Review landing page tags | Lists available landing page tags without using generic `get` | Pending post-deploy recapture |
+| `list_landing_page_tags` | Claude prompt 4 | Seeded Claude Review landing page tags | Lists available landing page tags without using generic `get` | Captured 2026-05-25 |
 | `get_landing_page` | Claude prompt 2 | Created Claude Review HTML Mode page | Fetches the created or seeded landing page | Captured 2026-05-24 |
-| `get_landing_page_public_view` | MCP Inspector | Published Claude Review HTML Mode page | Fetches authenticated public rendering data without using generic `get` | Pending post-deploy recapture |
+| `get_landing_page_public_view` | Claude prompt 4 | Published Claude Review HTML Mode page | Fetches authenticated public rendering data without using generic `get` | Captured 2026-05-25 |
 | `create_landing_page` | Claude prompt 2 | Synthetic HTML Mode draft | Creates review page using documented request body shape | Captured 2026-05-24 |
 | `update_landing_page` | Claude prompt 2 | Created Claude Review HTML Mode page | Updates metadata or `is_published` state | Captured 2026-05-24 |
-| `update_landing_page_tags` | MCP Inspector | Created or seeded Claude Review landing page | Replaces page tags without using generic `execute_safe` | Pending post-deploy recapture |
+| `update_landing_page_tags` | Claude prompt 6 | Created or seeded Claude Review landing page | Replaces page tags without using generic `execute_safe`; follow-up `get_landing_page` confirms tags persist server-side | Captured 2026-05-25 |
 | `delete_landing_page` | Claude prompt 2 | Created Claude Review HTML Mode page | Deletes only the synthetic review page and prompts as destructive | Captured 2026-05-24 |
-| `list_landing_page_displays` | MCP Inspector | Created or seeded Claude Review HTML Mode page | Lists display versions without using generic `get` | Pending post-deploy recapture |
-| `create_landing_page_display` | Claude prompt 2 or MCP Inspector | Created Claude Review HTML Mode page | Creates a new HTML/CSS/JS display version without using generic `execute_safe` | Pending post-deploy recapture |
-| `validate_landing_page_display` | MCP Inspector | HTML Mode display payload | Validates the display payload without persisting a display | Pending post-deploy recapture |
-| `get_landing_page_display` | MCP Inspector | Created display id | Fetches one saved display version without using generic `get` | Pending post-deploy recapture |
-| `delete_landing_page_display` | MCP Inspector | Non-current synthetic display id | Deletes one non-current display and prompts as destructive | Pending post-deploy recapture |
+| `list_landing_page_displays` | Claude prompts 4 and 5 | Created or seeded Claude Review HTML Mode page | Lists display versions without using generic `get` | Captured 2026-05-25 |
+| `create_landing_page_display` | Claude prompt 5 | Created Claude Review HTML Mode page | Creates a new HTML/CSS/JS display version bound to the page's store variant without using generic `execute_safe` | Captured 2026-05-25 |
+| `validate_landing_page_display` | Claude prompts 4 and 5 | HTML Mode display payload | Validates the display payload without persisting a display | Captured 2026-05-25 |
+| `get_landing_page_display` | Claude prompt 5 | Created display id | Fetches one saved display version without using generic `get` | Captured 2026-05-25 |
+| `delete_landing_page_display` | Claude prompt 5 | Non-current synthetic display id | Deletes one non-current display and prompts as destructive | Captured 2026-05-25 |
 | `list_orders` | Claude prompt 3 | At least 30 Claude connector review orders | Lists review-tagged orders across required statuses | Captured 2026-05-24 |
 | `get_order` | Claude prompt 3 | Seeded safe order id | Fetches one review order without dumping unrelated business data | Captured 2026-05-24 |
 | `create_order` | MCP Inspector | Synthetic customer/product fixture | Creates a synthetic review order or a disposable draft order | Captured 2026-05-24 |

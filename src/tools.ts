@@ -56,7 +56,7 @@ const executeInputSchema = z
   .catchall(z.unknown());
 
 export function createScalevMcpServer(env: Env): McpServer {
-  const server = new McpServer({ name: "scalev-v3", version: "0.3.0" });
+  const server = new McpServer({ name: "scalev-v3", version: "0.3.4" });
 
   server.registerTool(
     "get_me",

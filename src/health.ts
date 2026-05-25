@@ -13,7 +13,7 @@ export function healthResponse(env: Env, now = new Date()): Response {
       {
         service: "scalev-claude-connector",
         status: "ok",
-        version: "0.3.0",
+        version: "0.3.4",
         transport: "streamable_http",
         mcp_url: env.MCP_RESOURCE_URI,
         protected_resource_metadata_url: protectedResourceMetadataUrl,
@@ -21,6 +21,7 @@ export function healthResponse(env: Env, now = new Date()): Response {
         scalev_api_base_url: env.NEXUS_API_BASE_URL,
         security_txt_url: securityTxtUrl,
         security_policy_url: "https://scalev.com/security",
+        source_repository_url: "https://github.com/scalevcom/scalev-mcp",
         sentry_configured: Boolean(env.SENTRY_DSN),
         checked_at: now.toISOString()
       },

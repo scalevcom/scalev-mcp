@@ -75,7 +75,7 @@ const requiredFiles = [
     repo: "docs",
     path: "en/scalev-mcp-connector.mdx",
     snippets: [
-      "Scalev MCP exposes 26 tools",
+      "Scalev MCP exposes 25 tools",
       "https://mcp.scalev.com/mcp",
       "business_unique_id",
       "Claude supports remote MCP servers"
@@ -85,7 +85,7 @@ const requiredFiles = [
     repo: "docs",
     path: "id/konektor-scalev-mcp.mdx",
     snippets: [
-      "Scalev MCP menyediakan 26 tool",
+      "Scalev MCP menyediakan 25 tool",
       "https://mcp.scalev.com/mcp",
       "business_unique_id",
       "Claude mendukung remote MCP server"

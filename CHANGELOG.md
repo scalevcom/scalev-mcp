@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.3.4 - 2026-05-25
+
+- Wired the public source repository at `https://github.com/scalevcom/scalev-mcp`
+  into the submission surface: `package.json` metadata, `/health` JSON
+  (`source_repository_url`), submission form draft, README EN+ID Legal sections,
+  and the marketing landing-page footers (EN + ID).
+- Hardened the live readiness check with explicit gates for `/privacy-en`,
+  `/security`, `/security-en`, and `/claude-id` (23 of 23 PASS).
+- Captured the final reviewer evidence batch: Prompts 4, 5, and 6 cover the 8
+  Landing Pages tools added in 0.3.2 (tags read/write, public view,
+  display CRUD, validate). All 25 tools now have direct live reviewer evidence.
+- Removed three stale pre-rebrand landing-page concept JPGs from
+  `assets/reviewer-evidence/`; reviewers verify the live `scalev.com/claude`
+  and `scalev.com/claude-id` pages directly.
+- Synced the bundled `get_docs` catalog to the published 25-tool docs surface
+  on `docs.scalev.com` and refreshed the reviewer seed audit snapshot
+  (2026-05-25T08:37:54Z, zero warnings).
+
 ## 0.3.3 - 2026-05-25
 
 - Removed `list_landing_pages_simplified` semantic tool. The underlying

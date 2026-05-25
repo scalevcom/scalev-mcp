@@ -15,6 +15,8 @@
   "security_policy_url": "https://scalev.com/security",
   "security_policy_en_url": "https://scalev.com/security-en",
   "health_url": "https://mcp.scalev.com/health",
+  "source_repository_url": "https://github.com/scalevcom/scalev-mcp",
+  "source_visibility": "public",
   "tool_count": 25,
   "tools": [
     "get_me",
@@ -52,7 +54,7 @@
     "reviewer_account": "tester@scalev.com",
     "reviewer_business_unique_id": "NNY34GV8VWBL2KSH",
     "secondary_selector_test_business_unique_id": "KJKODFJYD4RGFE9N",
-    "last_data_reset_at": "2026-05-24T05:19:52Z"
+    "last_data_reset_at": "2026-05-25T08:37:54Z"
   },
   "evidence": [
     "assets/logo.svg",
@@ -61,9 +63,6 @@
     "assets/favicon.png",
     "assets/reviewer-evidence/prompts.md",
     "assets/reviewer-evidence/tool-exercise-matrix.md",
-    "assets/reviewer-evidence/scalev-claude-landing-page-desktop.jpg",
-    "assets/reviewer-evidence/scalev-claude-landing-page-mobile.jpg",
-    "assets/reviewer-evidence/scalev-claude-route-desktop.jpg",
     "README.md",
     "README.id.md",
     "SECURITY.md",
@@ -75,8 +74,9 @@
     "submission/operational-runbook.md",
     "submission/reviewer-test-account-instructions.md",
     "submission/pre-feedback-email.md",
-    "submission/live-checks-2026-05-22.md",
-    "submission/scalev-claude-landing-page.html"
+    "submission/live-checks-2026-05-25.md",
+    "submission/scalev-claude-landing-page.html",
+    "submission/scalev-claude-landing-page-id.html"
   ],
   "compliance_checkboxes": {
     "oauth_https_and_origin_validation": true,

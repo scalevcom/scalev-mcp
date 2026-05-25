@@ -29,7 +29,7 @@ This memo covers the connector Worker at `https://mcp.scalev.com/mcp` and the Sc
 - Non-destructive writes set `readOnlyHint: false`, `destructiveHint: false`, `idempotentHint: false`, `openWorldHint: true`.
 - Destructive writes set `readOnlyHint: false`, `destructiveHint: true`, `idempotentHint: false`, `openWorldHint: true`.
 - Claude-visible semantic tools cover Landing Pages and Orders. Generic catalog tools cover approved business-authenticated `/v3` endpoints and are documented separately in `submission/catalog-surface-report.md`.
-- The current generated catalog contains 218 endpoints: 96 read-only GET endpoints, 92 non-destructive write/action endpoints, and 30 destructive write/action endpoints.
+- The current generated catalog contains 223 endpoints: 98 read-only GET endpoints, 94 non-destructive write/action endpoints, and 31 destructive write/action endpoints.
 - The catalog generator marks destructive operations when the method is `DELETE` or the operation id, path, or summary matches `cancel`, `revoke`, `delete`, `remove`, or `disconnect`.
 - `execute_safe` refuses destructive operations and all `GET` operations.
 - `execute_destructive` refuses non-destructive operations and all `GET` operations.
@@ -68,9 +68,7 @@ Live checks performed on 2026-05-22:
 - `GET https://api.scalev.com/v3/oauth/.well-known/oauth-authorization-server` returned `200`.
 - Unauthenticated `GET https://mcp.scalev.com/mcp` returned `401` with `WWW-Authenticate`.
 - `GET https://scalev.com/privacy`, `GET https://scalev.com/terms`, and `GET https://scalev.com/contact-us` returned `200`.
-- `GET https://scalev.com/claude` returned `404` before publishing; use `submission/scalev-claude-landing-page.html` as the HTML Mode source for the Scalev-owned business landing page.
-- Draft landing-page QA screenshots are saved at `assets/reviewer-evidence/scalev-claude-landing-page-desktop.jpg` and `assets/reviewer-evidence/scalev-claude-landing-page-mobile.jpg`.
-- Local public-route browser QA is saved at `assets/reviewer-evidence/scalev-claude-route-desktop.jpg`; final recorded production video is still pending.
+- `GET https://scalev.com/claude` and `GET https://scalev.com/claude-id` now return `200`; the rebuilt EN and ID marketing pages are live and the source HTML is at `submission/scalev-claude-landing-page.html` and `submission/scalev-claude-landing-page-id.html`. Reviewers can verify the live pages directly.
 - `dig +short CAA scalev.com`, `dig +short CAA mcp.scalev.com`, and `dig +short CAA api.scalev.com` returned no CAA records.
 - DNS CAA and status-page setup instructions are tracked in `submission/dns-and-status-page-plan.md`.
 - Detailed live edge notes are in `submission/live-checks-2026-05-22.md`.

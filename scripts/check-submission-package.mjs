@@ -43,9 +43,6 @@ const REQUIRED_FILES = [
   "assets/favicon.png",
   "assets/reviewer-evidence/prompts.md",
   "assets/reviewer-evidence/tool-exercise-matrix.md",
-  "assets/reviewer-evidence/scalev-claude-landing-page-desktop.jpg",
-  "assets/reviewer-evidence/scalev-claude-landing-page-mobile.jpg",
-  "assets/reviewer-evidence/scalev-claude-route-desktop.jpg",
   "submission/anthropic-requirements-audit-2026-05-22.md",
   "submission/catalog-surface-report.md",
   "submission/claude-connector-submission.md",
@@ -143,8 +140,8 @@ for (const path of REQUIRED_FILES) {
 
 const packageJson = readJson("package.json");
 if (packageJson) {
-  if (packageJson.version !== "0.3.0") {
-    errors.push(`package.json version must be 0.3.0, got ${packageJson.version || "missing"}`);
+  if (packageJson.version !== "0.3.4") {
+    errors.push(`package.json version must be 0.3.4, got ${packageJson.version || "missing"}`);
   }
 
   if (!packageJson.dependencies?.["@sentry/cloudflare"]) {

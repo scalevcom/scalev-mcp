@@ -1,20 +1,29 @@
 # DNS And Status Page Plan
 
-Date: 2026-05-22
+Audit started: 2026-05-22
+Status: RESOLVED 2026-05-24 (see `submission/live-checks-2026-05-25.md` for current verified state)
 
-This is the production operations checklist for the Claude connector submission
-items that cannot be completed from the local repositories alone.
+This was the production operations checklist for the Claude connector
+submission items that could not be completed from the local repositories
+alone. All items here have been resolved on production; the historical
+text is retained as deployment evidence.
 
-## Current Edge Evidence
+## Edge Evidence At Audit Time (2026-05-22)
 
-Checked on 2026-05-22:
-
-- `scalev.com`, `mcp.scalev.com`, and `api.scalev.com` currently present edge
+- `scalev.com`, `mcp.scalev.com`, and `api.scalev.com` presented edge
   certificates issued by Google Trust Services `WE1`.
 - `dig +short CAA scalev.com`, `dig +short CAA mcp.scalev.com`, and
   `dig +short CAA api.scalev.com` returned no CAA records.
-- `pnpm check:live-readiness:report` still records `status.scalev.com` as a
-  live blocker until the production monitor is reachable.
+- `pnpm check:live-readiness:report` recorded `status.scalev.com` as a
+  live blocker until the production monitor was reachable.
+
+## Current State (2026-05-25)
+
+- CAA records are published on the apex (`pki.goog`, `letsencrypt.org` for
+  `issue` and `issuewild`, plus `iodef "mailto:security@scalev.com"`) and
+  cover `mcp.scalev.com` and `api.scalev.com` via DNS-tree walk.
+- `status.scalev.com` is live and monitors `https://mcp.scalev.com/health`.
+- `pnpm check:live-readiness` runs all CAA and status checks as PASS.
 
 Cloudflare's CAA guidance says Universal SSL can use partner CAs and documents
 Google Trust Services as `pki.goog; cansignhttpexchanges=yes`. Confirm the

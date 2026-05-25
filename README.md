@@ -216,3 +216,4 @@ pnpm check:live-readiness:report
 - Support: https://scalev.com/contact-us
 - Security Contact: https://mcp.scalev.com/.well-known/security.txt
 - Security Commitments: https://scalev.com/security
+- Source Code: https://github.com/scalevcom/scalev-mcp
