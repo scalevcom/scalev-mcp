@@ -57,6 +57,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Catalogs are deterministic outputs of the sibling api-openapi
+      # and docs repos. If sibling repos changed since the last in-tree
+      # catalog commit, we regenerate here so the deploy reflects the
+      # latest API and docs surface. The same run that detects drift
+      # ALSO validates, deploys, and persists the regenerated catalog
+      # back to main — never skips the deploy step.
       - name: Regenerate catalogs from sibling sources
         run: pnpm run generate:catalogs
 
@@ -67,21 +73,35 @@ jobs:
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
-            echo "::notice::Generated catalogs were stale; will sync and skip deploy this run."
+            echo "::notice::Generated catalogs were stale; deploying regenerated catalog and persisting it back to main."
           fi
 
-      # When drift is detected, verify the regenerated catalogs are healthy
-      # (typecheck + tests) before committing. If unhealthy, we fail fast
-      # so a broken catalog never reaches main.
-      - name: Typecheck regenerated catalogs
-        if: steps.drift.outputs.changed == 'true'
+      - name: Check submission text safety
+        run: pnpm run check:submission-text
+
+      - name: Check submission package
+        run: pnpm run check:submission-package
+
+      - name: Typecheck
         run: pnpm run typecheck
 
-      - name: Test regenerated catalogs
-        if: steps.drift.outputs.changed == 'true'
+      - name: Test
         run: pnpm test
 
-      - name: Commit synced catalogs and stop (next push will deploy)
+      - name: Deploy Worker
+        run: pnpm run deploy
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+      # After a successful deploy, persist the regenerated catalog back
+      # to main so the next Deploy run sees no drift. Pushing happens
+      # AFTER deploy so a failing deploy never lands a "synced" commit
+      # on main without the corresponding Worker bundle being live.
+      # The push is authenticated with GITHUB_TOKEN, which intentionally
+      # does NOT re-trigger this workflow — that's fine, because the
+      # current run already deployed the same catalog.
+      - name: Persist synced catalogs back to main
         if: steps.drift.outputs.changed == 'true'
         run: |
           git config user.name "github-actions[bot]"
@@ -89,28 +109,4 @@ jobs:
           git add src/generated/v3Catalog.ts src/generated/docsCatalog.ts
           git commit -m "Sync generated MCP catalogs (auto)"
           git push
-          echo "::notice::Catalogs synced. A new Deploy run will follow from that push."
-
-      # Steps below only run when catalogs were already in sync.
-      - name: Check submission text safety
-        if: steps.drift.outputs.changed != 'true'
-        run: pnpm run check:submission-text
-
-      - name: Check submission package
-        if: steps.drift.outputs.changed != 'true'
-        run: pnpm run check:submission-package
-
-      - name: Typecheck
-        if: steps.drift.outputs.changed != 'true'
-        run: pnpm run typecheck
-
-      - name: Test
-        if: steps.drift.outputs.changed != 'true'
-        run: pnpm test
-
-      - name: Deploy Worker
-        if: steps.drift.outputs.changed != 'true'
-        run: pnpm run deploy
-        env:
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          echo "::notice::Regenerated catalog persisted to main."
