@@ -20,6 +20,8 @@ export async function protectedResourceMetadata(env: Env): Promise<Response> {
   return json(payload);
 }
 
+const MISSING_TOKEN_DESCRIPTION = "Connect Scalev through your MCP client before using this MCP server.";
+
 export async function unauthorized(env: Env): Promise<Response> {
   const scopes = await nexusScopesSupported(env).catch(() => []);
   const metadataUrl = protectedResourceMetadataUrl(env);
@@ -27,8 +29,14 @@ export async function unauthorized(env: Env): Promise<Response> {
 
   return json(
     {
-      error: "unauthorized",
-      error_description: "Connect Scalev through your MCP client before using this MCP server."
+      // RFC 6750 §3 standard bearer error code. MCP clients (Claude Code,
+      // Claude.ai, Codex) detect "invalid_token" specifically to trigger
+      // the OAuth flow. A non-standard value here (such as the previous
+      // "unauthorized") is parsed as a generic transport failure and
+      // surfaces as "Failed to connect" in client UIs instead of
+      // "Needs authentication".
+      error: "invalid_token",
+      error_description: MISSING_TOKEN_DESCRIPTION
     },
     {
       status: 401,
@@ -79,7 +87,15 @@ function protectedResourceMetadataUrl(env: Env): string {
 }
 
 function bearerChallenge(metadataUrl: string, scopes: string[]): string {
-  const base = `Bearer resource_metadata="${escapeHeaderValue(metadataUrl)}"`;
+  // RFC 6750 §3 requires the `error` attribute on missing/invalid-token
+  // 401s. MCP clients use it to distinguish an OAuth challenge from a
+  // generic transport failure. `realm` is conventional. `error_description`
+  // mirrors the JSON body so well-known clients can show a useful prompt
+  // without parsing the response body.
+  const base =
+    `Bearer realm="OAuth", error="invalid_token", ` +
+    `error_description="${escapeHeaderValue(MISSING_TOKEN_DESCRIPTION)}", ` +
+    `resource_metadata="${escapeHeaderValue(metadataUrl)}"`;
 
   if (scopes.length === 0) {
     return base;

@@ -65,11 +65,28 @@ describe("metadata", () => {
 
     const response = await unauthorized(env);
     const header = response.headers.get("www-authenticate") || "";
-    const payload = (await response.json()) as { error_description?: string };
+    const payload = (await response.json()) as { error?: string; error_description?: string };
 
     expect(response.status).toBe(401);
-    expect(payload.error_description).toBe("Connect Scalev through your MCP client before using this MCP server.");
-    expect(header).toContain("https://mcp.scalev.test/.well-known/oauth-protected-resource/mcp");
+    // RFC 6750 §3: the body must use the standard `invalid_token` error code.
+    // Claude Code, Claude.ai, and Codex all key off this exact value to
+    // distinguish an OAuth challenge from a generic transport failure.
+    expect(payload.error).toBe("invalid_token");
+    expect(payload.error_description).toBe(
+      "Connect Scalev through your MCP client before using this MCP server."
+    );
+
+    // RFC 6750 §3: the challenge MUST include the `error` attribute and
+    // SHOULD include `realm` plus `error_description`. The `resource_metadata`
+    // attribute carries the RFC 9728 protected-resource metadata URL.
+    expect(header).toContain('error="invalid_token"');
+    expect(header).toContain('realm="OAuth"');
+    expect(header).toContain(
+      'error_description="Connect Scalev through your MCP client before using this MCP server."'
+    );
+    expect(header).toContain(
+      'resource_metadata="https://mcp.scalev.test/.well-known/oauth-protected-resource/mcp"'
+    );
     expect(header).toContain('scope="page:read page:write"');
   });
 });
