@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "5610e94c76a1d9982d61c4f597dc8f7a5f02baa9453058f9e82d45d407e99af4";
+export const V3_CATALOG_SOURCE_SHA256 = "9c4dc44db80d63e0e1448ebd39c3b575de7121a0262382530fb82a2f945b08d7";
 
 export const V3_ENDPOINTS = [
   {
@@ -3208,6 +3208,7 @@ export const V3_ENDPOINTS = [
         "name": "id",
         "in": "path",
         "required": true,
+        "description": "Canonical UUIDv7 order primary key. For migrated orders, legacy numeric `core_order.id` values remain accepted for compatibility.",
         "schema": {
           "type": "string"
         }
@@ -3238,6 +3239,7 @@ export const V3_ENDPOINTS = [
         "name": "id",
         "in": "path",
         "required": true,
+        "description": "Canonical UUIDv7 order primary key. For migrated orders, legacy numeric `core_order.id` values remain accepted for compatibility.",
         "schema": {
           "type": "string"
         }
@@ -3308,6 +3310,7 @@ export const V3_ENDPOINTS = [
         "name": "id",
         "in": "path",
         "required": true,
+        "description": "Canonical UUIDv7 order primary key. For migrated orders, legacy numeric `core_order.id` values remain accepted for compatibility.",
         "schema": {
           "type": "string"
         }
@@ -3338,6 +3341,7 @@ export const V3_ENDPOINTS = [
         "name": "id",
         "in": "path",
         "required": true,
+        "description": "Canonical UUIDv7 order primary key. For migrated orders, legacy numeric `core_order.id` values remain accepted for compatibility.",
         "schema": {
           "type": "string"
         }
@@ -3376,6 +3380,7 @@ export const V3_ENDPOINTS = [
         "name": "id",
         "in": "path",
         "required": true,
+        "description": "Canonical UUIDv7 order primary key. For migrated orders, legacy numeric `core_order.id` values remain accepted for compatibility.",
         "schema": {
           "type": "string"
         }
@@ -3406,6 +3411,7 @@ export const V3_ENDPOINTS = [
         "name": "id",
         "in": "path",
         "required": true,
+        "description": "Canonical UUIDv7 order primary key. For migrated orders, legacy numeric `core_order.id` values remain accepted for compatibility.",
         "schema": {
           "type": "string"
         }
@@ -3450,6 +3456,7 @@ export const V3_ENDPOINTS = [
         "name": "id",
         "in": "path",
         "required": true,
+        "description": "Canonical UUIDv7 order primary key. For migrated orders, legacy numeric `core_order.id` values remain accepted for compatibility.",
         "schema": {
           "type": "string"
         }
@@ -3497,6 +3504,7 @@ export const V3_ENDPOINTS = [
         "name": "id",
         "in": "path",
         "required": true,
+        "description": "Canonical UUIDv7 order primary key. For migrated orders, legacy numeric `core_order.id` values remain accepted for compatibility.",
         "schema": {
           "type": "string"
         }
@@ -3527,6 +3535,7 @@ export const V3_ENDPOINTS = [
         "name": "id",
         "in": "path",
         "required": true,
+        "description": "Canonical UUIDv7 order primary key. For migrated orders, legacy numeric `core_order.id` values remain accepted for compatibility.",
         "schema": {
           "type": "string"
         }
@@ -3557,6 +3566,7 @@ export const V3_ENDPOINTS = [
         "name": "id",
         "in": "path",
         "required": true,
+        "description": "Canonical UUIDv7 order primary key. For migrated orders, legacy numeric `core_order.id` values remain accepted for compatibility.",
         "schema": {
           "type": "string"
         }
@@ -3601,6 +3611,7 @@ export const V3_ENDPOINTS = [
         "name": "id",
         "in": "path",
         "required": true,
+        "description": "Canonical UUIDv7 order primary key. For migrated orders, legacy numeric `core_order.id` values remain accepted for compatibility.",
         "schema": {
           "type": "string"
         }
@@ -3631,6 +3642,7 @@ export const V3_ENDPOINTS = [
         "name": "id",
         "in": "path",
         "required": true,
+        "description": "Canonical UUIDv7 order primary key. For migrated orders, legacy numeric `core_order.id` values remain accepted for compatibility.",
         "schema": {
           "type": "string"
         }
@@ -3661,6 +3673,7 @@ export const V3_ENDPOINTS = [
         "name": "id",
         "in": "path",
         "required": true,
+        "description": "Canonical UUIDv7 order primary key. For migrated orders, legacy numeric `core_order.id` values remain accepted for compatibility.",
         "schema": {
           "type": "string"
         }
@@ -3707,6 +3720,7 @@ export const V3_ENDPOINTS = [
         "name": "id",
         "in": "path",
         "required": true,
+        "description": "Canonical UUIDv7 order primary key. For migrated orders, legacy numeric `core_order.id` values remain accepted for compatibility.",
         "schema": {
           "type": "string"
         }
@@ -3751,6 +3765,7 @@ export const V3_ENDPOINTS = [
         "name": "id",
         "in": "path",
         "required": true,
+        "description": "Canonical UUIDv7 order primary key. For migrated orders, legacy numeric `core_order.id` values remain accepted for compatibility.",
         "schema": {
           "type": "string"
         }
@@ -3799,6 +3814,7 @@ export const V3_ENDPOINTS = [
         "name": "id",
         "in": "path",
         "required": true,
+        "description": "Canonical UUIDv7 order primary key. For migrated orders, legacy numeric `core_order.id` values remain accepted for compatibility.",
         "schema": {
           "type": "string"
         }
@@ -3829,6 +3845,7 @@ export const V3_ENDPOINTS = [
         "name": "id",
         "in": "path",
         "required": true,
+        "description": "Canonical UUIDv7 order primary key. For migrated orders, legacy numeric `core_order.id` values remain accepted for compatibility.",
         "schema": {
           "type": "string"
         }
@@ -4933,6 +4950,7 @@ export const V3_ENDPOINTS = [
         "tiktok_events_onload_parameters"
       ],
       "properties": [
+        "additional_head_code",
         "csp_policy",
         "css_code",
         "fb_events_onload_parameters",
@@ -5100,6 +5118,7 @@ export const V3_ENDPOINTS = [
         "tiktok_events_onload_parameters"
       ],
       "properties": [
+        "additional_head_code",
         "csp_policy",
         "css_code",
         "fb_events_onload_parameters",
