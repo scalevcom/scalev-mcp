@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "a25a677a2ed5b2b96ff291744f96212a25357e2dd09a819e3bf61c21697ee31f";
+export const V3_CATALOG_SOURCE_SHA256 = "ed2b291c03daa9c9c3191c9f0277d493dac28677afce194ae8087636fb713e10";
 
 export const V3_ENDPOINTS = [
   {
@@ -1144,6 +1144,110 @@ export const V3_ENDPOINTS = [
         }
       }
     ]
+  },
+  {
+    "operationId": "getCurrentBusinessUser",
+    "method": "GET",
+    "path": "/v3/business-users/me",
+    "summary": "Get current business user",
+    "description": "Returns the selected business membership for the authenticated caller. Requires a business-authenticated credential and selected business context.",
+    "tags": [
+      "Business Users"
+    ],
+    "scopes": [],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": []
+  },
+  {
+    "operationId": "acceptBusinessInvitation",
+    "method": "POST",
+    "path": "/v3/business-users/me/accept-invitation",
+    "summary": "Accept current business invitation",
+    "description": "Accepts the selected pending business membership for the authenticated caller and returns the verified business-user record.",
+    "tags": [
+      "Business Users"
+    ],
+    "scopes": [],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [],
+    "requestBody": {
+      "required": false,
+      "contentTypes": [
+        "application/json"
+      ],
+      "schemaRef": "AcceptBusinessInvitationRequest",
+      "requiredFields": [],
+      "properties": [
+        "business_phone"
+      ]
+    }
+  },
+  {
+    "operationId": "denyBusinessInvitation",
+    "method": "POST",
+    "path": "/v3/business-users/me/deny-invitation",
+    "summary": "Deny current business invitation",
+    "description": "Deletes the authenticated caller's selected pending business membership. Already accepted memberships cannot be denied.",
+    "tags": [
+      "Business Users"
+    ],
+    "scopes": [],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": []
+  },
+  {
+    "operationId": "leaveBusiness",
+    "method": "POST",
+    "path": "/v3/business-users/me/leave",
+    "summary": "Leave current business",
+    "description": "Removes the authenticated caller's verified membership from the selected business. Owners and the final remaining business member cannot leave through this endpoint.",
+    "tags": [
+      "Business Users"
+    ],
+    "scopes": [],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [],
+    "requestBody": {
+      "required": true,
+      "contentTypes": [
+        "application/json"
+      ],
+      "schemaRef": "PasswordRequest",
+      "requiredFields": [
+        "password"
+      ],
+      "properties": [
+        "password"
+      ]
+    }
   },
   {
     "operationId": "getCourseContent",
@@ -2660,6 +2764,72 @@ export const V3_ENDPOINTS = [
       }
     ],
     "queryParams": []
+  },
+  {
+    "operationId": "listBusinessUsers",
+    "method": "GET",
+    "path": "/v3/me/business-users",
+    "summary": "List authenticated user's business-user memberships",
+    "description": "Returns the authenticated caller's business-user memberships. This is a user-scoped endpoint and does not use `b_uid` or selected-business context. Results use regular v3 cursor pagination ordered by membership ID descending.",
+    "tags": [
+      "Business Users"
+    ],
+    "scopes": [],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [
+      {
+        "name": "business_name",
+        "in": "query",
+        "required": false,
+        "description": "Filter memberships by business account holder.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "next_cursor",
+        "in": "query",
+        "required": false,
+        "description": "Opaque cursor for the next page.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "page_size",
+        "in": "query",
+        "required": false,
+        "description": "Cursor page size.",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      {
+        "name": "previous_cursor",
+        "in": "query",
+        "required": false,
+        "description": "Opaque cursor for the previous page.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "search",
+        "in": "query",
+        "required": false,
+        "description": "Filter memberships by business username or account holder.",
+        "schema": {
+          "type": "string"
+        }
+      }
+    ]
   },
   {
     "operationId": "listOrders",

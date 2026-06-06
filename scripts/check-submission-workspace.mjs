@@ -24,7 +24,7 @@ const requiredFiles = [
     repo: "nexus",
     path: "lib/scalev_api_web/router.ex",
     snippets: [
-      "get \"/me/connected_businesses\"",
+      "get \"/me\"",
       "get \"/scopes\"",
       "get \"/applications/me\""
     ]
@@ -45,7 +45,7 @@ const requiredFiles = [
     repo: "api-openapi",
     path: "specs/v3/openapi.yaml",
     snippets: [
-      "/v3/me/connected_businesses:",
+      "/v3/me:",
       "/v3/oauth/scopes:",
       "/v3/oauth/applications/me:",
       "connected_businesses"
