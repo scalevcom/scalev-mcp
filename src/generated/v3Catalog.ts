@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "ed2b291c03daa9c9c3191c9f0277d493dac28677afce194ae8087636fb713e10";
+export const V3_CATALOG_SOURCE_SHA256 = "0bf83b93297a8a4dabbec2bfac9d91f3f9f8d0dc9a74713bf0e77d0d67803636";
 
 export const V3_ENDPOINTS = [
   {
@@ -2770,7 +2770,7 @@ export const V3_ENDPOINTS = [
     "method": "GET",
     "path": "/v3/me/business-users",
     "summary": "List authenticated user's business-user memberships",
-    "description": "Returns the authenticated caller's business-user memberships. This is a user-scoped endpoint and does not use `b_uid` or selected-business context. Results use regular v3 cursor pagination ordered by membership ID descending.",
+    "description": "Returns the authenticated caller's business-user memberships. This is a user-scoped endpoint and does not use `b_uid` or selected-business context. Results use regular v3 cursor pagination ordered by membership ID descending by default. Use `sort_direction=asc` to list the earliest business membership first.",
     "tags": [
       "Business Users"
     ],
@@ -2827,6 +2827,19 @@ export const V3_ENDPOINTS = [
         "description": "Filter memberships by business username or account holder.",
         "schema": {
           "type": "string"
+        }
+      },
+      {
+        "name": "sort_direction",
+        "in": "query",
+        "required": false,
+        "description": "Optional sort direction for endpoints that explicitly document support for directional sorting. Cursor requests must keep the same sort_direction used to create the cursor.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "asc",
+            "desc"
+          ]
         }
       }
     ]
@@ -4285,7 +4298,7 @@ export const V3_ENDPOINTS = [
         "name": "datetime_type",
         "in": "query",
         "required": false,
-        "description": "Type of datetime for statistics (defaults to 'created_at')",
+        "description": "Type of datetime for statistics (defaults to 'draft_time')",
         "schema": {
           "type": "string",
           "enum": [
