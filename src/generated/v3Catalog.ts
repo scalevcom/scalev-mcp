@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "0bf83b93297a8a4dabbec2bfac9d91f3f9f8d0dc9a74713bf0e77d0d67803636";
+export const V3_CATALOG_SOURCE_SHA256 = "9e5c4b90654de48724e49e441f5c171c80cd07b8d3222002b378be9528cb4c89";
 
 export const V3_ENDPOINTS = [
   {
@@ -1946,6 +1946,259 @@ export const V3_ENDPOINTS = [
       "requiredFields": [],
       "properties": []
     }
+  },
+  {
+    "operationId": "listDiscountCodes",
+    "method": "GET",
+    "path": "/v3/discount-codes",
+    "summary": "List discount codes",
+    "description": "Business-scoped discount-code list ordered by discount-code ID descending. Supports code search plus `applied_to` and enabled-status filters. Results use v3 cursor pagination.",
+    "tags": [
+      "Discounts"
+    ],
+    "scopes": [
+      "discount_code:list"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [
+      {
+        "name": "applied_to",
+        "in": "query",
+        "required": false,
+        "description": "Filter by the value the discount applies to.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "product_price",
+            "shipping_cost"
+          ]
+        }
+      },
+      {
+        "name": "next_cursor",
+        "in": "query",
+        "required": false,
+        "description": "Opaque cursor for the next page.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "page_size",
+        "in": "query",
+        "required": false,
+        "description": "Cursor page size.",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      {
+        "name": "previous_cursor",
+        "in": "query",
+        "required": false,
+        "description": "Opaque cursor for the previous page.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "search",
+        "in": "query",
+        "required": false,
+        "description": "Case-insensitive partial match against the discount code.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "status",
+        "in": "query",
+        "required": false,
+        "description": "Filter by whether customers can use the discount code.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "enabled",
+            "disabled"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "createDiscountCode",
+    "method": "POST",
+    "path": "/v3/discount-codes",
+    "summary": "Create a discount code",
+    "description": "Creates a business-scoped discount code. The code is normalized to an uppercase, space-free value before saving.",
+    "tags": [
+      "Discounts"
+    ],
+    "scopes": [
+      "discount_code:create"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [],
+    "requestBody": {
+      "required": true,
+      "contentTypes": [
+        "application/json"
+      ],
+      "schemaRef": "DiscountCodeCreateRequest",
+      "requiredFields": [
+        "amount_type",
+        "applied_to",
+        "code"
+      ],
+      "properties": [
+        "amount",
+        "amount_type",
+        "applied_to",
+        "code",
+        "expiry_time",
+        "is_enabled",
+        "is_expiry",
+        "is_limited_to_pages",
+        "is_limited_to_payment_methods",
+        "is_max_amount",
+        "is_minimum_revenue",
+        "is_usage_limit",
+        "max_amount",
+        "minimum_revenue",
+        "page_ids",
+        "payment_methods",
+        "percentage",
+        "usage_limit"
+      ]
+    }
+  },
+  {
+    "operationId": "getDiscountCode",
+    "method": "GET",
+    "path": "/v3/discount-codes/{id}",
+    "summary": "Get a discount code",
+    "description": "Returns one business-scoped discount code.",
+    "tags": [
+      "Discounts"
+    ],
+    "scopes": [
+      "discount_code:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "queryParams": []
+  },
+  {
+    "operationId": "updateDiscountCode",
+    "method": "PATCH",
+    "path": "/v3/discount-codes/{id}",
+    "summary": "Update a discount code",
+    "description": "Updates discount-code availability, usage, expiry, page, payment-method, and minimum-revenue settings. Code, discount type, and discount amount are immutable after creation.",
+    "tags": [
+      "Discounts"
+    ],
+    "scopes": [
+      "discount_code:update"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "queryParams": [],
+    "requestBody": {
+      "required": true,
+      "contentTypes": [
+        "application/json"
+      ],
+      "schemaRef": "DiscountCodeUpdateRequest",
+      "requiredFields": [],
+      "properties": [
+        "expiry_time",
+        "is_enabled",
+        "is_expiry",
+        "is_limited_to_pages",
+        "is_limited_to_payment_methods",
+        "is_minimum_revenue",
+        "is_usage_limit",
+        "minimum_revenue",
+        "page_ids",
+        "payment_methods",
+        "usage_limit"
+      ]
+    }
+  },
+  {
+    "operationId": "deleteDiscountCode",
+    "method": "DELETE",
+    "path": "/v3/discount-codes/{id}",
+    "summary": "Delete a discount code",
+    "description": "Deletes a business-scoped discount code when it has no recorded usage.",
+    "tags": [
+      "Discounts"
+    ],
+    "scopes": [
+      "discount_code:delete"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": true,
+    "pathParams": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "queryParams": []
   },
   {
     "operationId": "listFacebookPixels",
