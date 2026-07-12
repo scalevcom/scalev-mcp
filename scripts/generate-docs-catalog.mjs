@@ -10,12 +10,19 @@ const docsJsonPath = path.resolve(docsRoot, "docs.json");
 const outputPath = path.resolve(repoRoot, "src", "generated", "docsCatalog.ts");
 const generatedDocs = [];
 const sourceHashes = [];
+const GUIDE_TAB_LABELS = new Set(["Guide", "Developers"]);
 const TOPIC_OVERRIDES = {
+  en: "dev_introduction",
+  id: "dev_pendahuluan",
   "en/authorization-with-o-auth": "oauth_authorization"
 };
 
 const docsJson = await readJson(docsJsonPath);
 const developerDocs = developersDocsFromNavigation(docsJson);
+
+if (developerDocs.length === 0) {
+  throw new Error(`No docs found in navigation tabs: ${[...GUIDE_TAB_LABELS].join(", ")}`);
+}
 
 for (const doc of developerDocs) {
   const sourcePath = path.resolve(docsRoot, `${doc.slug}.mdx`);
@@ -61,7 +68,7 @@ function developersDocsFromNavigation(docsJson) {
     const language = languageEntry.language;
 
     for (const tabEntry of languageEntry.tabs || []) {
-      if (tabEntry.tab !== "Developers") continue;
+      if (!GUIDE_TAB_LABELS.has(tabEntry.tab)) continue;
 
       docs.push(
         ...flattenPages(tabEntry.pages || [], {

@@ -81,7 +81,7 @@ export function createScalevMcpServer(env: Env): McpServer {
     {
       title: "Read Scalev docs",
       description:
-        "Local read-only docs lookup. Reads Scalev Developers documentation bundled into MCP from the docs repo navigation without calling the Scalev API or changing business data. Relevant for request payload fields and write action details when search returns docs_topic/docs_url/docs_hint. Topics are generated from Developers-tab slugs, for example landing_pages_api, storefront_api_introduction, oauth_authorization, and scalev_mcp_connector.",
+        "Local read-only docs lookup. Reads Scalev Developers documentation bundled into MCP from the docs repo navigation without calling the Scalev API or changing business data. Relevant for request payload fields and write action details when search returns docs_topic/docs_url/docs_hint. Topics are generated from Guide-tab slugs, for example landing_pages_api, storefront_api_introduction, oauth_authorization, and scalev_mcp_connector.",
       inputSchema: {
         topic: z
           .string()
@@ -95,7 +95,7 @@ export function createScalevMcpServer(env: Env): McpServer {
         nav_group: z
           .string()
           .optional()
-          .describe("Optional Developers navigation group filter, for example Storefront API, Webhooks, or Landing pages."),
+          .describe("Optional Guide navigation group filter, for example Storefront API, Webhooks, or Landing pages."),
         query: z.string().optional().describe("Optional docs search query, for example landing pages html mode."),
         limit: z.number().int().min(1).max(20).optional().describe("Maximum docs to return for query/list mode.")
       },

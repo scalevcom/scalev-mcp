@@ -168,7 +168,7 @@ describe("Scalev MCP tools", () => {
       language: "en",
       slug: "en/landing-pages-api",
       nav_group: "Landing pages",
-      nav_path: ["Developers", "Landing pages"]
+      nav_path: ["Guide", "Landing pages"]
     });
     expect(byTopic.data[0].content).toContain("## HTML Mode display payload");
     expect(byTopic.catalog.docs_count).toBe(38);
@@ -188,6 +188,9 @@ describe("Scalev MCP tools", () => {
 
     const indonesianOauth = getDocs({ topic: "otorisasi_dengan_o_auth", language: "id" });
     expect(indonesianOauth.data[0].url).toBe("https://docs.scalev.com/id/otorisasi-dengan-o-auth");
+
+    expect(getDocs({ topic: "dev_introduction" }).data[0].slug).toBe("en");
+    expect(getDocs({ topic: "dev_pendahuluan" }).data[0].slug).toBe("id");
   });
 
   it("keeps OAuth flow routes and storefront browser routes out of search", () => {
