@@ -475,7 +475,7 @@ export function registerSemanticTools(server: McpServer, env: Env): void {
     {
       title: "Get order statistics",
       description:
-        "Retrieves aggregated order statistics for the selected business from Scalev API v3: total orders, total revenue, and aggregate counts with optional time and dimensional breakdowns. Useful for merchant performance summaries and answering questions like 'how did sales do last week broken down by city'. Requires the order:statistics:list scope.",
+        "Retrieves aggregated order statistics for the selected business from Scalev API v3: total orders, total revenue, and aggregate counts with optional time and dimensional breakdowns. Useful for merchant performance summaries and answering questions like 'how did sales do last week broken down by city'. Defaults to draft_time and requires the order:statistics:read scope.",
       inputSchema: {
         business_unique_id: businessUniqueIdSchema,
         breakdown_date: z
@@ -490,7 +490,7 @@ export function registerSemanticTools(server: McpServer, env: Env): void {
           .string()
           .optional()
           .describe(
-            "Which order timestamp to aggregate on. Examples: created_at, pending_time, confirmed_time, shipped_time, completed_time. Defaults to created_at."
+            "Which order timestamp to aggregate on. Examples: draft_time, pending_time, confirmed_time, shipped_time, completed_time. Defaults to draft_time."
           ),
         is_breakdown_status: z
           .boolean()

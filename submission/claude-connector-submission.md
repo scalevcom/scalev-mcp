@@ -63,7 +63,7 @@ The connector asks only for the scopes needed by the exposed tool surface:
 Reviewer-facing scope names:
 
 - `page:list`, `page:read`, `page:create`, `page:update`, `page:delete`
-- `order:list`, `order:read`, `order:create`, `order:update`, `order:change_status`, `order:statistics:list`
+- `order:list`, `order:read`, `order:create`, `order:update`, `order:change_status`, `order:statistics:read`
 
 ## Reviewer Prompts
 

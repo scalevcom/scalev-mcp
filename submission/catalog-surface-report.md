@@ -2,11 +2,11 @@
 
 Generated from `src/generated/v3Catalog.ts`.
 
-- Source OpenAPI SHA-256: `599b10ee4fd880d00738b7bdfa9f56588eba3a4efde00a2a691ee967ec6f594b`
-- Total catalog endpoints: 223
-- Read-only GET endpoints: 98
-- Non-destructive write/action endpoints: 94
-- Destructive write/action endpoints: 31
+- Source OpenAPI SHA-256: `5e9f8149fd64040fde010c124bd687e6e03677a25ead1ffe356b6f92871e1f2f`
+- Total catalog endpoints: 240
+- Read-only GET endpoints: 102
+- Non-destructive write/action endpoints: 104
+- Destructive write/action endpoints: 34
 
 ## Submission Posture
 
@@ -21,7 +21,7 @@ Generated from `src/generated/v3Catalog.ts`.
 
 | Tag | Write endpoints |
 | --- | ---: |
-| Business Products | 29 |
+| Business Products | 36 |
 | WABA | 21 |
 | Orders | 20 |
 | Business Bundles | 13 |
@@ -31,6 +31,8 @@ Generated from `src/generated/v3Catalog.ts`.
 | Business Stores | 5 |
 | Storefront Setup | 4 |
 | WhatsApp Integrations | 4 |
+| Business Users | 3 |
+| Discounts | 3 |
 | Shipping | 3 |
 
 ## Destructive Endpoints
@@ -44,6 +46,7 @@ Generated from `src/generated/v3Catalog.ts`.
 | DELETE | `/v3/course-contents/{uuid}` | `deleteCourseContent` | Delete a course content item |
 | DELETE | `/v3/course-sections/{uuid}` | `deleteCourseSection` | Delete a course section |
 | DELETE | `/v3/customers/{customer_id}/addresses/{id}` | `deleteBusinessCustomerAddress` | Delete a business customer address |
+| DELETE | `/v3/discount-codes/{id}` | `deleteDiscountCode` | Delete a discount code |
 | DELETE | `/v3/fb-pixels/{id}` | `deleteFacebookPixel` | Delete a Facebook pixel |
 | DELETE | `/v3/gtm/{id}` | `deleteGtmContainer` | Delete a Google Tag Manager container |
 | DELETE | `/v3/kwai-pixels/{id}` | `deleteKwaiPixel` | Delete a SnackVideo pixel |
@@ -56,11 +59,13 @@ Generated from `src/generated/v3Catalog.ts`.
 | DELETE | `/v3/products/{product_id}/follow-up-chats/{id}` | `deleteProductFollowUpChat` | Delete a product follow-up chat |
 | DELETE | `/v3/products/{product_id}/knowledge-items/{id}` | `deleteProductKnowledgeItem` | Delete a product knowledge item |
 | DELETE | `/v3/products/{product_id}/partners/{id}` | `deleteProductPartner` | Remove a product partner |
+| PATCH | `/v3/products/{product_id}/remove-option-value` | `removeProductOptionValue` | Remove a single-value product option |
 | DELETE | `/v3/stores/{id}` | `deleteBusinessStore` | Delete a business store |
 | DELETE | `/v3/stores/{store_id}/bundle-price-options/{id}` | `detachBusinessStoreBundlePriceOption` | Remove a bundle price option from a business store |
 | DELETE | `/v3/stores/{store_id}/public-api-keys/{id}` | `revokeStorefrontPublicApiKey` | Revoke a storefront public API key |
 | DELETE | `/v3/stores/{store_id}/storefront/allowed-origins/{id}` | `revokeStorefrontAllowedOrigin` | Revoke a storefront allowed origin |
 | DELETE | `/v3/tiktok-pixels/{id}` | `deleteTiktokPixel` | Delete a TikTok pixel |
+| DELETE | `/v3/variants/{id}` | `deleteProductVariant` | Delete one product variant |
 | DELETE | `/v3/variants/{variant_id}/digital-product-files/{id}` | `deleteVariantDigitalProductFile` | Delete a variant digital product file |
 | DELETE | `/v3/variants/{variant_id}/knowledge-items/{id}` | `deleteVariantKnowledgeItem` | Delete a variant knowledge item |
 | DELETE | `/v3/waba-accounts/{id}` | `deleteWabaAccount` | Delete a WABA account |

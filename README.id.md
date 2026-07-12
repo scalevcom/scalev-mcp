@@ -96,7 +96,7 @@ connector. Refresh daftar tool connector dan gunakan `execute_safe` atau
 - `order:list` dan `order:read`: melihat order.
 - `order:create` dan `order:update`: membuat atau mengubah order.
 - `order:change_status`: mengubah status order atau pembayaran.
-- `order:statistics:list`: melihat statistik order (total, revenue, breakdown).
+- `order:statistics:read`: melihat statistik order (total, revenue, breakdown).
 
 Connector tidak memberi akses melebihi persetujuan merchant di Scalev. Scalev API
 memeriksa scope per bisnis yang dipilih pada setiap request.

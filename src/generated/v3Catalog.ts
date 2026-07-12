@@ -1254,7 +1254,7 @@ export const V3_ENDPOINTS = [
     "method": "GET",
     "path": "/v3/course-contents/{uuid}",
     "summary": "Get a course content item",
-    "description": "Requires the `product:read` scope.",
+    "description": "Requires the `product:read` scope. Course discussion flags are effective booleans: course-level override first, then variant-level default.",
     "tags": [
       "Business Products"
     ],
@@ -1284,7 +1284,7 @@ export const V3_ENDPOINTS = [
     "method": "PATCH",
     "path": "/v3/course-contents/{uuid}",
     "summary": "Update a course content item",
-    "description": "Requires the `product:update` scope.",
+    "description": "Requires the `product:update` scope. Send `is_discussion_active` or `is_email_notification_active` as `true`, `false`, or `null`; `null` resets the module to the variant-level default.",
     "tags": [
       "Business Products"
     ],
@@ -4491,12 +4491,12 @@ export const V3_ENDPOINTS = [
     "method": "GET",
     "path": "/v3/orders/statistics",
     "summary": "Get order statistics",
-    "description": "Requires the `order:statistics:list` scope. Retrieves descriptive statistics about orders, such as total orders, total revenue, and other aggregated data. Can be filtered using the same parameters as the orders list endpoint.",
+    "description": "Requires the `order:statistics:read` scope. Retrieves descriptive statistics about orders, such as total orders, total revenue, and other aggregated data. Can be filtered using the same parameters as the orders list endpoint.",
     "tags": [
       "Orders"
     ],
     "scopes": [
-      "order:statistics:list"
+      "order:statistics:read"
     ],
     "auth": [
       "apiKeyAuth",
@@ -5946,9 +5946,6 @@ export const V3_ENDPOINTS = [
         "item_type",
         "meta_thumbnail",
         "name",
-        "option1_name",
-        "option2_name",
-        "option3_name",
         "partnership_sales_letter",
         "public_name",
         "rich_description",
@@ -5993,7 +5990,7 @@ export const V3_ENDPOINTS = [
     "method": "PATCH",
     "path": "/v3/products/{id}",
     "summary": "Update a business product",
-    "description": "Requires the `product:update` scope. Updates the details of a product, including its variants.",
+    "description": "Requires the `product:update` scope. Updates the details of a product. Variant creation, updates, and deletion must use the dedicated variant endpoints. Product update may change `is_multiple` only through guarded single-active-variant transitions: true to false clears product option names and active variant option values; false to true requires `option1_name` and `option1_value`. Product update may also change option names through `option1_name`, `option2_name`, and `option3_name`; setting an option name to null removes that slot only when active variants have at most one unique value for that option, then moves any higher option names and variant values left to keep option slots contiguous.",
     "tags": [
       "Business Products"
     ],
@@ -6031,20 +6028,19 @@ export const V3_ENDPOINTS = [
       "properties": [
         "description",
         "is_inventory",
-        "is_multiple",
         "is_product_sharing",
         "item_type",
         "meta_thumbnail",
         "name",
         "option1_name",
+        "option1_value",
         "option2_name",
         "option3_name",
         "partnership_sales_letter",
         "public_name",
         "rich_description",
         "slug",
-        "taxonomy_id",
-        "variants"
+        "taxonomy_id"
       ]
     }
   },
@@ -6107,6 +6103,52 @@ export const V3_ENDPOINTS = [
       }
     ],
     "queryParams": []
+  },
+  {
+    "operationId": "addProductOption",
+    "method": "POST",
+    "path": "/v3/products/{product_id}/add-option",
+    "summary": "Add one product option with an initial value",
+    "description": "Requires the `product:update` scope. Sets the next empty product option name and applies one initial option value to every active variant in one transaction. This does not create, delete, or clone variants.",
+    "tags": [
+      "Business Products"
+    ],
+    "scopes": [
+      "product:update"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "product_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "queryParams": [],
+    "requestBody": {
+      "required": true,
+      "description": "Product option name and one initial value",
+      "contentTypes": [
+        "application/json"
+      ],
+      "schemaRef": "AddProductOptionRequest",
+      "requiredFields": [
+        "name",
+        "value"
+      ],
+      "properties": [
+        "name",
+        "value"
+      ]
+    }
   },
   {
     "operationId": "listProductFollowUpChats",
@@ -6875,6 +6917,184 @@ export const V3_ENDPOINTS = [
       }
     ],
     "queryParams": []
+  },
+  {
+    "operationId": "removeProductOptionValue",
+    "method": "PATCH",
+    "path": "/v3/products/{product_id}/remove-option-value",
+    "summary": "Remove a single-value product option",
+    "description": "Requires the `product:update` scope. Removes an option dimension by position only when that position has exactly one active option value. The product option slot and matching variant option values are cleared and higher option slots are shifted left in one transaction. This does not delete variants.",
+    "tags": [
+      "Business Products"
+    ],
+    "scopes": [
+      "product:update"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": true,
+    "pathParams": [
+      {
+        "name": "product_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "queryParams": [],
+    "requestBody": {
+      "required": true,
+      "description": "Product option position and the single active value to remove",
+      "contentTypes": [
+        "application/json"
+      ],
+      "schemaRef": "RemoveProductOptionValueRequest",
+      "requiredFields": [
+        "position",
+        "value"
+      ],
+      "properties": [
+        "position",
+        "value"
+      ]
+    }
+  },
+  {
+    "operationId": "reorderProductOptionValues",
+    "method": "PATCH",
+    "path": "/v3/products/{product_id}/reorder-option-values",
+    "summary": "Reorder product option values",
+    "description": "Requires the `product:update` scope. Updates display order for values in one product option position. The submitted values must exactly match the active values for that position. This updates only `option_value_order`; it does not create, delete, hide, or mutate variants.",
+    "tags": [
+      "Business Products"
+    ],
+    "scopes": [
+      "product:update"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "product_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "queryParams": [],
+    "requestBody": {
+      "required": true,
+      "description": "Product option position and desired active value order",
+      "contentTypes": [
+        "application/json"
+      ],
+      "schemaRef": "ReorderProductOptionValuesRequest",
+      "requiredFields": [
+        "position",
+        "values"
+      ],
+      "properties": [
+        "position",
+        "values"
+      ]
+    }
+  },
+  {
+    "operationId": "createProductVariant",
+    "method": "POST",
+    "path": "/v3/products/{product_id}/variants",
+    "summary": "Create one product variant",
+    "description": "Requires the `product:update` scope. Creates a single variant for an existing product. The request must provide values for all configured product option dimensions.",
+    "tags": [
+      "Business Products"
+    ],
+    "scopes": [
+      "product:update"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "product_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "queryParams": [],
+    "requestBody": {
+      "required": false,
+      "description": "Single product variant data to create",
+      "contentTypes": [
+        "application/json"
+      ],
+      "schemaRef": "ProductVariantCreateRequest",
+      "requiredFields": [],
+      "properties": []
+    }
+  },
+  {
+    "operationId": "bulkUpdateProductVariantPrices",
+    "method": "PATCH",
+    "path": "/v3/products/{product_id}/variants/bulk",
+    "summary": "Bulk update active variant prices or physical weights",
+    "description": "Requires the `product:update` scope. Updates the price of every active variant on the product, or the weight of every active variant when the product is physical. This endpoint only accepts the `price` field for all product types and the `weight` field for physical products. It does not create, delete, hide, or update option values on variants.",
+    "tags": [
+      "Business Products"
+    ],
+    "scopes": [
+      "product:update"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "product_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "queryParams": [],
+    "requestBody": {
+      "required": true,
+      "description": "Bulk price or physical weight update for every active product variant",
+      "contentTypes": [
+        "application/json"
+      ],
+      "schemaRef": "BulkUpdateProductVariantPricesRequest",
+      "requiredFields": [
+        "field",
+        "value"
+      ],
+      "properties": [
+        "field",
+        "value"
+      ]
+    }
   },
   {
     "operationId": "countProducts",
@@ -8787,6 +9007,76 @@ export const V3_ENDPOINTS = [
     ],
     "readOnly": true,
     "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "queryParams": []
+  },
+  {
+    "operationId": "updateProductVariant",
+    "method": "PATCH",
+    "path": "/v3/variants/{id}",
+    "summary": "Update one product variant",
+    "description": "Requires the `product:update` scope. Updates a single variant. Product update does not accept bulk variant changes.",
+    "tags": [
+      "Business Products"
+    ],
+    "scopes": [
+      "product:update"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "queryParams": [],
+    "requestBody": {
+      "required": false,
+      "description": "Single product variant data to update",
+      "contentTypes": [
+        "application/json"
+      ],
+      "schemaRef": "ProductVariantUpdateRequest",
+      "requiredFields": [],
+      "properties": []
+    }
+  },
+  {
+    "operationId": "deleteProductVariant",
+    "method": "DELETE",
+    "path": "/v3/variants/{id}",
+    "summary": "Delete one product variant",
+    "description": "Requires the `product:update` scope. Deletes one active variant and cannot delete the last active variant of a product.",
+    "tags": [
+      "Business Products"
+    ],
+    "scopes": [
+      "product:update"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": true,
     "pathParams": [
       {
         "name": "id",

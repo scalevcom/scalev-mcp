@@ -117,7 +117,7 @@ Scalev OAuth consent groups scopes by the business data or action they unlock:
 - `order:list` and `order:read`: view orders.
 - `order:create` and `order:update`: create or edit orders.
 - `order:change_status`: change order or payment status.
-- `order:statistics:list`: view aggregated order statistics (totals, revenue, breakdowns).
+- `order:statistics:read`: view aggregated order statistics (totals, revenue, breakdowns).
 
 The connector never grants more access than the merchant approved in Scalev. The Scalev API enforces scopes per selected business on every call.
 
