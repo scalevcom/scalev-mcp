@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "d7f936f2e75789f624184ac0a895dcf6643294970a1d95255771cb228d850456";
+export const V3_CATALOG_SOURCE_SHA256 = "1d4716595292c0b400e2e1944ce6e1f058f6ca7b6e5ac20f9d81fd2b21cbf075";
 
 export const V3_ENDPOINTS = [
   {
@@ -3178,7 +3178,7 @@ export const V3_ENDPOINTS = [
         "name": "columns",
         "in": "query",
         "required": false,
-        "description": "Comma-separated list of columns to include. Available columns: secret_slug, public_order_url, payment_url, final_variants, store, origin_address, address_location, handler_phone, order_id, destination_address, quantity, product_price, total_weight, courier_service, shipping_cost, payment_method, gross_revenue, shipment_receipt, courier_additional_info, payment_status, status, customer, draft_time, orderlines, is_dropshipping, dropshipper_name, dropshipper_phone, unique_code_discount, tags, awb_status, awb_ca_status, follow_up_chats, follow_up_chat_type, message_history, metadata, notes, courier_aggregator_code, shipment_account, payment_account, financial_entity, payment_account_holder, payment_account_number, transferproof_url, transfer_time, product_discount, shipping_discount, other_income, other_income_name, shipment_status, is_repeat, platform, external_id, is_purchase_fb, is_purchase_tiktok, is_purchase_kwai, fb_pixel_ids, tiktok_pixel_ids, kwai_pixel_ids, pending_time, confirmed_time, shipped_time, completed_time, rts_time, canceled_time, closed_time, warehouse, page, channel_name, handler, advertiser, pg_payment_info, sub_payment_method, epayment_provider, invoice_url, pg_reference_id, net_revenue, payment_fee, scalev_fee, net_payment_revenue, discount_code_discount, discount_code_code, discount_code_applied_to, utm_source",
+        "description": "Comma-separated list of columns to include. Available columns: secret_slug, public_order_url, payment_url, final_variants, store, origin_address, address_location, handler_phone, order_id, destination_address, quantity, product_price, total_weight, courier_service, shipping_cost, payment_method, gross_revenue, shipment_receipt, courier_additional_info, payment_status, status, customer, draft_time, orderlines, is_dropshipping, dropshipper_name, dropshipper_phone, unique_code_discount, tags, awb_status, awb_ca_status, follow_up_chats, follow_up_chat_type, message_history, metadata, notes, courier_aggregator_code, shipment_account, payment_account, financial_entity, payment_account_holder, payment_account_number, transferproof_url, transfer_time, product_discount, shipping_discount, other_income, other_income_name, shipment_status, is_repeat, platform, external_id, is_purchase_fb, is_purchase_tiktok, is_purchase_kwai, fb_pixel_ids, tiktok_pixel_ids, kwai_pixel_ids, pending_time, confirmed_time, shipped_time, completed_time, rts_time, canceled_time, closed_time, warehouse, page, channel_name, handler, advertiser, pg_payment_info, epayment_provider, invoice_url, pg_reference_id, net_revenue, payment_fee, scalev_fee, net_payment_revenue, discount_code_discount, discount_code_code, discount_code_applied_to, utm_source",
         "schema": {
           "type": "string"
         }
@@ -3365,10 +3365,27 @@ export const V3_ENDPOINTS = [
         "schema": {
           "type": "string",
           "enum": [
-            "va",
+            "va_bca",
+            "va_bni",
+            "va_bri",
+            "va_mandiri",
+            "va_permata",
+            "va_cimb",
+            "va_bsi",
+            "va_maybank",
+            "va_bnc",
+            "va_danamon",
+            "va_artha_graha",
+            "va_muamalat",
+            "va_btn",
+            "va_ocbc",
+            "va_bjb",
+            "va_sahabat_sampoerna",
+            "va_artajasa",
             "qris",
             "card",
             "invoice",
+            "payment_link",
             "alfamart",
             "indomaret",
             "ovo",
@@ -3615,7 +3632,6 @@ export const V3_ENDPOINTS = [
         "shipping_cost",
         "shipping_discount",
         "store_unique_id",
-        "sub_payment_method",
         "transferproof_url",
         "warehouse_unique_id"
       ]
@@ -3717,7 +3733,6 @@ export const V3_ENDPOINTS = [
         "shipment_provider_code",
         "shipping_cost",
         "shipping_discount",
-        "sub_payment_method",
         "transferproof_url",
         "warehouse_unique_id"
       ]
@@ -3912,8 +3927,7 @@ export const V3_ENDPOINTS = [
         "metadata",
         "payment_account_holder",
         "payment_account_number",
-        "payment_method",
-        "sub_payment_method"
+        "payment_method"
       ]
     }
   },
