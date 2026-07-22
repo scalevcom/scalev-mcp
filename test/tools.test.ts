@@ -226,6 +226,46 @@ describe("Scalev MCP tools", () => {
     expect(paths).not.toContain("/v3/stores/{store_id}/payment-methods");
   });
 
+  it("retains and forwards business store and variant reference constraints", () => {
+    const productList = V3_ENDPOINTS.find((endpoint) => endpoint.operationId === "listProducts");
+    const storeProducts = V3_ENDPOINTS.find(
+      (endpoint) => endpoint.operationId === "listBusinessStoreProducts"
+    );
+    const variant = V3_ENDPOINTS.find((endpoint) => endpoint.operationId === "getVariant");
+
+    expect(productList?.queryParams.find((parameter) => parameter.name === "store_id")?.schema).toMatchObject({
+      type: "string",
+      minLength: 1,
+      pattern: expect.stringContaining("store_")
+    });
+    expect(storeProducts?.pathParams.find((parameter) => parameter.name === "store_id")?.schema).toMatchObject({
+      type: "string",
+      minLength: 1,
+      pattern: expect.stringContaining("store_")
+    });
+    expect(variant?.pathParams.find((parameter) => parameter.name === "id")?.schema).toMatchObject({
+      type: "string",
+      minLength: 1,
+      pattern: expect.stringContaining("variant_")
+    });
+
+    expect(
+      buildGetRequest({ operation_id: "listProducts", query: { store_id: "12,store_abc" } }).request.path
+    ).toBe("/v3/products?store_id=12%2Cstore_abc");
+    expect(
+      buildGetRequest({
+        operation_id: "listBusinessStoreProducts",
+        path_params: { store_id: "store_abc" }
+      }).request.path
+    ).toBe("/v3/stores/store_abc/products");
+
+    for (const id of [12, "variant_abc", "018f47a8-b43c-7bf2-9a6d-6e584105bca6"]) {
+      expect(buildGetRequest({ operation_id: "getVariant", path_params: { id } }).request.path).toBe(
+        `/v3/variants/${id}`
+      );
+    }
+  });
+
   it("builds get requests from operation_id", () => {
     const { endpoint, request } = buildGetRequest({
       operation_id: "getLandingPage",

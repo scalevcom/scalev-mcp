@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "1d4716595292c0b400e2e1944ce6e1f058f6ca7b6e5ac20f9d81fd2b21cbf075";
+export const V3_CATALOG_SOURCE_SHA256 = "7bc6f93217236c40e4d0c5e61aa2231db2a5dfc59d15162193ad3f024ba7e83f";
 
 export const V3_ENDPOINTS = [
   {
@@ -59,7 +59,8 @@ export const V3_ENDPOINTS = [
         "required": false,
         "description": "Number of items per page (default: 25, max: 25)",
         "schema": {
-          "type": "integer"
+          "type": "integer",
+          "maximum": 25
         }
       },
       {
@@ -180,7 +181,8 @@ export const V3_ENDPOINTS = [
         "required": false,
         "description": "Number of items to return per page. Default is 25, maximum is 25.",
         "schema": {
-          "type": "integer"
+          "type": "integer",
+          "maximum": 25
         }
       },
       {
@@ -416,7 +418,8 @@ export const V3_ENDPOINTS = [
         "required": false,
         "description": "Number of items per page (default: 25, max: 25)",
         "schema": {
-          "type": "integer"
+          "type": "integer",
+          "maximum": 25
         }
       },
       {
@@ -700,7 +703,8 @@ export const V3_ENDPOINTS = [
         "required": false,
         "description": "Number of items to return per page. Default is 25, maximum is 25.",
         "schema": {
-          "type": "integer"
+          "type": "integer",
+          "maximum": 25
         }
       },
       {
@@ -1019,7 +1023,8 @@ export const V3_ENDPOINTS = [
         "required": false,
         "description": "Number of items per page (default: 25, max: 25)",
         "schema": {
-          "type": "integer"
+          "type": "integer",
+          "maximum": 25
         }
       },
       {
@@ -1113,7 +1118,8 @@ export const V3_ENDPOINTS = [
         "required": false,
         "description": "Number of items per page (default: 25, max: 25)",
         "schema": {
-          "type": "integer"
+          "type": "integer",
+          "maximum": 25
         }
       },
       {
@@ -1996,7 +2002,8 @@ export const V3_ENDPOINTS = [
         "required": false,
         "description": "Cursor page size.",
         "schema": {
-          "type": "integer"
+          "type": "integer",
+          "minimum": 1
         }
       },
       {
@@ -2964,7 +2971,9 @@ export const V3_ENDPOINTS = [
         "required": false,
         "description": "Number of items per page.",
         "schema": {
-          "type": "integer"
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 25
         }
       },
       {
@@ -3061,7 +3070,8 @@ export const V3_ENDPOINTS = [
         "required": false,
         "description": "Cursor page size.",
         "schema": {
-          "type": "integer"
+          "type": "integer",
+          "minimum": 1
         }
       },
       {
@@ -3354,7 +3364,8 @@ export const V3_ENDPOINTS = [
         "required": false,
         "description": "Number of items per page (default: 25, max: 25)",
         "schema": {
-          "type": "integer"
+          "type": "integer",
+          "maximum": 25
         }
       },
       {
@@ -5007,7 +5018,8 @@ export const V3_ENDPOINTS = [
         "required": false,
         "description": "Cursor page size.",
         "schema": {
-          "type": "integer"
+          "type": "integer",
+          "minimum": 1
         }
       },
       {
@@ -5331,7 +5343,8 @@ export const V3_ENDPOINTS = [
         "required": false,
         "description": "Cursor page size.",
         "schema": {
-          "type": "integer"
+          "type": "integer",
+          "minimum": 1
         }
       },
       {
@@ -5631,7 +5644,8 @@ export const V3_ENDPOINTS = [
         "required": false,
         "description": "Cursor page size.",
         "schema": {
-          "type": "integer"
+          "type": "integer",
+          "minimum": 1
         }
       },
       {
@@ -5706,7 +5720,9 @@ export const V3_ENDPOINTS = [
         "required": false,
         "description": "Number of items per page",
         "schema": {
-          "type": "integer"
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 25
         }
       },
       {
@@ -5855,7 +5871,8 @@ export const V3_ENDPOINTS = [
         "required": false,
         "description": "Number of items per page (default: 25, max: 25)",
         "schema": {
-          "type": "integer"
+          "type": "integer",
+          "maximum": 25
         }
       },
       {
@@ -5905,9 +5922,11 @@ export const V3_ENDPOINTS = [
         "name": "store_id",
         "in": "query",
         "required": false,
-        "description": "Filter products associated with a specific store ID",
+        "description": "One or more comma-separated positive numeric store IDs or `store_...` unique references. Every value is resolved within the authenticated business, then deduplicated before filtering products.",
         "schema": {
-          "type": "integer"
+          "type": "string",
+          "pattern": "^(?:[1-9][0-9]*|store_[A-Za-z0-9]+)(?:\\s*,\\s*(?:[1-9][0-9]*|store_[A-Za-z0-9]+))*$",
+          "minLength": 1
         }
       },
       {
@@ -6208,7 +6227,8 @@ export const V3_ENDPOINTS = [
         "required": false,
         "description": "Number of items per page (default: 25, max: 25)",
         "schema": {
-          "type": "integer"
+          "type": "integer",
+          "maximum": 25
         }
       },
       {
@@ -6492,7 +6512,8 @@ export const V3_ENDPOINTS = [
         "required": false,
         "description": "Number of items per page (default: 25, max: 25)",
         "schema": {
-          "type": "integer"
+          "type": "integer",
+          "maximum": 25
         }
       },
       {
@@ -6728,7 +6749,8 @@ export const V3_ENDPOINTS = [
         "required": false,
         "description": "Number of items per page (default: 25, max: 25)",
         "schema": {
-          "type": "integer"
+          "type": "integer",
+          "maximum": 25
         }
       },
       {
@@ -7206,7 +7228,8 @@ export const V3_ENDPOINTS = [
         "required": false,
         "description": "Number of items per page (default: 25, max: 25)",
         "schema": {
-          "type": "integer"
+          "type": "integer",
+          "maximum": 25
         }
       },
       {
@@ -7377,7 +7400,8 @@ export const V3_ENDPOINTS = [
         "required": false,
         "description": "Number of items per page (default: 25, max: 25)",
         "schema": {
-          "type": "integer"
+          "type": "integer",
+          "maximum": 25
         }
       },
       {
@@ -8340,9 +8364,11 @@ export const V3_ENDPOINTS = [
         "name": "store_id",
         "in": "path",
         "required": true,
-        "description": "Numeric Scalev store database ID for authenticated business routes.",
+        "description": "Positive numeric store ID or `store_...` unique reference, resolved within the authenticated business for this product-list route.",
         "schema": {
-          "type": "integer"
+          "type": "string",
+          "pattern": "^(?:[1-9][0-9]*|store_[A-Za-z0-9]+)$",
+          "minLength": 1
         }
       }
     ],
@@ -9026,8 +9052,11 @@ export const V3_ENDPOINTS = [
         "name": "id",
         "in": "path",
         "required": true,
+        "description": "Positive numeric variant ID, `variant_...` unique reference, or canonical UUID, resolved within the authenticated business.",
         "schema": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^(?:[1-9][0-9]*|variant_[A-Za-z0-9_-]+|[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})$",
+          "minLength": 1
         }
       }
     ],
@@ -9056,8 +9085,11 @@ export const V3_ENDPOINTS = [
         "name": "id",
         "in": "path",
         "required": true,
+        "description": "Positive numeric variant ID, `variant_...` unique reference, or canonical UUID, resolved within the authenticated business.",
         "schema": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^(?:[1-9][0-9]*|variant_[A-Za-z0-9_-]+|[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})$",
+          "minLength": 1
         }
       }
     ],
@@ -9096,8 +9128,11 @@ export const V3_ENDPOINTS = [
         "name": "id",
         "in": "path",
         "required": true,
+        "description": "Positive numeric variant ID, `variant_...` unique reference, or canonical UUID, resolved within the authenticated business.",
         "schema": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^(?:[1-9][0-9]*|variant_[A-Za-z0-9_-]+|[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})$",
+          "minLength": 1
         }
       }
     ],
@@ -9126,8 +9161,11 @@ export const V3_ENDPOINTS = [
         "name": "id",
         "in": "path",
         "required": true,
+        "description": "Positive numeric variant ID, `variant_...` unique reference, or canonical UUID, resolved within the authenticated business.",
         "schema": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^(?:[1-9][0-9]*|variant_[A-Za-z0-9_-]+|[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})$",
+          "minLength": 1
         }
       }
     ],
@@ -9156,8 +9194,11 @@ export const V3_ENDPOINTS = [
         "name": "id",
         "in": "path",
         "required": true,
+        "description": "Positive numeric variant ID, `variant_...` unique reference, or canonical UUID, resolved within the authenticated business.",
         "schema": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^(?:[1-9][0-9]*|variant_[A-Za-z0-9_-]+|[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})$",
+          "minLength": 1
         }
       }
     ],
@@ -9195,8 +9236,11 @@ export const V3_ENDPOINTS = [
         "name": "id",
         "in": "path",
         "required": true,
+        "description": "Positive numeric variant ID, `variant_...` unique reference, or canonical UUID, resolved within the authenticated business.",
         "schema": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^(?:[1-9][0-9]*|variant_[A-Za-z0-9_-]+|[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})$",
+          "minLength": 1
         }
       }
     ],
@@ -9225,8 +9269,11 @@ export const V3_ENDPOINTS = [
         "name": "variant_id",
         "in": "path",
         "required": true,
+        "description": "Positive numeric variant ID, `variant_...` unique reference, or canonical UUID, resolved within the authenticated business.",
         "schema": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^(?:[1-9][0-9]*|variant_[A-Za-z0-9_-]+|[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})$",
+          "minLength": 1
         }
       }
     ],
@@ -9264,8 +9311,11 @@ export const V3_ENDPOINTS = [
         "name": "variant_id",
         "in": "path",
         "required": true,
+        "description": "Positive numeric variant ID, `variant_...` unique reference, or canonical UUID, resolved within the authenticated business.",
         "schema": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^(?:[1-9][0-9]*|variant_[A-Za-z0-9_-]+|[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})$",
+          "minLength": 1
         }
       }
     ],
@@ -9303,8 +9353,11 @@ export const V3_ENDPOINTS = [
         "name": "variant_id",
         "in": "path",
         "required": true,
+        "description": "Positive numeric variant ID, `variant_...` unique reference, or canonical UUID, resolved within the authenticated business.",
         "schema": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^(?:[1-9][0-9]*|variant_[A-Za-z0-9_-]+|[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})$",
+          "minLength": 1
         }
       }
     ],
@@ -9324,7 +9377,8 @@ export const V3_ENDPOINTS = [
         "required": false,
         "description": "Number of items per page (default: 25, max: 25)",
         "schema": {
-          "type": "integer"
+          "type": "integer",
+          "maximum": 25
         }
       },
       {
@@ -9361,8 +9415,11 @@ export const V3_ENDPOINTS = [
         "name": "variant_id",
         "in": "path",
         "required": true,
+        "description": "Positive numeric variant ID, `variant_...` unique reference, or canonical UUID, resolved within the authenticated business.",
         "schema": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^(?:[1-9][0-9]*|variant_[A-Za-z0-9_-]+|[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})$",
+          "minLength": 1
         }
       }
     ],
@@ -9408,8 +9465,11 @@ export const V3_ENDPOINTS = [
         "name": "variant_id",
         "in": "path",
         "required": true,
+        "description": "Positive numeric variant ID, `variant_...` unique reference, or canonical UUID, resolved within the authenticated business.",
         "schema": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^(?:[1-9][0-9]*|variant_[A-Za-z0-9_-]+|[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})$",
+          "minLength": 1
         }
       }
     ],
@@ -9446,8 +9506,11 @@ export const V3_ENDPOINTS = [
         "name": "variant_id",
         "in": "path",
         "required": true,
+        "description": "Positive numeric variant ID, `variant_...` unique reference, or canonical UUID, resolved within the authenticated business.",
         "schema": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^(?:[1-9][0-9]*|variant_[A-Za-z0-9_-]+|[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})$",
+          "minLength": 1
         }
       }
     ],
@@ -9476,8 +9539,11 @@ export const V3_ENDPOINTS = [
         "name": "variant_id",
         "in": "path",
         "required": true,
+        "description": "Positive numeric variant ID, `variant_...` unique reference, or canonical UUID, resolved within the authenticated business.",
         "schema": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^(?:[1-9][0-9]*|variant_[A-Za-z0-9_-]+|[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})$",
+          "minLength": 1
         }
       }
     ],
@@ -9497,7 +9563,8 @@ export const V3_ENDPOINTS = [
         "required": false,
         "description": "Number of items per page (default: 25, max: 25)",
         "schema": {
-          "type": "integer"
+          "type": "integer",
+          "maximum": 25
         }
       },
       {
@@ -9534,8 +9601,11 @@ export const V3_ENDPOINTS = [
         "name": "variant_id",
         "in": "path",
         "required": true,
+        "description": "Positive numeric variant ID, `variant_...` unique reference, or canonical UUID, resolved within the authenticated business.",
         "schema": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^(?:[1-9][0-9]*|variant_[A-Za-z0-9_-]+|[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})$",
+          "minLength": 1
         }
       }
     ],
@@ -9589,8 +9659,11 @@ export const V3_ENDPOINTS = [
         "name": "variant_id",
         "in": "path",
         "required": true,
+        "description": "Positive numeric variant ID, `variant_...` unique reference, or canonical UUID, resolved within the authenticated business.",
         "schema": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^(?:[1-9][0-9]*|variant_[A-Za-z0-9_-]+|[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})$",
+          "minLength": 1
         }
       }
     ],
@@ -9627,8 +9700,11 @@ export const V3_ENDPOINTS = [
         "name": "variant_id",
         "in": "path",
         "required": true,
+        "description": "Positive numeric variant ID, `variant_...` unique reference, or canonical UUID, resolved within the authenticated business.",
         "schema": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^(?:[1-9][0-9]*|variant_[A-Za-z0-9_-]+|[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})$",
+          "minLength": 1
         }
       }
     ],
@@ -9682,8 +9758,11 @@ export const V3_ENDPOINTS = [
         "name": "variant_id",
         "in": "path",
         "required": true,
+        "description": "Positive numeric variant ID, `variant_...` unique reference, or canonical UUID, resolved within the authenticated business.",
         "schema": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^(?:[1-9][0-9]*|variant_[A-Za-z0-9_-]+|[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})$",
+          "minLength": 1
         }
       }
     ],
@@ -10430,7 +10509,8 @@ export const V3_ENDPOINTS = [
         "required": false,
         "description": "Cursor page size.",
         "schema": {
-          "type": "integer"
+          "type": "integer",
+          "minimum": 1
         }
       },
       {

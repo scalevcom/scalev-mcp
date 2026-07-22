@@ -211,7 +211,12 @@ function schemaMetadata(schema) {
     type: schema.type,
     format: schema.format,
     enum: Array.isArray(schema.enum) ? schema.enum.map(String) : undefined,
-    itemsType: schema.items?.type
+    itemsType: schema.items?.type,
+    pattern: schema.pattern,
+    minLength: schema.minLength,
+    maxLength: schema.maxLength,
+    minimum: schema.minimum,
+    maximum: schema.maximum
   });
 
   return Object.keys(metadata).length > 0 ? metadata : undefined;
