@@ -16,6 +16,11 @@ export interface V3EndpointParameter {
     readonly format?: string;
     readonly enum?: readonly string[];
     readonly itemsType?: string;
+    readonly pattern?: string;
+    readonly minLength?: number;
+    readonly maxLength?: number;
+    readonly minimum?: number;
+    readonly maximum?: number;
   };
 }
 
