@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "7bc6f93217236c40e4d0c5e61aa2231db2a5dfc59d15162193ad3f024ba7e83f";
+export const V3_CATALOG_SOURCE_SHA256 = "4ccf2470568c9edad4e89a978a79ba00e9d4a63f7ae0c5b7ad0d353d463d6e6e";
 
 export const V3_ENDPOINTS = [
   {
@@ -3398,7 +3398,6 @@ export const V3_ENDPOINTS = [
             "invoice",
             "payment_link",
             "alfamart",
-            "indomaret",
             "ovo",
             "dana",
             "shopeepay",
