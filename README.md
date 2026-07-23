@@ -150,7 +150,7 @@ pnpm generate:catalog-surface-report
 pnpm check:catalog-surface-report
 ```
 
-The docs catalog is generated from the sibling docs repo:
+The docs catalog is generated from the sibling `../dev-docs` repo:
 
 ```bash
 pnpm generate:docs-catalog
