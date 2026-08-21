@@ -88,6 +88,15 @@ jobs:
       - name: Test
         run: pnpm test
 
+      - name: Load Cloudflare deploy secrets
+        uses: 1password/load-secrets-action@v4
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: op://scalev/spa-deployer/CLOUDFLARE_ACCOUNT_ID
+          CLOUDFLARE_API_TOKEN: op://scalev/spa-deployer/CLOUDFLARE_API_TOKEN
+
       - name: Deploy Worker
         run: |
           max_attempts=4
@@ -114,10 +123,6 @@ jobs:
             rm -f "$log_file"
             sleep "$delay"
           done
-        env:
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-
       # After a successful deploy, persist the regenerated catalog back
       # to main so the next Deploy run sees no drift. Pushing happens
       # AFTER deploy so a failing deploy never lands a "synced" commit
