@@ -163,10 +163,12 @@ When Scalev API business-authenticated `/v3` behavior changes, update the Scalev
 
 Deployments run from GitHub Actions on pushes to `main`, or manually through the `Deploy` workflow.
 
-Required GitHub Actions secrets:
+Required GitHub Actions secret:
 
-- `CLOUDFLARE_ACCOUNT_ID`
-- `CLOUDFLARE_API_TOKEN`
+- `OP_SERVICE_ACCOUNT_TOKEN`
+
+The deploy workflow loads the Cloudflare credentials at runtime from the
+`spa-deployer` item in the `scalev` 1Password vault.
 
 Required API token permission:
 
