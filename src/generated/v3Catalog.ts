@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "0467c932abafaeb9579467b5a37093fca2154c14566d89d0548a09700064d15e";
+export const V3_CATALOG_SOURCE_SHA256 = "600324cd7f5c655fc24919ecbc579d892536f2355038a28a29bba701fe1c8166";
 
 export const V3_ENDPOINTS = [
   {
@@ -11365,6 +11365,132 @@ export const V3_ENDPOINTS = [
         "schema": {
           "type": "string",
           "format": "date"
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "getWebAnalyticsSourceRevenue",
+    "method": "GET",
+    "path": "/v3/web-analytics/source-revenue",
+    "summary": "Get visits and earnings per acquisition source",
+    "description": "Returns, for each acquisition source, how many visits it produced and how much it earned. The two halves come from different places and describe different moments, so they are returned separately rather than merged into one column. `first_touch` counts visits and is keyed off the URL the visitor arrived on. `last_touch` holds order counts and amounts, keyed off the values recorded when checkout was submitted. Combining them into a single \"source\" figure would present two different measurements as one. Only orders that were paid or settled are counted. An order that exists but was never paid is not earnings, and including it makes every source look better than it is. Amounts are strings, not numbers. They are exact decimals server-side and a JSON number would lose precision for no benefit. A source may appear on one side only: traffic that produced no orders, or orders whose visit was never recorded. Both are returned so the gap is visible rather than looking like missing data.",
+    "tags": [
+      "Web Analytics"
+    ],
+    "scopes": [],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [
+      {
+        "name": "entity_id",
+        "in": "query",
+        "required": false,
+        "description": "Identifier of the catalog item, used with `entity_type`.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_path",
+        "in": "query",
+        "required": false,
+        "description": "The item's current path, accepted as a fallback alongside `entity_type` and `entity_id`. Events collected before item identity was emitted carry only a path, and so do client-side navigations, which cannot know which item rendered. Passing the current path includes those. A path recorded before the item's slug was last changed cannot be recovered.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_type",
+        "in": "query",
+        "required": false,
+        "description": "Restrict to one catalog item, together with `entity_id`. Catalog pages are served under the storefront token and carry no page identifier, so they are identified by type and id instead.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "product",
+            "bundle_price_option"
+          ]
+        }
+      },
+      {
+        "name": "from",
+        "in": "query",
+        "required": true,
+        "description": "First day of the range, inclusive, as an ISO 8601 date. Interpreted in `timezone`.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "description": "Maximum rows to return. Values above 100 are clamped to 100.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      {
+        "name": "page_id",
+        "in": "query",
+        "required": false,
+        "description": "Restrict to one landing page. Mutually exclusive with `entity_type` and `entity_id`; when both are supplied, `page_id` wins.",
+        "schema": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      {
+        "name": "store_id",
+        "in": "query",
+        "required": false,
+        "description": "Restrict to a single store. Landing and sales pages often belong to no store, so omitting this is usually what a merchant wants.",
+        "schema": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      {
+        "name": "timezone",
+        "in": "query",
+        "required": false,
+        "description": "IANA time zone used for day boundaries and for grouping. An unrecognised zone is rejected rather than falling back to UTC.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "to",
+        "in": "query",
+        "required": true,
+        "description": "Last day of the range, inclusive, as an ISO 8601 date. The range may not exceed 180 days, which is how long raw events are retained; a longer range is rejected rather than silently truncated.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      {
+        "name": "utm_type",
+        "in": "query",
+        "required": false,
+        "description": "Which UTM dimension to group the earnings half by. The visits half is always grouped the same way.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "source",
+            "medium",
+            "campaign"
+          ]
         }
       }
     ]
