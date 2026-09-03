@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "095cc7cec349ecb1da01ad2961c823f0b54d13ed43f74158c9371e825658a95f";
+export const V3_CATALOG_SOURCE_SHA256 = "0467c932abafaeb9579467b5a37093fca2154c14566d89d0548a09700064d15e";
 
 export const V3_ENDPOINTS = [
   {
@@ -10942,6 +10942,645 @@ export const V3_ENDPOINTS = [
       }
     ],
     "queryParams": []
+  },
+  {
+    "operationId": "getWebAnalyticsAudience",
+    "method": "GET",
+    "path": "/v3/web-analytics/audience",
+    "summary": "Get device and country breakdowns",
+    "description": "Returns visits split by device type and, separately, by country. Both breakdowns share every filter, so they are returned together as one resource. Country comes from the edge network's country header. No IP address is stored, so no finer geography is available.",
+    "tags": [
+      "Web Analytics"
+    ],
+    "scopes": [],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [
+      {
+        "name": "entity_id",
+        "in": "query",
+        "required": false,
+        "description": "Identifier of the catalog item, used with `entity_type`.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_path",
+        "in": "query",
+        "required": false,
+        "description": "The item's current path, accepted as a fallback alongside `entity_type` and `entity_id`. Events collected before item identity was emitted carry only a path, and so do client-side navigations, which cannot know which item rendered. Passing the current path includes those. A path recorded before the item's slug was last changed cannot be recovered.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_type",
+        "in": "query",
+        "required": false,
+        "description": "Restrict to one catalog item, together with `entity_id`. Catalog pages are served under the storefront token and carry no page identifier, so they are identified by type and id instead.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "product",
+            "bundle_price_option"
+          ]
+        }
+      },
+      {
+        "name": "from",
+        "in": "query",
+        "required": true,
+        "description": "First day of the range, inclusive, as an ISO 8601 date. Interpreted in `timezone`.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      {
+        "name": "page_id",
+        "in": "query",
+        "required": false,
+        "description": "Restrict to one landing page. Mutually exclusive with `entity_type` and `entity_id`; when both are supplied, `page_id` wins.",
+        "schema": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      {
+        "name": "store_id",
+        "in": "query",
+        "required": false,
+        "description": "Restrict to a single store. Landing and sales pages often belong to no store, so omitting this is usually what a merchant wants.",
+        "schema": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      {
+        "name": "timezone",
+        "in": "query",
+        "required": false,
+        "description": "IANA time zone used for day boundaries and for grouping. An unrecognised zone is rejected rather than falling back to UTC.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "to",
+        "in": "query",
+        "required": true,
+        "description": "Last day of the range, inclusive, as an ISO 8601 date. The range may not exceed 180 days, which is how long raw events are retained; a longer range is rejected rather than silently truncated.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "getWebAnalyticsConversion",
+    "method": "GET",
+    "path": "/v3/web-analytics/conversion",
+    "summary": "Get page view to completed-order conversion",
+    "description": "Returns views, visitors, sessions, and completed orders for the requested range. `matched_purchases` are completed orders that carry a visitor identity and can be tied back to a visit. `unattributed_purchases` are the rest: manually created orders, and browsers that never reported. Both are returned so the gap is visible rather than looking like missing data. No monetary values are returned. Order totals are mutable state that can change long after an order completes, so they are read from the orders API and joined on the source dimension instead.",
+    "tags": [
+      "Web Analytics"
+    ],
+    "scopes": [],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [
+      {
+        "name": "entity_id",
+        "in": "query",
+        "required": false,
+        "description": "Identifier of the catalog item, used with `entity_type`.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_path",
+        "in": "query",
+        "required": false,
+        "description": "The item's current path, accepted as a fallback alongside `entity_type` and `entity_id`. Events collected before item identity was emitted carry only a path, and so do client-side navigations, which cannot know which item rendered. Passing the current path includes those. A path recorded before the item's slug was last changed cannot be recovered.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_type",
+        "in": "query",
+        "required": false,
+        "description": "Restrict to one catalog item, together with `entity_id`. Catalog pages are served under the storefront token and carry no page identifier, so they are identified by type and id instead.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "product",
+            "bundle_price_option"
+          ]
+        }
+      },
+      {
+        "name": "from",
+        "in": "query",
+        "required": true,
+        "description": "First day of the range, inclusive, as an ISO 8601 date. Interpreted in `timezone`.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      {
+        "name": "page_id",
+        "in": "query",
+        "required": false,
+        "description": "Restrict to one landing page. Mutually exclusive with `entity_type` and `entity_id`; when both are supplied, `page_id` wins.",
+        "schema": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      {
+        "name": "store_id",
+        "in": "query",
+        "required": false,
+        "description": "Restrict to a single store. Landing and sales pages often belong to no store, so omitting this is usually what a merchant wants.",
+        "schema": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      {
+        "name": "timezone",
+        "in": "query",
+        "required": false,
+        "description": "IANA time zone used for day boundaries and for grouping. An unrecognised zone is rejected rather than falling back to UTC.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "to",
+        "in": "query",
+        "required": true,
+        "description": "Last day of the range, inclusive, as an ISO 8601 date. The range may not exceed 180 days, which is how long raw events are retained; a longer range is rejected rather than silently truncated.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "listWebAnalyticsJourneyTransitions",
+    "method": "GET",
+    "path": "/v3/web-analytics/journey",
+    "summary": "List page-to-page movement within sessions",
+    "description": "Returns how often one path was followed by another within the same session, ordered by session count descending. This discovers the paths visitors actually took; it does not measure predefined steps. A completed order appears as the terminal node `purchase`, identified by event type rather than by its path, so it is not folded into the checkout page it was submitted from. Repeated deliveries of the same event are collapsed before sequencing, so a retried beacon cannot invent movement from a page to itself.",
+    "tags": [
+      "Web Analytics"
+    ],
+    "scopes": [],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [
+      {
+        "name": "entity_id",
+        "in": "query",
+        "required": false,
+        "description": "Identifier of the catalog item, used with `entity_type`.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_path",
+        "in": "query",
+        "required": false,
+        "description": "The item's current path, accepted as a fallback alongside `entity_type` and `entity_id`. Events collected before item identity was emitted carry only a path, and so do client-side navigations, which cannot know which item rendered. Passing the current path includes those. A path recorded before the item's slug was last changed cannot be recovered.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_type",
+        "in": "query",
+        "required": false,
+        "description": "Restrict to one catalog item, together with `entity_id`. Catalog pages are served under the storefront token and carry no page identifier, so they are identified by type and id instead.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "product",
+            "bundle_price_option"
+          ]
+        }
+      },
+      {
+        "name": "from",
+        "in": "query",
+        "required": true,
+        "description": "First day of the range, inclusive, as an ISO 8601 date. Interpreted in `timezone`.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "description": "Maximum rows to return. Values above 100 are clamped to 100.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      {
+        "name": "page_id",
+        "in": "query",
+        "required": false,
+        "description": "Restrict to one landing page. Mutually exclusive with `entity_type` and `entity_id`; when both are supplied, `page_id` wins.",
+        "schema": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      {
+        "name": "store_id",
+        "in": "query",
+        "required": false,
+        "description": "Restrict to a single store. Landing and sales pages often belong to no store, so omitting this is usually what a merchant wants.",
+        "schema": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      {
+        "name": "timezone",
+        "in": "query",
+        "required": false,
+        "description": "IANA time zone used for day boundaries and for grouping. An unrecognised zone is rejected rather than falling back to UTC.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "to",
+        "in": "query",
+        "required": true,
+        "description": "Last day of the range, inclusive, as an ISO 8601 date. The range may not exceed 180 days, which is how long raw events are retained; a longer range is rejected rather than silently truncated.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "listWebAnalyticsTopPages",
+    "method": "GET",
+    "path": "/v3/web-analytics/pages",
+    "summary": "List the most viewed pages",
+    "description": "Returns the merchant's most viewed paths over the requested range, ordered by views descending. A ranked summary rather than a page-through list, so it is a non-paginated collection with an explicit `limit`. A keyset cursor over a ranked aggregate would be unstable, because the ranking itself shifts as new events arrive between requests.",
+    "tags": [
+      "Web Analytics"
+    ],
+    "scopes": [],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [
+      {
+        "name": "entity_id",
+        "in": "query",
+        "required": false,
+        "description": "Identifier of the catalog item, used with `entity_type`.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_path",
+        "in": "query",
+        "required": false,
+        "description": "The item's current path, accepted as a fallback alongside `entity_type` and `entity_id`. Events collected before item identity was emitted carry only a path, and so do client-side navigations, which cannot know which item rendered. Passing the current path includes those. A path recorded before the item's slug was last changed cannot be recovered.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_type",
+        "in": "query",
+        "required": false,
+        "description": "Restrict to one catalog item, together with `entity_id`. Catalog pages are served under the storefront token and carry no page identifier, so they are identified by type and id instead.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "product",
+            "bundle_price_option"
+          ]
+        }
+      },
+      {
+        "name": "from",
+        "in": "query",
+        "required": true,
+        "description": "First day of the range, inclusive, as an ISO 8601 date. Interpreted in `timezone`.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "description": "Maximum rows to return. Values above 100 are clamped to 100.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      {
+        "name": "page_id",
+        "in": "query",
+        "required": false,
+        "description": "Restrict to one landing page. Mutually exclusive with `entity_type` and `entity_id`; when both are supplied, `page_id` wins.",
+        "schema": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      {
+        "name": "store_id",
+        "in": "query",
+        "required": false,
+        "description": "Restrict to a single store. Landing and sales pages often belong to no store, so omitting this is usually what a merchant wants.",
+        "schema": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      {
+        "name": "timezone",
+        "in": "query",
+        "required": false,
+        "description": "IANA time zone used for day boundaries and for grouping. An unrecognised zone is rejected rather than falling back to UTC.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "to",
+        "in": "query",
+        "required": true,
+        "description": "Last day of the range, inclusive, as an ISO 8601 date. The range may not exceed 180 days, which is how long raw events are retained; a longer range is rejected rather than silently truncated.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "listWebAnalyticsSources",
+    "method": "GET",
+    "path": "/v3/web-analytics/sources",
+    "summary": "List acquisition sources for visits",
+    "description": "Returns referrer hosts and UTM values for visits over the requested range. Every row is labelled `attribution: first_touch`, because these values are parsed from the URL the visitor arrived on. Values recorded when an order is completed describe the last touch instead and are not mixed in here. A single column combining both would mean two different things.",
+    "tags": [
+      "Web Analytics"
+    ],
+    "scopes": [],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [
+      {
+        "name": "entity_id",
+        "in": "query",
+        "required": false,
+        "description": "Identifier of the catalog item, used with `entity_type`.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_path",
+        "in": "query",
+        "required": false,
+        "description": "The item's current path, accepted as a fallback alongside `entity_type` and `entity_id`. Events collected before item identity was emitted carry only a path, and so do client-side navigations, which cannot know which item rendered. Passing the current path includes those. A path recorded before the item's slug was last changed cannot be recovered.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_type",
+        "in": "query",
+        "required": false,
+        "description": "Restrict to one catalog item, together with `entity_id`. Catalog pages are served under the storefront token and carry no page identifier, so they are identified by type and id instead.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "product",
+            "bundle_price_option"
+          ]
+        }
+      },
+      {
+        "name": "from",
+        "in": "query",
+        "required": true,
+        "description": "First day of the range, inclusive, as an ISO 8601 date. Interpreted in `timezone`.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "description": "Maximum rows to return. Values above 100 are clamped to 100.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      {
+        "name": "page_id",
+        "in": "query",
+        "required": false,
+        "description": "Restrict to one landing page. Mutually exclusive with `entity_type` and `entity_id`; when both are supplied, `page_id` wins.",
+        "schema": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      {
+        "name": "store_id",
+        "in": "query",
+        "required": false,
+        "description": "Restrict to a single store. Landing and sales pages often belong to no store, so omitting this is usually what a merchant wants.",
+        "schema": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      {
+        "name": "timezone",
+        "in": "query",
+        "required": false,
+        "description": "IANA time zone used for day boundaries and for grouping. An unrecognised zone is rejected rather than falling back to UTC.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "to",
+        "in": "query",
+        "required": true,
+        "description": "Last day of the range, inclusive, as an ISO 8601 date. The range may not exceed 180 days, which is how long raw events are retained; a longer range is rejected rather than silently truncated.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "getWebAnalyticsTraffic",
+    "method": "GET",
+    "path": "/v3/web-analytics/traffic",
+    "summary": "Get page views, visitors, and sessions over time",
+    "description": "Returns one bucket per day for the requested range, in the merchant's own time zone. This is a fixed-size series for a requested range, not a list, so it is a single resource rather than a paginated collection. Day boundaries follow `timezone`, not UTC. An event at 22:30 UTC belongs to the following day for a merchant in Asia/Jakarta, so a UTC-grouped series would file evening traffic under the wrong day. Counts are deduplicated by event identity. A browser that retries a beacon can deliver the same event twice, and both copies count once.",
+    "tags": [
+      "Web Analytics"
+    ],
+    "scopes": [],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [
+      {
+        "name": "entity_id",
+        "in": "query",
+        "required": false,
+        "description": "Identifier of the catalog item, used with `entity_type`.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_path",
+        "in": "query",
+        "required": false,
+        "description": "The item's current path, accepted as a fallback alongside `entity_type` and `entity_id`. Events collected before item identity was emitted carry only a path, and so do client-side navigations, which cannot know which item rendered. Passing the current path includes those. A path recorded before the item's slug was last changed cannot be recovered.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_type",
+        "in": "query",
+        "required": false,
+        "description": "Restrict to one catalog item, together with `entity_id`. Catalog pages are served under the storefront token and carry no page identifier, so they are identified by type and id instead.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "product",
+            "bundle_price_option"
+          ]
+        }
+      },
+      {
+        "name": "from",
+        "in": "query",
+        "required": true,
+        "description": "First day of the range, inclusive, as an ISO 8601 date. Interpreted in `timezone`.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      {
+        "name": "page_id",
+        "in": "query",
+        "required": false,
+        "description": "Restrict to one landing page. Mutually exclusive with `entity_type` and `entity_id`; when both are supplied, `page_id` wins.",
+        "schema": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      {
+        "name": "store_id",
+        "in": "query",
+        "required": false,
+        "description": "Restrict to a single store. Landing and sales pages often belong to no store, so omitting this is usually what a merchant wants.",
+        "schema": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      {
+        "name": "timezone",
+        "in": "query",
+        "required": false,
+        "description": "IANA time zone used for day boundaries and for grouping. An unrecognised zone is rejected rather than falling back to UTC.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "to",
+        "in": "query",
+        "required": true,
+        "description": "Last day of the range, inclusive, as an ISO 8601 date. The range may not exceed 180 days, which is how long raw events are retained; a longer range is rejected rather than silently truncated.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    ]
   },
   {
     "operationId": "listWhatsappIntegrations",
