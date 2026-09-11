@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "095cc7cec349ecb1da01ad2961c823f0b54d13ed43f74158c9371e825658a95f";
+export const V3_CATALOG_SOURCE_SHA256 = "ebeaf67a3bcbb1638f778aa95975599d6df7b1da6d6f815eccfaa7bb5b00d775";
 
 export const V3_ENDPOINTS = [
   {
@@ -2527,7 +2527,7 @@ export const V3_ENDPOINTS = [
     "method": "POST",
     "path": "/v3/gtm",
     "summary": "Create a Google Tag Manager container",
-    "description": "Requires the `gtm:create` scope.",
+    "description": "Requires the `gtm:create` scope. A name and container_id are sufficient to configure the container; no manual tag inventory or separate GTM approval is required. On Scalev pages using the container, GTM follows the same marketing consent decision as native pixels: it loads immediately when Customer Privacy does not require consent, or after marketing approval, and honors an explicit refusal.",
     "tags": [
       "Analytics Setup"
     ],
@@ -2593,7 +2593,7 @@ export const V3_ENDPOINTS = [
     "method": "PATCH",
     "path": "/v3/gtm/{id}",
     "summary": "Update a Google Tag Manager container",
-    "description": "Requires the `gtm:update` scope.",
+    "description": "Requires the `gtm:update` scope. A name and container_id are sufficient to configure the container; no manual tag inventory or separate GTM approval is required. On Scalev pages using the container, GTM follows the same marketing consent decision as native pixels: it loads immediately when Customer Privacy does not require consent, or after marketing approval, and honors an explicit refusal.",
     "tags": [
       "Analytics Setup"
     ],
