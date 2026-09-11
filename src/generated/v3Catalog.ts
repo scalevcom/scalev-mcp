@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "add0116ea801f5651e7b52f72117b7d44973731bf3ec363376405cb2a5a67b78";
+export const V3_CATALOG_SOURCE_SHA256 = "abf2d2a3cee387d5808ffa707f0ddc5a54de713ecc6c9faf26323e18d4204654";
 
 export const V3_ENDPOINTS = [
   {
@@ -4256,7 +4256,7 @@ export const V3_ENDPOINTS = [
     "method": "POST",
     "path": "/v3/orders/{id}/trigger-purchase",
     "summary": "Trigger purchase processing for an order",
-    "description": "Requires the `order:update` scope. Trigger configured third-party purchase events using the order's saved visit decision. Only an explicit visitor refusal blocks privacy permission; absent consent records and grants allow delivery without policy-version or catalog-freshness checks. HTTP 200 contains per-provider acknowledgement or error results and does not by itself confirm delivery. Previously acknowledged pixels are reused.",
+    "description": "Requires the `order:update` scope. Trigger configured third-party purchase events using consent saved when the order was created. Later visitor choices and business policy changes do not alter that order's decision. Only an explicit visitor refusal blocks privacy permission; absent consent records and grants allow delivery without policy-version or catalog-freshness checks. HTTP 200 contains per-provider acknowledgement or error results and does not by itself confirm delivery. Previously acknowledged pixels are reused.",
     "tags": [
       "Orders"
     ],
