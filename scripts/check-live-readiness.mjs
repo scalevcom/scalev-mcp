@@ -52,14 +52,8 @@ const checks = [
     expectText: ["https://mcp.scalev.com/mcp"]
   },
   {
-    name: "English connector docs",
-    url: "https://docs.scalev.com/en/scalev-mcp-connector",
-    expectStatus: 200,
-    expectText: ["Scalev MCP", "https://mcp.scalev.com/mcp"]
-  },
-  {
-    name: "Indonesian connector docs",
-    url: "https://docs.scalev.com/id/konektor-scalev-mcp",
+    name: "Connector developer docs",
+    url: "https://docs.scalev.dev/docs/scalev-mcp-connector",
     expectStatus: 200,
     expectText: ["Scalev MCP", "https://mcp.scalev.com/mcp"]
   },

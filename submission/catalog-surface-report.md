@@ -2,10 +2,10 @@
 
 Generated from `src/generated/v3Catalog.ts`.
 
-- Source OpenAPI SHA-256: `7bc6f93217236c40e4d0c5e61aa2231db2a5dfc59d15162193ad3f024ba7e83f`
-- Total catalog endpoints: 240
-- Read-only GET endpoints: 102
-- Non-destructive write/action endpoints: 104
+- Source OpenAPI SHA-256: `e21b772072f966f5848c2bac4e197dec86b487bf153ff7d1d202b42fb5863710`
+- Total catalog endpoints: 243
+- Read-only GET endpoints: 104
+- Non-destructive write/action endpoints: 105
 - Destructive write/action endpoints: 34
 
 ## Submission Posture
@@ -34,6 +34,7 @@ Generated from `src/generated/v3Catalog.ts`.
 | Business Users | 3 |
 | Discounts | 3 |
 | Shipping | 3 |
+| Checkout Intents | 1 |
 
 ## Destructive Endpoints
 

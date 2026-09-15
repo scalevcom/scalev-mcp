@@ -35,7 +35,21 @@ for (const endpoint of endpoints) {
     ...(endpoint.tags || [])
   ].join(" ");
 
-  if (FINANCIAL_TEXT_PATTERN.test(searchableText) && !FINANCIAL_TEXT_ALLOWLIST.has(endpoint.operationId)) {
+  // This existing operation changes discount eligibility; code, type and amount are immutable.
+  // Match its complete operation identity so the exception cannot hide a financial action.
+  const isDiscountEligibilityUpdate =
+    endpoint.operationId === "updateDiscountCode" &&
+    endpoint.method === "PATCH" &&
+    endpoint.path === "/v3/discount-codes/{id}" &&
+    Array.isArray(endpoint.scopes) &&
+    endpoint.scopes.length === 1 &&
+    endpoint.scopes[0] === "discount_code:update";
+
+  if (
+    FINANCIAL_TEXT_PATTERN.test(searchableText) &&
+    !FINANCIAL_TEXT_ALLOWLIST.has(endpoint.operationId) &&
+    !isDiscountEligibilityUpdate
+  ) {
     errors.push(`${endpoint.operationId} matches financial-risk text at ${endpoint.method} ${endpoint.path}`);
   }
 }

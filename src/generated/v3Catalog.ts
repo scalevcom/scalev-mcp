@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "095cc7cec349ecb1da01ad2961c823f0b54d13ed43f74158c9371e825658a95f";
+export const V3_CATALOG_SOURCE_SHA256 = "e21b772072f966f5848c2bac4e197dec86b487bf153ff7d1d202b42fb5863710";
 
 export const V3_ENDPOINTS = [
   {
@@ -1254,6 +1254,231 @@ export const V3_ENDPOINTS = [
         "password"
       ]
     }
+  },
+  {
+    "operationId": "listCheckoutIntents",
+    "method": "GET",
+    "path": "/v3/checkout-intents",
+    "summary": "List contactable checkout intents",
+    "description": "Requires the `checkout_intent:list` scope. Returns only intents with a valid normalized email or phone for the selected business. Use status=abandoned for recovery work. Active means activity within 15 minutes; abandoned means unfinished and idle at least 15 minutes; completed means an order was created. Resumed intents can become active again. Uses cursor pagination ordered by the selected timestamp and intent ID.",
+    "externalDocs": {
+      "url": "https://docs.scalev.dev/docs/checkout-intents",
+      "description": "Capture and recover unfinished checkouts."
+    },
+    "tags": [
+      "Checkout Intents"
+    ],
+    "scopes": [
+      "checkout_intent:list"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [
+      {
+        "name": "form_widget_id",
+        "in": "query",
+        "required": false,
+        "description": "Optional capture-source filter within the selected business.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "next_cursor",
+        "in": "query",
+        "required": false,
+        "description": "Opaque cursor for the next page.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "page_size",
+        "in": "query",
+        "required": false,
+        "description": "Maximum number of rows.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      {
+        "name": "page_unique_id",
+        "in": "query",
+        "required": false,
+        "description": "Optional capture-source filter within the selected business.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "previous_cursor",
+        "in": "query",
+        "required": false,
+        "description": "Opaque cursor for the previous page.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "search",
+        "in": "query",
+        "required": false,
+        "description": "Search customer name, email, or normalized phone.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "sort_by",
+        "in": "query",
+        "required": false,
+        "description": "Timestamp used for cursor ordering. completed_at falls back to started_at for unfinished intents. Keep sort_by and sort_direction unchanged while paging.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "last_activity_at",
+            "started_at",
+            "completed_at"
+          ]
+        }
+      },
+      {
+        "name": "sort_direction",
+        "in": "query",
+        "required": false,
+        "description": "Sort direction.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "asc",
+            "desc"
+          ]
+        }
+      },
+      {
+        "name": "started_at_from",
+        "in": "query",
+        "required": false,
+        "description": "Inclusive start timestamp.",
+        "schema": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      {
+        "name": "started_at_until",
+        "in": "query",
+        "required": false,
+        "description": "Exclusive end timestamp.",
+        "schema": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      {
+        "name": "status",
+        "in": "query",
+        "required": false,
+        "description": "Omit to include all contactable statuses.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "active",
+            "abandoned",
+            "completed"
+          ]
+        }
+      },
+      {
+        "name": "store_unique_id",
+        "in": "query",
+        "required": false,
+        "description": "Optional capture-source filter within the selected business.",
+        "schema": {
+          "type": "string"
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "getCheckoutIntent",
+    "method": "GET",
+    "path": "/v3/checkout-intents/{checkout_intent_id}",
+    "summary": "Get a contactable checkout intent",
+    "description": "Requires the `checkout_intent:read` scope. Returns a contactable intent belonging to the selected business, including captured fields, item snapshots, safe attribution and a recovery URL when available. recovery_url and recovery_url_expires_at are null for completed intents or a missing or untrusted source URL. Recovery URLs are customer capabilities; protect them as customer data.",
+    "externalDocs": {
+      "url": "https://docs.scalev.dev/docs/checkout-intents",
+      "description": "Capture and recover unfinished checkouts."
+    },
+    "tags": [
+      "Checkout Intents"
+    ],
+    "scopes": [
+      "checkout_intent:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "checkout_intent_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    ],
+    "queryParams": []
+  },
+  {
+    "operationId": "sendCheckoutIntentFollowUpEmail",
+    "method": "POST",
+    "path": "/v3/checkout-intents/{checkout_intent_id}/follow-up-email",
+    "summary": "Send a checkout intent follow-up email",
+    "description": "Requires the `checkout_intent:follow_up` scope. Queues one personalized email for a contactable intent with a captured customer email. Active, abandoned, and completed intents are accepted. Returns after enqueueing, before delivery. Repeated requests return 409 after an email was already queued. The store email identity and configured Reply-To rules apply.",
+    "externalDocs": {
+      "url": "https://docs.scalev.dev/docs/checkout-intents",
+      "description": "Capture and recover unfinished checkouts."
+    },
+    "tags": [
+      "Checkout Intents"
+    ],
+    "scopes": [
+      "checkout_intent:follow_up"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "checkout_intent_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    ],
+    "queryParams": []
   },
   {
     "operationId": "getCourseContent",
@@ -4984,7 +5209,7 @@ export const V3_ENDPOINTS = [
     "summary": "List landing pages",
     "description": "Business-scoped landing page list. Returns Builder and HTML Mode pages visible to the authenticated business.",
     "externalDocs": {
-      "url": "https://docs.scalev.com/en/landing-pages-api",
+      "url": "https://docs.scalev.dev/docs/landing-pages-api",
       "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
     },
     "tags": [
@@ -5039,7 +5264,7 @@ export const V3_ENDPOINTS = [
     "summary": "Create a landing page",
     "description": "Creates a business-scoped landing page using the same page creation behavior as Landing Page Studio. The request body below documents the HTML Mode payload. To create and publish an HTML Mode page in one call, include `is_published: true` with `page_display`. If `is_published` is omitted or false, the nested `page_display` is saved as an unpublished draft and is not returned as the page's current display; create or pick a page display, then call `PATCH /v3/pages/{id}` with `is_published: true` and `current_page_display_id` to publish it.",
     "externalDocs": {
-      "url": "https://docs.scalev.com/en/landing-pages-api",
+      "url": "https://docs.scalev.dev/docs/landing-pages-api",
       "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
     },
     "tags": [
@@ -5085,7 +5310,7 @@ export const V3_ENDPOINTS = [
     "summary": "Get a landing page",
     "description": "Returns a business-scoped landing page with its current published page display when one is selected.",
     "externalDocs": {
-      "url": "https://docs.scalev.com/en/landing-pages-api",
+      "url": "https://docs.scalev.dev/docs/landing-pages-api",
       "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
     },
     "tags": [
@@ -5121,7 +5346,7 @@ export const V3_ENDPOINTS = [
     "summary": "Update a landing page",
     "description": "Updates business-scoped landing page metadata and publishing state using the same page update behavior as Landing Page Studio. Send `is_published: true` with `current_page_display_id` to publish a page display, or `is_published: false` with `current_page_display_id: null` to unpublish the page.",
     "externalDocs": {
-      "url": "https://docs.scalev.com/en/landing-pages-api",
+      "url": "https://docs.scalev.dev/docs/landing-pages-api",
       "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
     },
     "tags": [
@@ -5177,7 +5402,7 @@ export const V3_ENDPOINTS = [
     "summary": "Delete a landing page",
     "description": "Soft-deletes a business-scoped landing page. Builder and HTML Mode pages are both deletable through this endpoint.",
     "externalDocs": {
-      "url": "https://docs.scalev.com/en/landing-pages-api",
+      "url": "https://docs.scalev.dev/docs/landing-pages-api",
       "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
     },
     "tags": [
@@ -5213,7 +5438,7 @@ export const V3_ENDPOINTS = [
     "summary": "Get landing page public view data",
     "description": "Returns the authenticated public rendering payload for a landing page.",
     "externalDocs": {
-      "url": "https://docs.scalev.com/en/landing-pages-api",
+      "url": "https://docs.scalev.dev/docs/landing-pages-api",
       "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
     },
     "tags": [
@@ -5249,7 +5474,7 @@ export const V3_ENDPOINTS = [
     "summary": "Update landing page tags",
     "description": "Replaces the tags assigned to a landing page.",
     "externalDocs": {
-      "url": "https://docs.scalev.com/en/landing-pages-api",
+      "url": "https://docs.scalev.dev/docs/landing-pages-api",
       "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
     },
     "tags": [
@@ -5299,7 +5524,7 @@ export const V3_ENDPOINTS = [
     "summary": "List landing page displays",
     "description": "Lists saved displays for a landing page.",
     "externalDocs": {
-      "url": "https://docs.scalev.com/en/landing-pages-api",
+      "url": "https://docs.scalev.dev/docs/landing-pages-api",
       "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
     },
     "tags": [
@@ -5364,7 +5589,7 @@ export const V3_ENDPOINTS = [
     "summary": "Create a landing page display",
     "description": "Creates a new display for an existing landing page. The request body below documents the HTML Mode page display payload.",
     "externalDocs": {
-      "url": "https://docs.scalev.com/en/landing-pages-api",
+      "url": "https://docs.scalev.dev/docs/landing-pages-api",
       "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
     },
     "tags": [
@@ -5442,7 +5667,7 @@ export const V3_ENDPOINTS = [
     "summary": "Get a landing page display",
     "description": "Returns one saved landing page display.",
     "externalDocs": {
-      "url": "https://docs.scalev.com/en/landing-pages-api",
+      "url": "https://docs.scalev.dev/docs/landing-pages-api",
       "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
     },
     "tags": [
@@ -5487,7 +5712,7 @@ export const V3_ENDPOINTS = [
     "summary": "Delete a landing page display",
     "description": "Deletes one saved landing page display.",
     "externalDocs": {
-      "url": "https://docs.scalev.com/en/landing-pages-api",
+      "url": "https://docs.scalev.dev/docs/landing-pages-api",
       "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
     },
     "tags": [
@@ -5532,7 +5757,7 @@ export const V3_ENDPOINTS = [
     "summary": "Validate a landing page display",
     "description": "Validates the same landing page display payload accepted by create without persisting a page-display record.",
     "externalDocs": {
-      "url": "https://docs.scalev.com/en/landing-pages-api",
+      "url": "https://docs.scalev.dev/docs/landing-pages-api",
       "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
     },
     "tags": [
@@ -5610,7 +5835,7 @@ export const V3_ENDPOINTS = [
     "summary": "List simplified landing pages",
     "description": "Business-scoped simplified landing page list using the same page filtering as Landing Page Studio.",
     "externalDocs": {
-      "url": "https://docs.scalev.com/en/landing-pages-api",
+      "url": "https://docs.scalev.dev/docs/landing-pages-api",
       "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
     },
     "tags": [
@@ -5665,7 +5890,7 @@ export const V3_ENDPOINTS = [
     "summary": "List landing page tags",
     "description": "Lists landing page tags visible to the authenticated business.",
     "externalDocs": {
-      "url": "https://docs.scalev.com/en/landing-pages-api",
+      "url": "https://docs.scalev.dev/docs/landing-pages-api",
       "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
     },
     "tags": [
