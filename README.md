@@ -150,7 +150,7 @@ pnpm generate:catalog-surface-report
 pnpm check:catalog-surface-report
 ```
 
-The docs catalog is generated from the sibling `../dev-docs` repo:
+The docs catalog is generated from English public guides and `_order.yaml` navigation in the sibling `../dev-docs` repo (`v3` branch). Guide URLs use `https://docs.scalev.dev/docs/<slug>`:
 
 ```bash
 pnpm generate:docs-catalog

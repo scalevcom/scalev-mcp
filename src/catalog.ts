@@ -230,9 +230,12 @@ function resolveEndpoint(
       throw new Error(`${toolName} cannot run ${endpoint.method} operation ${endpoint.operationId}`);
     }
 
+    const path = buildPathFromTemplate(endpoint, input.path_params);
+    validateCheckoutIntentPath(endpoint, path);
+
     return {
       endpoint,
-      path: buildPathFromTemplate(endpoint, input.path_params),
+      path,
       queryParams: new URLSearchParams()
     };
   }
@@ -256,12 +259,30 @@ function resolveEndpoint(
   }
 
   const endpoint = endpoints[0];
+  const path = parsed.pathname.includes("{") ? buildPathFromTemplate(endpoint, input.path_params) : parsed.pathname;
+  validateCheckoutIntentPath(endpoint, path);
 
   return {
     endpoint,
-    path: parsed.pathname.includes("{") ? buildPathFromTemplate(endpoint, input.path_params) : parsed.pathname,
+    path,
     queryParams: parsed.searchParams
   };
+}
+
+function validateCheckoutIntentPath(endpoint: V3Endpoint, path: string): void {
+  if (!endpoint.path.startsWith("/v3/checkout-intents/")) return;
+
+  let id: string;
+  try {
+    id = decodeURIComponent(path.split("/")[3] || "");
+  } catch {
+    throw new Error("checkout_intent_id must be a UUID");
+  }
+
+  // Reserved statistics and prefill routes must never match the merchant detail template.
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+    throw new Error("checkout_intent_id must be a UUID");
+  }
 }
 
 function findTemplateEndpoints(methods: readonly BusinessV3Method[], path: string): V3Endpoint[] {

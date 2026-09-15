@@ -21,7 +21,7 @@
     "generate:docs-catalog": "node scripts/generate-docs-catalog.mjs",
     "generate:v3-catalog": "node scripts/generate-v3-catalog.mjs",
     "generate:catalog-surface-report": "node scripts/generate-catalog-surface-report.mjs",
-    "generate:catalogs": "pnpm generate:v3-catalog && pnpm generate:docs-catalog",
+    "generate:catalogs": "pnpm generate:v3-catalog && pnpm generate:docs-catalog && pnpm generate:catalog-surface-report",
     "check:docs-catalog": "node scripts/check-generated-catalog.mjs scripts/generate-docs-catalog.mjs src/generated/docsCatalog.ts",
     "check:v3-catalog": "node scripts/check-generated-catalog.mjs scripts/generate-v3-catalog.mjs src/generated/v3Catalog.ts",
     "check:catalogs": "pnpm check:v3-catalog && pnpm check:docs-catalog",

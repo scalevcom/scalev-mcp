@@ -39,7 +39,7 @@ export interface DocsLookupResult {
   };
 }
 
-const DOCS_SOURCE = "../docs";
+const DOCS_SOURCE = "../dev-docs";
 const DEFAULT_LIMIT = 5;
 const MAX_LIMIT = 20;
 const DOCS = SCALEV_DOCS as readonly ScalevDoc[];

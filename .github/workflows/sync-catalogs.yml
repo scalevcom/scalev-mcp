@@ -35,12 +35,12 @@ jobs:
           ref: main
           path: api-openapi
 
-      - name: Checkout docs
+      - name: Checkout dev-docs
         uses: actions/checkout@v5
         with:
-          repository: scalevcom/docs
-          ref: main
-          path: docs
+          repository: scalevcom/dev-docs
+          ref: v3
+          path: dev-docs
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v5
@@ -64,7 +64,7 @@ jobs:
       - name: Check generated diff
         id: diff
         run: |
-          if git diff --quiet -- src/generated/v3Catalog.ts src/generated/docsCatalog.ts; then
+          if git diff --quiet -- src/generated/v3Catalog.ts src/generated/docsCatalog.ts submission/catalog-surface-report.md; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
@@ -87,6 +87,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/generated/v3Catalog.ts src/generated/docsCatalog.ts
+          git add src/generated/v3Catalog.ts src/generated/docsCatalog.ts submission/catalog-surface-report.md
           git commit -m "Sync generated MCP catalogs"
           git push

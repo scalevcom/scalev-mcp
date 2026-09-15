@@ -127,7 +127,7 @@ describe("Scalev MCP tools", () => {
     const createLandingPage = createPage.data.find((endpoint) => endpoint.operation_id === "createLandingPage");
     expect(createLandingPage?.execution_tool).toBe("execute_safe");
     expect(createLandingPage?.is_destructive).toBe(false);
-    expect(createLandingPage?.docs_url).toBe("https://docs.scalev.com/en/landing-pages-api");
+    expect(createLandingPage?.docs_url).toBe("https://docs.scalev.dev/docs/landing-pages-api");
     expect(createLandingPage?.docs_topic).toBe("landing_pages_api");
     expect(createLandingPage?.docs_hint).toMatch(/Landing Pages API/);
 
@@ -160,37 +160,82 @@ describe("Scalev MCP tools", () => {
     expect(cancelOrderAwb?.is_destructive).toBe(true);
   });
 
-  it("reads bundled Scalev docs by topic or URL", () => {
+  it("reads current developer docs by topic or canonical URL", () => {
     const byTopic = getDocs({ topic: "landing_pages_api" });
     expect(byTopic.data).toHaveLength(1);
-    expect(byTopic.data[0].url).toBe("https://docs.scalev.com/en/landing-pages-api");
+    expect(byTopic.data[0].url).toBe("https://docs.scalev.dev/docs/landing-pages-api");
     expect(byTopic.data[0]).toMatchObject({
       language: "en",
-      slug: "en/landing-pages-api",
+      slug: "landing-pages-api",
       nav_group: "Landing pages",
-      nav_path: ["Guide", "Landing pages"]
+      nav_path: ["Guide", "Landing pages"],
+      source: "../dev-docs/docs/Landing pages/landing-pages-api.md"
     });
     expect(byTopic.data[0].content).toContain("## HTML Mode display payload");
-    expect(byTopic.catalog.docs_count).toBe(38);
-    expect(byTopic.catalog.available_languages).toEqual(["en", "id"]);
-    expect(byTopic.catalog.available_nav_groups).toContain("Storefront API");
-    expect(byTopic.catalog.available_nav_groups).toContain("Landing pages");
-    expect(byTopic.catalog.available_nav_groups).not.toContain("Landing Pages");
+    expect(byTopic.catalog.source).toBe("../dev-docs");
+    expect(byTopic.catalog.available_languages).toEqual(["en"]);
+    expect(byTopic.catalog.available_nav_groups).toContain("Storefront");
     expect(byTopic.catalog.available_nav_groups_by_language.en).toContain("Landing pages");
-    expect(byTopic.catalog.available_nav_groups_by_language.id).toContain("Landing Pages");
 
-    const byUrl = getDocs({ url: "https://docs.scalev.com/en/landing-pages-api/" });
+    const byUrl = getDocs({ url: "https://docs.scalev.dev/docs/landing-pages-api/" });
     expect(byUrl.data[0].topic).toBe("landing_pages_api");
 
-    const storefront = getDocs({ query: "introduction", language: "en", nav_group: "Storefront API", limit: 5 });
-    expect(storefront.data.map((doc) => doc.topic)).toContain("storefront_api_introduction");
-    expect(storefront.data.every((doc) => doc.language === "en" && doc.nav_group === "Storefront API")).toBe(true);
+    const storefront = getDocs({ query: "overview", language: "en", nav_group: "Storefront", limit: 5 });
+    expect(storefront.data.map((doc) => doc.topic)).toContain("storefront_api_overview");
+    expect(storefront.data.every((doc) => doc.language === "en" && doc.nav_group === "Storefront")).toBe(true);
+    expect(getDocs({ topic: "oauth_authorization" }).data[0].slug).toBe("authorization-with-o-auth");
+    expect(getDocs({ topic: "dev_introduction" }).data[0].slug).toBe("introduction");
+    expect(getDocs({ language: "id" }).data).toEqual([]);
 
-    const indonesianOauth = getDocs({ topic: "otorisasi_dengan_o_auth", language: "id" });
-    expect(indonesianOauth.data[0].url).toBe("https://docs.scalev.com/id/otorisasi-dengan-o-auth");
+    const webhookGuide = getDocs({ topic: "webhook_events" }).data[0];
+    expect(webhookGuide.content).toContain("checkout_intent.abandoned");
+    expect(webhookGuide.content).toContain("checkout_intent.completed");
+    const recoveryGuide = getDocs({ topic: "checkout_intents" }).data[0];
+    expect(recoveryGuide.url).toBe("https://docs.scalev.dev/docs/checkout-intents");
+    expect(recoveryGuide.content).toContain("https://docs.scalev.dev/docs/webhook-events");
+  });
 
-    expect(getDocs({ topic: "dev_introduction" }).data[0].slug).toBe("en");
-    expect(getDocs({ topic: "dev_pendahuluan" }).data[0].slug).toBe("id");
+  it("exposes only merchant checkout intent operations with their scopes", () => {
+    const operations = searchEndpoints({ tag: "Checkout Intents" }).data;
+    expect(operations.map((endpoint) => endpoint.operation_id).sort()).toEqual([
+      "getCheckoutIntent", "listCheckoutIntents", "sendCheckoutIntentFollowUpEmail"
+    ]);
+    expect(searchEndpoints({ scope: "checkout_intent:list" }).data[0]).toMatchObject({
+      operation_id: "listCheckoutIntents", execution_tool: "get", docs_topic: "checkout_intents"
+    });
+    expect(searchEndpoints({ scope: "checkout_intent:read" }).data[0].operation_id).toBe("getCheckoutIntent");
+    expect(searchEndpoints({ scope: "checkout_intent:follow_up" }).data[0]).toMatchObject({
+      operation_id: "sendCheckoutIntentFollowUpEmail", execution_tool: "execute_safe"
+    });
+    const id = "019c9db5-0fcb-7df3-8c6b-1827b568a61c";
+    expect(buildGetRequest({ operation_id: "getCheckoutIntent", path_params: { checkout_intent_id: id }, business_unique_id: "BIZ123" }).request).toMatchObject({
+      method: "GET", path: `/v3/checkout-intents/${id}`, businessUniqueId: "BIZ123"
+    });
+    expect(buildExecuteSafeRequest({ operation_id: "sendCheckoutIntentFollowUpEmail", path_params: { checkout_intent_id: id } }).request).toMatchObject({
+      method: "POST", path: `/v3/checkout-intents/${id}/follow-up-email`
+    });
+    expect(V3_ENDPOINTS.map((endpoint) => endpoint.path)).not.toContain("/v3/checkout-intents/statistics");
+    expect(V3_ENDPOINTS.map((endpoint) => endpoint.path)).not.toContain("/v3/checkout-intents/prefill");
+    expect(V3_ENDPOINTS.map((endpoint) => endpoint.operationId)).not.toContain("createPageCheckoutIntent");
+    expect(V3_ENDPOINTS.map((endpoint) => endpoint.operationId)).not.toContain("createStorefrontCheckoutIntent");
+  });
+
+  it.each(["statistics", "prefill", "%73tatistics", "%70refill", "not-a-uuid"])(
+    "rejects checkout intent reserved paths and invalid IDs: %s",
+    (id) => {
+      expect(() => buildGetRequest({ path: `/v3/checkout-intents/${id}` })).toThrow(/checkout_intent_id must be a UUID/);
+      expect(() => buildGetRequest({ operation_id: "getCheckoutIntent", path_params: { checkout_intent_id: id } })).toThrow(/checkout_intent_id must be a UUID/);
+      expect(() => buildGetRequest({ path: "/v3/checkout-intents/{checkout_intent_id}", path_params: { checkout_intent_id: id } })).toThrow(/checkout_intent_id must be a UUID/);
+      expect(() => buildExecuteSafeRequest({ path: `/v3/checkout-intents/${id}/follow-up-email` })).toThrow(/checkout_intent_id must be a UUID/);
+      expect(() => buildExecuteSafeRequest({ operation_id: "sendCheckoutIntentFollowUpEmail", path_params: { checkout_intent_id: id } })).toThrow(/checkout_intent_id must be a UUID/);
+    }
+  );
+
+  it("accepts UUID checkout intent paths without changing other endpoint ID formats", () => {
+    const id = "019c9db5-0fcb-7df3-8c6b-1827b568a61c";
+    expect(buildGetRequest({ path: `/v3/checkout-intents/${id}?preview=false` }).request.path).toBe(`/v3/checkout-intents/${id}?preview=false`);
+    expect(buildExecuteSafeRequest({ path: `/v3/checkout-intents/${id}/follow-up-email` }).request.path).toBe(`/v3/checkout-intents/${id}/follow-up-email`);
+    expect(buildGetRequest({ operation_id: "getLandingPage", path_params: { id: 123 } }).request.path).toBe("/v3/pages/123");
   });
 
   it("keeps OAuth flow routes and storefront browser routes out of search", () => {
