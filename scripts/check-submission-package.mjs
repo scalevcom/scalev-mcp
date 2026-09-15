@@ -86,8 +86,8 @@ const REQUIRED_README_SNIPPETS = [
 
 const REQUIRED_WRANGLER_SNIPPETS = [
   'MCP_RESOURCE_URI = "https://mcp.scalev.com/mcp"',
-  'NEXUS_API_BASE_URL = "https://api.scalev.com"',
-  'NEXUS_OAUTH_ISSUER = "https://api.scalev.com/v3/oauth"',
+  'SCALEV_API_BASE_URL = "https://api.scalev.com"',
+  'SCALEV_OAUTH_ISSUER = "https://api.scalev.com/v3/oauth"',
   "ALLOWED_ORIGINS",
   "https://chatgpt.com",
   "SENTRY_DSN",

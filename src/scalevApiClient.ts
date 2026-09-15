@@ -10,7 +10,7 @@ export interface BusinessV3Request {
   body?: unknown;
 }
 
-export class NexusError extends Error {
+export class ScalevApiError extends Error {
   public readonly errorCode?: string;
 
   constructor(
@@ -23,17 +23,17 @@ export class NexusError extends Error {
   }
 }
 
-export function nexusErrorCode(error: unknown): string | undefined {
-  if (!(error instanceof NexusError)) return undefined;
+export function scalevApiErrorCode(error: unknown): string | undefined {
+  if (!(error instanceof ScalevApiError)) return undefined;
   return error.errorCode;
 }
 
-export function nexusUrl(env: Pick<Env, "NEXUS_API_BASE_URL">, path: string): URL {
+export function scalevApiUrl(env: Pick<Env, "SCALEV_API_BASE_URL">, path: string): URL {
   if (!path.startsWith("/v3/")) {
     throw new Error(`Scalev API calls must use /v3 paths: ${path}`);
   }
 
-  const base = env.NEXUS_API_BASE_URL.replace(/\/+$/, "");
+  const base = env.SCALEV_API_BASE_URL.replace(/\/+$/, "");
   const url = new URL(`${base}${path}`);
 
   if (url.pathname.includes("/v2/") || url.href.includes("/v2/")) {
@@ -43,8 +43,8 @@ export function nexusUrl(env: Pick<Env, "NEXUS_API_BASE_URL">, path: string): UR
   return url;
 }
 
-export function nexusBusinessUrl(env: Pick<Env, "NEXUS_API_BASE_URL">, path: string): URL {
-  const url = nexusUrl(env, path);
+export function scalevApiBusinessUrl(env: Pick<Env, "SCALEV_API_BASE_URL">, path: string): URL {
+  const url = scalevApiUrl(env, path);
   const pathname = url.pathname;
 
   if (isOAuthFlowPath(pathname)) {
@@ -66,7 +66,7 @@ export function nexusBusinessUrl(env: Pick<Env, "NEXUS_API_BASE_URL">, path: str
   return url;
 }
 
-export async function nexusBusinessRequest<T>(
+export async function scalevApiBusinessRequest<T>(
   env: Env,
   auth: AuthContext,
   request: BusinessV3Request
@@ -92,7 +92,7 @@ export async function nexusBusinessRequest<T>(
     init.body = JSON.stringify(request.body);
   }
 
-  const url = nexusBusinessUrl(env, request.path);
+  const url = scalevApiBusinessUrl(env, request.path);
 
   if (request.businessUniqueId) {
     url.searchParams.set("b_uid", request.businessUniqueId);
@@ -137,7 +137,7 @@ async function parseJsonResponse<T>(response: Response): Promise<T> {
   const payload = parseJson(text);
 
   if (!response.ok) {
-    throw new NexusError(errorMessage(response, payload, text), response.status, payload);
+    throw new ScalevApiError(errorMessage(response, payload, text), response.status, payload);
   }
 
   return payload as T;

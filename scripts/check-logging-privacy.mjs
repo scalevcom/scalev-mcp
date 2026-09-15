@@ -4,7 +4,7 @@ import { join } from "node:path";
 const ROOT = process.cwd();
 const SRC_ROOT = "src";
 const LOGGER_PATH = "src/logger.ts";
-const NEXUS_CLIENT_PATH = "src/nexusClient.ts";
+const API_CLIENT_PATH = "src/scalevApiClient.ts";
 const ALLOWED_LOG_PAYLOAD_KEYS = new Set([
   "request_id",
   "tool_name",
@@ -16,16 +16,16 @@ const ALLOWED_LOG_PAYLOAD_KEYS = new Set([
 const errors = [];
 
 const loggerText = readText(LOGGER_PATH);
-const nexusClientText = readText(NEXUS_CLIENT_PATH);
+const scalevApiClientText = readText(API_CLIENT_PATH);
 
 requireSnippet(LOGGER_PATH, loggerText, "sendDefaultPii: false");
 requireSnippet(LOGGER_PATH, loggerText, "tracesSampleRate: 0");
 requireSnippet(LOGGER_PATH, loggerText, 'captureMessage("Scalev MCP tool error"');
-requireSnippet(NEXUS_CLIENT_PATH, nexusClientText, "public readonly errorCode?: string;");
-requireSnippet(NEXUS_CLIENT_PATH, nexusClientText, "return error.errorCode;");
+requireSnippet(API_CLIENT_PATH, scalevApiClientText, "public readonly errorCode?: string;");
+requireSnippet(API_CLIENT_PATH, scalevApiClientText, "return error.errorCode;");
 
-if (/public\s+readonly\s+payload/u.test(nexusClientText) || /\bthis\.payload\b/u.test(nexusClientText)) {
-  errors.push(`${NEXUS_CLIENT_PATH} must not attach raw Nexus payloads to thrown errors`);
+if (/public\s+readonly\s+payload/u.test(scalevApiClientText) || /\bthis\.payload\b/u.test(scalevApiClientText)) {
+  errors.push(`${API_CLIENT_PATH} must not attach raw Scalev API payloads to thrown errors`);
 }
 
 for (const match of loggerText.matchAll(/payload\.([a-zA-Z0-9_]+)/gu)) {

@@ -1,7 +1,7 @@
 import { V3_CATALOG_SOURCE_SHA256, V3_ENDPOINTS } from "./generated/v3Catalog";
 import { docsTopicForUrl } from "./docs";
 import { normalizeBusinessSelectorInput, type BusinessScopedToolInput } from "./businessSelector";
-import type { BusinessV3Method, BusinessV3Request } from "./nexusClient";
+import type { BusinessV3Method, BusinessV3Request } from "./scalevApiClient";
 
 export type CatalogPrimitive = string | number | boolean;
 export type CatalogQueryValue = CatalogPrimitive | CatalogPrimitive[] | null;

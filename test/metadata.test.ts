@@ -3,8 +3,8 @@ import { protectedResourceMetadata, resetMetadataCacheForTest, unauthorized } fr
 import type { Env } from "../src/types";
 
 const env: Env = {
-  NEXUS_API_BASE_URL: "https://api.scalev.test",
-  NEXUS_OAUTH_ISSUER: "https://api.scalev.test/v3/oauth",
+  SCALEV_API_BASE_URL: "https://api.scalev.test",
+  SCALEV_OAUTH_ISSUER: "https://api.scalev.test/v3/oauth",
   MCP_RESOURCE_URI: "https://mcp.scalev.test/mcp"
 };
 
@@ -14,7 +14,7 @@ describe("metadata", () => {
     vi.unstubAllGlobals();
   });
 
-  it("serves MCP protected resource metadata with Nexus-derived scopes", async () => {
+  it("serves MCP protected resource metadata with API-derived scopes", async () => {
     const fetchMock = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => {
       return new Response(JSON.stringify({ scopes_supported: ["page:read", "page:write"] }), {
         headers: { "content-type": "application/json" }
@@ -32,13 +32,13 @@ describe("metadata", () => {
     );
     expect(payload).toMatchObject({
       resource: env.MCP_RESOURCE_URI,
-      authorization_servers: [env.NEXUS_OAUTH_ISSUER],
+      authorization_servers: [env.SCALEV_OAUTH_ISSUER],
       scopes_supported: ["page:read", "page:write"]
     });
     expect(JSON.stringify(payload)).not.toContain("/v2/");
   });
 
-  it("caches Nexus scopes when serving protected resource metadata", async () => {
+  it("caches Scalev API scopes when serving protected resource metadata", async () => {
     const fetchMock = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => {
       return new Response(JSON.stringify({ scopes_supported: ["page:read"] }), {
         headers: { "content-type": "application/json" }

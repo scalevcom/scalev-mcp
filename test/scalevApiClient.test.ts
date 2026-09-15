@@ -1,33 +1,33 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { NexusError, nexusBusinessRequest, nexusBusinessUrl, nexusUrl } from "../src/nexusClient";
+import { ScalevApiError, scalevApiBusinessRequest, scalevApiBusinessUrl, scalevApiUrl } from "../src/scalevApiClient";
 import type { Env } from "../src/types";
 
 const env: Env = {
-  NEXUS_API_BASE_URL: "https://api.scalev.test",
-  NEXUS_OAUTH_ISSUER: "https://api.scalev.test/v3/oauth",
+  SCALEV_API_BASE_URL: "https://api.scalev.test",
+  SCALEV_OAUTH_ISSUER: "https://api.scalev.test/v3/oauth",
   MCP_RESOURCE_URI: "https://mcp.scalev.test/mcp"
 };
 
-describe("nexusUrl", () => {
+describe("scalevApiUrl", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
   });
 
-  it("builds /v3 Nexus URLs", () => {
-    const url = nexusUrl({ NEXUS_API_BASE_URL: "https://api.scalev.test" }, "/v3/pages");
+  it("builds /v3 Scalev API URLs", () => {
+    const url = scalevApiUrl({ SCALEV_API_BASE_URL: "https://api.scalev.test" }, "/v3/pages");
 
     expect(url.href).toBe("https://api.scalev.test/v3/pages");
   });
 
   it("rejects non-/v3 paths", () => {
     expect(() =>
-      nexusUrl({ NEXUS_API_BASE_URL: "https://api.scalev.test" }, "/v2/oauth/introspect")
+      scalevApiUrl({ SCALEV_API_BASE_URL: "https://api.scalev.test" }, "/v2/oauth/introspect")
     ).toThrow(/must use \/v3/);
   });
 
   it("rejects base URLs that smuggle /v2", () => {
     expect(() =>
-      nexusUrl({ NEXUS_API_BASE_URL: "https://api.scalev.test/v2" }, "/v3/oauth/introspect")
+      scalevApiUrl({ SCALEV_API_BASE_URL: "https://api.scalev.test/v2" }, "/v3/oauth/introspect")
     ).toThrow(/never use \/v2/);
   });
 
@@ -40,7 +40,7 @@ describe("nexusUrl", () => {
 
     vi.stubGlobal("fetch", fetchMock);
 
-    await nexusBusinessRequest(
+    await scalevApiBusinessRequest(
       env,
       { token: "raw-oauth-token" },
       {
@@ -60,7 +60,7 @@ describe("nexusUrl", () => {
     expect(JSON.stringify(headers)).not.toContain("x-scalev-user-id");
   });
 
-  it("forwards business_unique_id to Nexus as b_uid without adding business headers", async () => {
+  it("forwards business_unique_id to Scalev API as b_uid without adding business headers", async () => {
     const fetchMock = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => {
       return new Response(JSON.stringify({ data: [] }), {
         headers: { "content-type": "application/json" }
@@ -69,7 +69,7 @@ describe("nexusUrl", () => {
 
     vi.stubGlobal("fetch", fetchMock);
 
-    await nexusBusinessRequest(
+    await scalevApiBusinessRequest(
       env,
       { token: "raw-oauth-token" },
       {
@@ -97,7 +97,7 @@ describe("nexusUrl", () => {
 
     vi.stubGlobal("fetch", fetchMock);
 
-    await nexusBusinessRequest(
+    await scalevApiBusinessRequest(
       env,
       { token: "raw-oauth-token" },
       {
@@ -118,7 +118,7 @@ describe("nexusUrl", () => {
     expect(init.body).toBe(JSON.stringify({ name: "MCP Test Bundle", public_name: "MCP Test Bundle" }));
   });
 
-  it("surfaces Nexus request errors with request ids without exposing raw bodies", async () => {
+  it("surfaces Scalev API request errors with request ids without exposing raw bodies", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn(async () => {
@@ -140,7 +140,7 @@ describe("nexusUrl", () => {
     );
 
     await expect(
-      nexusBusinessRequest(env, { token: "raw-oauth-token" }, { method: "POST", path: "/v3/bundles", body: {} })
+      scalevApiBusinessRequest(env, { token: "raw-oauth-token" }, { method: "POST", path: "/v3/bundles", body: {} })
     ).rejects.toMatchObject({
       status: 422,
       message:
@@ -148,11 +148,11 @@ describe("nexusUrl", () => {
     });
 
     await expect(
-      nexusBusinessRequest(env, { token: "raw-oauth-token" }, { method: "POST", path: "/v3/bundles", body: {} })
+      scalevApiBusinessRequest(env, { token: "raw-oauth-token" }, { method: "POST", path: "/v3/bundles", body: {} })
     ).rejects.not.toThrow(/buyer@example\.com|628123456789|ORD-SECRET-123/);
   });
 
-  it("surfaces sanitized Nexus validation details when available", async () => {
+  it("surfaces sanitized Scalev API validation details when available", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn(async () => {
@@ -177,7 +177,7 @@ describe("nexusUrl", () => {
     );
 
     await expect(
-      nexusBusinessRequest(env, { token: "raw-oauth-token" }, { method: "PATCH", path: "/v3/orders/123", body: {} })
+      scalevApiBusinessRequest(env, { token: "raw-oauth-token" }, { method: "PATCH", path: "/v3/orders/123", body: {} })
     ).rejects.toMatchObject({
       status: 422,
       message:
@@ -185,11 +185,11 @@ describe("nexusUrl", () => {
     });
 
     await expect(
-      nexusBusinessRequest(env, { token: "raw-oauth-token" }, { method: "PATCH", path: "/v3/orders/123", body: {} })
+      scalevApiBusinessRequest(env, { token: "raw-oauth-token" }, { method: "PATCH", path: "/v3/orders/123", body: {} })
     ).rejects.not.toThrow(/buyer@example\.com|628123456789/);
   });
 
-  it("does not attach raw Nexus payloads to thrown error objects", async () => {
+  it("does not attach raw Scalev API payloads to thrown error objects", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn(async () => {
@@ -213,12 +213,12 @@ describe("nexusUrl", () => {
     let thrown: unknown;
 
     try {
-      await nexusBusinessRequest(env, { token: "raw-oauth-token" }, { method: "POST", path: "/v3/bundles", body: {} });
+      await scalevApiBusinessRequest(env, { token: "raw-oauth-token" }, { method: "POST", path: "/v3/bundles", body: {} });
     } catch (error) {
       thrown = error;
     }
 
-    expect(thrown).toBeInstanceOf(NexusError);
+    expect(thrown).toBeInstanceOf(ScalevApiError);
     expect(thrown).toMatchObject({
       status: 422,
       errorCode: "validation_failed"
@@ -229,7 +229,7 @@ describe("nexusUrl", () => {
     expect(JSON.stringify(thrown)).not.toContain("ORD-SECRET-123");
   });
 
-  it("surfaces empty Nexus error responses with request ids", async () => {
+  it("surfaces empty Scalev API error responses with request ids", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn(async () => {
@@ -241,7 +241,7 @@ describe("nexusUrl", () => {
     );
 
     await expect(
-      nexusBusinessRequest(env, { token: "raw-oauth-token" }, { method: "POST", path: "/v3/bundles", body: {} })
+      scalevApiBusinessRequest(env, { token: "raw-oauth-token" }, { method: "POST", path: "/v3/bundles", body: {} })
     ).rejects.toMatchObject({
       status: 400,
       message:
@@ -249,7 +249,7 @@ describe("nexusUrl", () => {
     });
   });
 
-  it("surfaces Nexus business selection errors clearly", async () => {
+  it("surfaces Scalev API business selection errors clearly", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn(async () => {
@@ -267,7 +267,7 @@ describe("nexusUrl", () => {
     );
 
     await expect(
-      nexusBusinessRequest(env, { token: "raw-oauth-token" }, { method: "GET", path: "/v3/pages" })
+      scalevApiBusinessRequest(env, { token: "raw-oauth-token" }, { method: "GET", path: "/v3/pages" })
     ).rejects.toMatchObject({
       status: 400,
       message:
@@ -275,7 +275,7 @@ describe("nexusUrl", () => {
     });
   });
 
-  it("maps common Nexus authorization and rate limit failures to Claude-friendly messages", async () => {
+  it("maps common Scalev API authorization and rate limit failures to Claude-friendly messages", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn(async () => {
@@ -293,13 +293,13 @@ describe("nexusUrl", () => {
     );
 
     await expect(
-      nexusBusinessRequest(env, { token: "raw-oauth-token" }, { method: "PATCH", path: "/v3/orders/123", body: {} })
+      scalevApiBusinessRequest(env, { token: "raw-oauth-token" }, { method: "PATCH", path: "/v3/orders/123", body: {} })
     ).rejects.toThrow(
       "Scalev API authorization failed insufficient_scope (request_id: req_forbidden): the OAuth token, selected business, or approved scopes do not allow this action. Use get_me to inspect connected businesses and scopes, then reconnect if a scope is missing."
     );
 
     await expect(
-      nexusBusinessRequest(env, { token: "raw-oauth-token" }, { method: "PATCH", path: "/v3/orders/123", body: {} })
+      scalevApiBusinessRequest(env, { token: "raw-oauth-token" }, { method: "PATCH", path: "/v3/orders/123", body: {} })
     ).rejects.not.toThrow(/buyer@example\.com|Order 123/);
   });
 
@@ -334,7 +334,7 @@ describe("nexusUrl", () => {
       expected:
         "Scalev API service error server_error (request_id: req_status): Scalev could not complete the request. Retry later or contact Scalev support with the request_id."
     }
-  ])("maps Nexus $status responses without exposing raw payload data", async ({ status, errorCode, expected }) => {
+  ])("maps Scalev API $status responses without exposing raw payload data", async ({ status, errorCode, expected }) => {
     vi.stubGlobal(
       "fetch",
       vi.fn(async () => {
@@ -355,12 +355,12 @@ describe("nexusUrl", () => {
     let thrown: unknown;
 
     try {
-      await nexusBusinessRequest(env, { token: "raw-oauth-token" }, { method: "GET", path: "/v3/orders/123" });
+      await scalevApiBusinessRequest(env, { token: "raw-oauth-token" }, { method: "GET", path: "/v3/orders/123" });
     } catch (error) {
       thrown = error;
     }
 
-    expect(thrown).toBeInstanceOf(NexusError);
+    expect(thrown).toBeInstanceOf(ScalevApiError);
     expect(thrown).toMatchObject({ status, errorCode, message: expected });
     expect((thrown as Error).message).not.toMatch(/buyer@example\.com|628123456789|ORD-SECRET-123/);
     expect(JSON.stringify(thrown)).not.toMatch(/buyer@example\.com|628123456789|ORD-SECRET-123/);
@@ -389,7 +389,7 @@ describe("nexusUrl", () => {
     let thrown: unknown;
 
     try {
-      await nexusBusinessRequest(
+      await scalevApiBusinessRequest(
         env,
         { token: "raw-oauth-token" },
         { method: "GET", path: "/v3/orders", businessUniqueId: "BIZ123" }
@@ -398,7 +398,7 @@ describe("nexusUrl", () => {
       thrown = error;
     }
 
-    expect(thrown).toBeInstanceOf(NexusError);
+    expect(thrown).toBeInstanceOf(ScalevApiError);
     expect(thrown).toMatchObject({
       status,
       errorCode,
@@ -411,43 +411,43 @@ describe("nexusUrl", () => {
 
   it("blocks OAuth flow and storefront client paths from execute transport", () => {
     expect(() =>
-      nexusBusinessUrl({ NEXUS_API_BASE_URL: "https://api.scalev.test" }, "/v3/oauth/authorize")
+      scalevApiBusinessUrl({ SCALEV_API_BASE_URL: "https://api.scalev.test" }, "/v3/oauth/authorize")
     ).toThrow(/OAuth flow/);
 
     expect(() =>
-      nexusBusinessUrl({ NEXUS_API_BASE_URL: "https://api.scalev.test" }, "/v3/oauth/token")
+      scalevApiBusinessUrl({ SCALEV_API_BASE_URL: "https://api.scalev.test" }, "/v3/oauth/token")
     ).toThrow(/OAuth flow/);
 
     expect(() =>
-      nexusBusinessUrl({ NEXUS_API_BASE_URL: "https://api.scalev.test" }, "/v3/oauth/billing/refunds")
+      scalevApiBusinessUrl({ SCALEV_API_BASE_URL: "https://api.scalev.test" }, "/v3/oauth/billing/refunds")
     ).toThrow(/OAuth billing/);
 
     expect(() =>
-      nexusBusinessUrl({ NEXUS_API_BASE_URL: "https://api.scalev.test" }, "/v3/developer/oauth-billing/withdrawals")
+      scalevApiBusinessUrl({ SCALEV_API_BASE_URL: "https://api.scalev.test" }, "/v3/developer/oauth-billing/withdrawals")
     ).toThrow(/OAuth billing/);
 
     expect(() =>
-      nexusBusinessUrl({ NEXUS_API_BASE_URL: "https://api.scalev.test" }, "/v3/orders/123/payment")
+      scalevApiBusinessUrl({ SCALEV_API_BASE_URL: "https://api.scalev.test" }, "/v3/orders/123/payment")
     ).toThrow(/payment routes/);
 
     expect(() =>
-      nexusBusinessUrl({ NEXUS_API_BASE_URL: "https://api.scalev.test" }, "/v3/orders/123/check-settlement")
+      scalevApiBusinessUrl({ SCALEV_API_BASE_URL: "https://api.scalev.test" }, "/v3/orders/123/check-settlement")
     ).toThrow(/payment routes/);
 
     expect(() =>
-      nexusBusinessUrl({ NEXUS_API_BASE_URL: "https://api.scalev.test" }, "/v3/orders/pg-reference-id/pg_123")
+      scalevApiBusinessUrl({ SCALEV_API_BASE_URL: "https://api.scalev.test" }, "/v3/orders/pg-reference-id/pg_123")
     ).toThrow(/payment routes/);
 
     expect(() =>
-      nexusBusinessUrl({ NEXUS_API_BASE_URL: "https://api.scalev.test" }, "/v3/stores/store_123/payment-accounts")
+      scalevApiBusinessUrl({ SCALEV_API_BASE_URL: "https://api.scalev.test" }, "/v3/stores/store_123/payment-accounts")
     ).toThrow(/payment routes/);
 
     expect(() =>
-      nexusBusinessUrl({ NEXUS_API_BASE_URL: "https://api.scalev.test" }, "/v3/stores/store_123/public/items")
+      scalevApiBusinessUrl({ SCALEV_API_BASE_URL: "https://api.scalev.test" }, "/v3/stores/store_123/public/items")
     ).toThrow(/Storefront public/);
 
     expect(() =>
-      nexusBusinessUrl({ NEXUS_API_BASE_URL: "https://api.scalev.test" }, "/v3/stores/store_123/customers/me")
+      scalevApiBusinessUrl({ SCALEV_API_BASE_URL: "https://api.scalev.test" }, "/v3/stores/store_123/customers/me")
     ).toThrow(/Storefront public/);
   });
 });
