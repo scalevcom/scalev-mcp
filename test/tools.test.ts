@@ -19,8 +19,8 @@ vi.mock("agents/mcp", () => ({
 }));
 
 const env: Env = {
-  NEXUS_API_BASE_URL: "https://api.scalev.test",
-  NEXUS_OAUTH_ISSUER: "https://api.scalev.test/v3/oauth",
+  SCALEV_API_BASE_URL: "https://api.scalev.test",
+  SCALEV_OAUTH_ISSUER: "https://api.scalev.test/v3/oauth",
   MCP_RESOURCE_URI: "https://mcp.scalev.test/mcp"
 };
 
@@ -549,7 +549,7 @@ describe("Scalev MCP tools", () => {
       .toMatchObject({ method: "POST", path: "/v3/orders/cancel-awb" });
   });
 
-  it("runs every registered semantic tool through the intended Nexus request", async () => {
+  it("runs every registered semantic tool through the intended Scalev API request", async () => {
     const fetchMock = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => {
       return new Response(JSON.stringify({ ok: true }), {
         headers: { "content-type": "application/json" }

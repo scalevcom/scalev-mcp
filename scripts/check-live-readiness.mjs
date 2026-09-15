@@ -16,7 +16,7 @@ const checks = [
     expectJsonFields: ["authorization_servers", "resource"]
   },
   {
-    name: "Nexus OAuth authorization-server metadata",
+    name: "Scalev API OAuth authorization-server metadata",
     url: "https://api.scalev.com/v3/oauth/.well-known/oauth-authorization-server",
     expectStatus: 200,
     expectJsonFields: ["issuer", "authorization_endpoint", "token_endpoint", "registration_endpoint"]
@@ -34,7 +34,7 @@ const checks = [
     expectText: ["Contact:", "Policy:", "Canonical:", "Expires:"]
   },
   {
-    name: "Nexus API security.txt",
+    name: "Scalev API security.txt",
     url: "https://api.scalev.com/.well-known/security.txt",
     expectStatus: 200,
     expectText: ["Contact:", "Policy:", "Canonical:", "Expires:"]

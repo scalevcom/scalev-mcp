@@ -6,10 +6,10 @@ const MAX_WWW_AUTHENTICATE_LENGTH = 7_000;
 const scopesCache = new Map<string, { expiresAt: number; scopes: string[] }>();
 
 export async function protectedResourceMetadata(env: Env): Promise<Response> {
-  const scopes = await nexusScopesSupported(env);
+  const scopes = await scalevApiScopesSupported(env);
   const payload: Record<string, unknown> = {
     resource: env.MCP_RESOURCE_URI,
-    authorization_servers: [env.NEXUS_OAUTH_ISSUER],
+    authorization_servers: [env.SCALEV_OAUTH_ISSUER],
     bearer_methods_supported: ["header"]
   };
 
@@ -23,7 +23,7 @@ export async function protectedResourceMetadata(env: Env): Promise<Response> {
 const MISSING_TOKEN_DESCRIPTION = "Connect Scalev through your MCP client before using this MCP server.";
 
 export async function unauthorized(env: Env): Promise<Response> {
-  const scopes = await nexusScopesSupported(env).catch(() => []);
+  const scopes = await scalevApiScopesSupported(env).catch(() => []);
   const metadataUrl = protectedResourceMetadataUrl(env);
   const challenge = bearerChallenge(metadataUrl, scopes);
 
@@ -51,7 +51,7 @@ export function resetMetadataCacheForTest(): void {
   scopesCache.clear();
 }
 
-async function nexusScopesSupported(env: Env): Promise<string[]> {
+async function scalevApiScopesSupported(env: Env): Promise<string[]> {
   const metadataUrl = oauthAuthorizationServerMetadataUrl(env);
   const cached = scopesCache.get(metadataUrl);
   const now = Date.now();
@@ -79,7 +79,7 @@ async function nexusScopesSupported(env: Env): Promise<string[]> {
 }
 
 function oauthAuthorizationServerMetadataUrl(env: Env): string {
-  return `${env.NEXUS_OAUTH_ISSUER.replace(/\/+$/, "")}/.well-known/oauth-authorization-server`;
+  return `${env.SCALEV_OAUTH_ISSUER.replace(/\/+$/, "")}/.well-known/oauth-authorization-server`;
 }
 
 function protectedResourceMetadataUrl(env: Env): string {

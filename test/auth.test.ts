@@ -4,8 +4,8 @@ import { validateRequestOrigin } from "../src/origin";
 import type { Env } from "../src/types";
 
 const env: Env = {
-  NEXUS_API_BASE_URL: "https://api.scalev.test",
-  NEXUS_OAUTH_ISSUER: "https://api.scalev.test/v3/oauth",
+  SCALEV_API_BASE_URL: "https://api.scalev.test",
+  SCALEV_OAUTH_ISSUER: "https://api.scalev.test/v3/oauth",
   MCP_RESOURCE_URI: "https://mcp.scalev.test/mcp"
 };
 

@@ -6,7 +6,7 @@ import {
   buildGetRequest,
   type CatalogQueryValue
 } from "./catalog";
-import { nexusBusinessRequest } from "./nexusClient";
+import { scalevApiBusinessRequest } from "./scalevApiClient";
 import { toolAnnotations } from "./toolAnnotations";
 import { currentAuth, runLoggedTool, toolResult } from "./toolRuntime";
 import type { Env } from "./types";
@@ -43,7 +43,7 @@ export function registerSemanticTools(server: McpServer, env: Env): void {
         ...paginationSchema,
         query: querySchema.optional().describe("Additional documented query parameters for listLandingPages.")
       },
-      annotations: toolAnnotations("List landing pages", "nexus_read")
+      annotations: toolAnnotations("List landing pages", "api_read")
     },
     async (input) =>
       runCatalogTool(env, "list_landing_pages", "listLandingPages", () =>
@@ -68,7 +68,7 @@ export function registerSemanticTools(server: McpServer, env: Env): void {
       inputSchema: {
         business_unique_id: businessUniqueIdSchema
       },
-      annotations: toolAnnotations("List landing page tags", "nexus_read")
+      annotations: toolAnnotations("List landing page tags", "api_read")
     },
     async (input) =>
       runCatalogTool(env, "list_landing_page_tags", "listLandingPageTags", () =>
@@ -95,7 +95,7 @@ export function registerSemanticTools(server: McpServer, env: Env): void {
         preview: z.boolean().optional().describe("Optional preview flag."),
         query: querySchema.optional().describe("Additional documented query parameters for getLandingPage.")
       },
-      annotations: toolAnnotations("Get landing page", "nexus_read")
+      annotations: toolAnnotations("Get landing page", "api_read")
     },
     async (input) =>
       runCatalogTool(env, "get_landing_page", "getLandingPage", () =>
@@ -118,7 +118,7 @@ export function registerSemanticTools(server: McpServer, env: Env): void {
         business_unique_id: businessUniqueIdSchema,
         id: landingPageIdSchema
       },
-      annotations: toolAnnotations("Get landing page public view", "nexus_read")
+      annotations: toolAnnotations("Get landing page public view", "api_read")
     },
     async (input) =>
       runCatalogTool(env, "get_landing_page_public_view", "getLandingPagePublicView", () =>
@@ -234,7 +234,7 @@ export function registerSemanticTools(server: McpServer, env: Env): void {
         ...paginationSchema,
         query: querySchema.optional().describe("Additional documented query parameters for listLandingPageDisplays.")
       },
-      annotations: toolAnnotations("List landing page displays", "nexus_read")
+      annotations: toolAnnotations("List landing page displays", "api_read")
     },
     async (input) =>
       runCatalogTool(env, "list_landing_page_displays", "listLandingPageDisplays", () =>
@@ -310,7 +310,7 @@ export function registerSemanticTools(server: McpServer, env: Env): void {
         page_id: landingPageIdSchema,
         display_id: landingPageDisplayIdSchema
       },
-      annotations: toolAnnotations("Get landing page display", "nexus_read")
+      annotations: toolAnnotations("Get landing page display", "api_read")
     },
     async (input) =>
       runCatalogTool(env, "get_landing_page_display", "getLandingPageDisplay", () =>
@@ -360,7 +360,7 @@ export function registerSemanticTools(server: McpServer, env: Env): void {
         payment_status: z.string().optional().describe("Optional payment status filter."),
         query: querySchema.optional().describe("Additional documented query parameters for listOrders.")
       },
-      annotations: toolAnnotations("List orders", "nexus_read")
+      annotations: toolAnnotations("List orders", "api_read")
     },
     async (input) =>
       runCatalogTool(env, "list_orders", "listOrders", () =>
@@ -390,7 +390,7 @@ export function registerSemanticTools(server: McpServer, env: Env): void {
         business_unique_id: businessUniqueIdSchema,
         id: z.union([z.string(), z.number()]).describe("Order id.")
       },
-      annotations: toolAnnotations("Get order", "nexus_read")
+      annotations: toolAnnotations("Get order", "api_read")
     },
     async (input) =>
       runCatalogTool(env, "get_order", "getOrder", () =>
@@ -502,7 +502,7 @@ export function registerSemanticTools(server: McpServer, env: Env): void {
           .optional()
           .describe("Additional documented query parameters for getOrderStatistics (e.g. date range filters).")
       },
-      annotations: toolAnnotations("Get order statistics", "nexus_read")
+      annotations: toolAnnotations("Get order statistics", "api_read")
     },
     async (input) =>
       runCatalogTool(env, "get_order_statistics", "getOrderStatistics", () =>
@@ -532,7 +532,7 @@ async function runCatalogTool(
 
   return runLoggedTool(env, auth, { toolName, operationId }, async () => {
     const { endpoint, request } = buildRequest();
-    const response = await nexusBusinessRequest(env, auth, request);
+    const response = await scalevApiBusinessRequest(env, auth, request);
 
     return toolResult({
       operation_id: endpoint.operationId,

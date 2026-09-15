@@ -1,17 +1,56 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, realpathSync } from "node:fs";
 import { resolve } from "node:path";
 
 const ROOT = process.cwd();
 const WORKSPACE = resolve(ROOT, "..");
+const API_LABEL = "Scalev API";
+const API_MARKER = "lib/scalev_api_web/router.ex";
+
+function resolveApiRepo() {
+  const override = process.env.SCALEV_API_REPO?.trim();
+
+  if (override) {
+    const repoRoot = resolve(ROOT, override);
+    if (!existsSync(resolve(repoRoot, API_MARKER))) {
+      throw new Error(`SCALEV_API_REPO must point to a ${API_LABEL} checkout containing ${API_MARKER}.`);
+    }
+    return repoRoot;
+  }
+
+  const candidates = readdirSync(WORKSPACE, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory() || entry.isSymbolicLink())
+    .map((entry) => resolve(WORKSPACE, entry.name))
+    .filter((repoRoot) => existsSync(resolve(repoRoot, API_MARKER)))
+    .map((repoRoot) => realpathSync(repoRoot));
+  const uniqueCandidates = [...new Set(candidates)];
+
+  if (uniqueCandidates.length !== 1) {
+    throw new Error(
+      `Expected one sibling ${API_LABEL} checkout; found ${uniqueCandidates.length}. ` +
+      "Set SCALEV_API_REPO to the intended checkout."
+    );
+  }
+
+  return uniqueCandidates[0];
+}
+
+let apiRepo;
+try {
+  apiRepo = resolveApiRepo();
+} catch (error) {
+  console.error("Submission workspace check failed:");
+  console.error(`- ${error.message}`);
+  process.exit(1);
+}
 
 const requiredFiles = [
   {
-    repo: "nexus",
+    repo: API_LABEL,
     path: "lib/scalev_api_web/controllers/security_txt_controller.ex",
     snippets: ["Contact:", "Policy:", "Canonical:", "Expires:"]
   },
   {
-    repo: "nexus",
+    repo: API_LABEL,
     path: "lib/util/reviewer_seed_audit.ex",
     snippets: [
       "Util.ReviewerSeedAudit",
@@ -21,7 +60,7 @@ const requiredFiles = [
     ]
   },
   {
-    repo: "nexus",
+    repo: API_LABEL,
     path: "lib/scalev_api_web/router.ex",
     snippets: [
       "get \"/me\"",
@@ -30,7 +69,7 @@ const requiredFiles = [
     ]
   },
   {
-    repo: "nexus",
+    repo: API_LABEL,
     path: "docs/oauth_apps_developer_guide.md",
     snippets: [
       "## MCP Clients",
@@ -86,7 +125,8 @@ const requiredFiles = [
 const errors = [];
 
 for (const entry of requiredFiles) {
-  const fullPath = resolve(WORKSPACE, entry.repo, entry.path);
+  const repoRoot = entry.repo === API_LABEL ? apiRepo : resolve(WORKSPACE, entry.repo);
+  const fullPath = resolve(repoRoot, entry.path);
 
   if (!existsSync(fullPath)) {
     errors.push(`missing ${entry.repo}/${entry.path}`);

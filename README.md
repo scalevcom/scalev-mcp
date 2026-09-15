@@ -34,8 +34,8 @@ pnpm dev
 Required local variables can be placed in `.dev.vars`:
 
 ```bash
-NEXUS_API_BASE_URL=https://api.scalev.test
-NEXUS_OAUTH_ISSUER=https://api.scalev.test/v3/oauth
+SCALEV_API_BASE_URL=https://api.scalev.test
+SCALEV_OAUTH_ISSUER=https://api.scalev.test/v3/oauth
 MCP_RESOURCE_URI=https://mcp.scalev.test/mcp
 ALLOWED_ORIGINS=http://localhost:6274,https://claude.ai,https://claude.com,https://chatgpt.com,https://chat.openai.com,https://platform.openai.com
 ```
@@ -139,6 +139,10 @@ Submission package drafts live in `submission/claude-connector-submission.md`,
 `submission/compliance-memo.md`, `submission/operational-runbook.md`, and
 `submission/pre-feedback-email.md`.
 
+## Public naming
+
+Use **Scalev API** in documentation, examples, MCP tool descriptions, generated catalogs, source identifiers and configuration. Keep internal service names out of this repository.
+
 ## Catalog Sync
 
 The endpoint catalog is generated from the sibling OpenAPI repo:
@@ -187,6 +191,12 @@ catalog risk scan, catalog surface report check, logging privacy guard,
 evidence redaction and reviewer-evidence structure checks, submission
 text/package/workspace checks, TypeScript typecheck, Vitest suite, and Wrangler
 dry-run.
+
+The workspace check discovers the Scalev API checkout among sibling directories. If multiple checkouts exist or the backend lives elsewhere, set `SCALEV_API_REPO` to its path (relative to this repository or absolute):
+
+```bash
+SCALEV_API_REPO=../scalev-api pnpm check:submission-local
+```
 
 After production deploy, run the live readiness check:
 

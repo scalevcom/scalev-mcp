@@ -3,7 +3,7 @@ import { z } from "zod";
 import { buildExecuteDestructiveRequest, buildExecuteSafeRequest, buildGetRequest, searchEndpoints } from "./catalog";
 import { getDocs } from "./docs";
 import { normalizeExecuteInput } from "./executeInput";
-import { nexusBusinessRequest } from "./nexusClient";
+import { scalevApiBusinessRequest } from "./scalevApiClient";
 import { registerSemanticTools } from "./semanticTools";
 import { toolAnnotations } from "./toolAnnotations";
 import { SCALEV_TOOL_NAMES } from "./toolNames";
@@ -65,12 +65,12 @@ export function createScalevMcpServer(env: Env): McpServer {
       description:
         "Returns token-level Scalev identity for the current MCP OAuth token: authenticated user, OAuth application, auth method, and active connected_businesses. For tokens with more than one connected business, business-scoped tools require the chosen connected_businesses[].unique_id as the top-level business_unique_id argument.",
       inputSchema: {},
-      annotations: toolAnnotations("Get Scalev identity", "nexus_read")
+      annotations: toolAnnotations("Get Scalev identity", "api_read")
     },
     async () => {
       const auth = currentAuth();
       return runLoggedTool(env, auth, { toolName: "get_me", operationId: "getAuthenticatedIdentity" }, async () => {
-        const result = await nexusBusinessRequest(env, auth, { method: "GET", path: "/v3/me" });
+        const result = await scalevApiBusinessRequest(env, auth, { method: "GET", path: "/v3/me" });
         return toolResult(result);
       });
     }
@@ -153,7 +153,7 @@ export function createScalevMcpServer(env: Env): McpServer {
       description:
         "Runs one read-only GET operation from the business-authenticated Scalev API v3 search catalog. For tokens with more than one get_me.connected_businesses entry, the chosen connected_businesses[].unique_id must be included as the top-level business_unique_id argument. Top-level business_unique_id is canonical: {\"operation_id\":\"listOrders\",\"business_unique_id\":\"ABC123\",\"query\":{\"page_size\":10}}. If a client accidentally puts the exact business_unique_id key in query, query_params, header_params, headers, body, or the concrete path query string, Scalev MCP recovers it, strips it from the API payload/query, and forwards it to the Scalev API as b_uid. Accepts operation_id plus path_params/query from a search result, or a catalog-matching concrete /v3 path. Search results may include docs_topic/docs_url for related get_docs lookups. This tool only runs GET operations, never accepts a request body, and forwards the user's OAuth bearer token unchanged to the Scalev API.",
       inputSchema: catalogOperationSchema,
-      annotations: toolAnnotations("Get Scalev v3 resource", "nexus_read")
+      annotations: toolAnnotations("Get Scalev v3 resource", "api_read")
     },
     async (input) => {
       const auth = currentAuth();
@@ -161,7 +161,7 @@ export function createScalevMcpServer(env: Env): McpServer {
 
       return runLoggedTool(env, auth, { toolName: "get", operationId }, async () => {
         const { endpoint, request } = buildGetRequest(input);
-        const response = await nexusBusinessRequest(env, auth, request);
+        const response = await scalevApiBusinessRequest(env, auth, request);
 
         return toolResult({
           operation_id: endpoint.operationId,
@@ -188,7 +188,7 @@ export function createScalevMcpServer(env: Env): McpServer {
 
       return runLoggedTool(env, auth, { toolName: "execute_safe", operationId }, async () => {
         const { endpoint, request } = buildExecuteSafeRequest(normalizeExecuteInput(input));
-        const response = await nexusBusinessRequest(env, auth, request);
+        const response = await scalevApiBusinessRequest(env, auth, request);
 
         return toolResult({
           operation_id: endpoint.operationId,
@@ -215,7 +215,7 @@ export function createScalevMcpServer(env: Env): McpServer {
 
       return runLoggedTool(env, auth, { toolName: "execute_destructive", operationId }, async () => {
         const { endpoint, request } = buildExecuteDestructiveRequest(normalizeExecuteInput(input));
-        const response = await nexusBusinessRequest(env, auth, request);
+        const response = await scalevApiBusinessRequest(env, auth, request);
 
         return toolResult({
           operation_id: endpoint.operationId,

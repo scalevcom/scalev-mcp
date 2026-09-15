@@ -1,6 +1,6 @@
 import { getMcpAuthContext } from "agents/mcp";
 import { captureMcpError, logMcpEvent } from "./logger";
-import { nexusErrorCode } from "./nexusClient";
+import { scalevApiErrorCode } from "./scalevApiClient";
 import type { AuthContext, Env } from "./types";
 
 export interface ToolLogContext {
@@ -32,7 +32,7 @@ export async function runLoggedTool<T>(
 
     return result;
   } catch (error) {
-    const errorCode = nexusErrorCode(error);
+    const errorCode = scalevApiErrorCode(error);
 
     logMcpEvent(env, {
       requestId: auth?.requestId,

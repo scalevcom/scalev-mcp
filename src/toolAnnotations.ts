@@ -1,6 +1,6 @@
 import type { ToolAnnotations } from "@modelcontextprotocol/sdk/types.js";
 
-export type ToolAnnotationKind = "local_read" | "nexus_read" | "safe_write" | "destructive_write";
+export type ToolAnnotationKind = "local_read" | "api_read" | "safe_write" | "destructive_write";
 
 export function toolAnnotations(title: string, kind: ToolAnnotationKind): ToolAnnotations {
   switch (kind) {
@@ -12,7 +12,7 @@ export function toolAnnotations(title: string, kind: ToolAnnotationKind): ToolAn
         idempotentHint: true,
         openWorldHint: false
       };
-    case "nexus_read":
+    case "api_read":
       return {
         title,
         readOnlyHint: true,
