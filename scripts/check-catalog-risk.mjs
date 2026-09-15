@@ -35,7 +35,13 @@ for (const endpoint of endpoints) {
     ...(endpoint.tags || [])
   ].join(" ");
 
-  if (FINANCIAL_TEXT_PATTERN.test(searchableText) && !FINANCIAL_TEXT_ALLOWLIST.has(endpoint.operationId)) {
+  // This authenticated report describes payment snapshots but cannot move
+  // money. Keep the exception tied to the exact GET route, not its name alone.
+  const linkedRevenueRead = endpoint.operationId === "getWebAnalyticsSourceRevenue" &&
+    endpoint.method === "GET" && endpoint.readOnly === true &&
+    endpoint.path === "/v3/web-analytics/source-revenue";
+
+  if (FINANCIAL_TEXT_PATTERN.test(searchableText) && !FINANCIAL_TEXT_ALLOWLIST.has(endpoint.operationId) && !linkedRevenueRead) {
     errors.push(`${endpoint.operationId} matches financial-risk text at ${endpoint.method} ${endpoint.path}`);
   }
 }

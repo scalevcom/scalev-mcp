@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "095cc7cec349ecb1da01ad2961c823f0b54d13ed43f74158c9371e825658a95f";
+export const V3_CATALOG_SOURCE_SHA256 = "73926a55040c689d31338f4886625434de1d62a94540468bab4fb6b6e2c8c647";
 
 export const V3_ENDPOINTS = [
   {
@@ -10942,6 +10942,171 @@ export const V3_ENDPOINTS = [
       }
     ],
     "queryParams": []
+  },
+  {
+    "operationId": "getWebAnalyticsSourceRevenue",
+    "method": "GET",
+    "path": "/v3/web-analytics/source-revenue",
+    "summary": "Get linked paid-order earnings by acquisition source",
+    "description": "Requires the `web_analytics:read` scope. Returns first-touch traffic alongside checkout-attributed earnings for the exact paid orders linked by the order funnel. The selected date range and filters apply to the original page view; later order creation and payment update that cohort. Revenue uses the earliest complete linked payment snapshot. Historical events without a snapshot use the current matching order amount. This is gross/net order revenue at payment, not cash collected, and subsequent refunds or order edits do not alter a stored snapshot. A missing historical amount remains unavailable rather than becoming zero or an incomplete total. Each last-touch source has one row per currency; never add amounts across currencies. If a source has missing revenue with unknown currency, its other currency amounts must not be presented as complete source totals. Visit counts are grouped independently by first-touch source and must not be duplicated when joining currency rows. Ranked results select source groups and include all their currencies; limits may omit other sources. Mixed-currency groups rank by linked paid-order count rather than an implied exchange rate. This endpoint does not report all operational orders or earnings.",
+    "tags": [
+      "Web Analytics"
+    ],
+    "scopes": [
+      "web_analytics:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [
+      {
+        "name": "ad_click",
+        "in": "query",
+        "required": false,
+        "description": "Use paid, organic, or an ad network name to filter the originating page views.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_id",
+        "in": "query",
+        "required": false,
+        "description": "Owner identity for entity_type; landing_page uses a positive integer encoded as text. Requires entity_type.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_path",
+        "in": "query",
+        "required": false,
+        "description": "Optional historical path for the selected entity. Requires entity_type, or the legacy page_id selector.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_type",
+        "in": "query",
+        "required": false,
+        "description": "Surface type. An omitted entity_id selects all owners of the type. Cannot be combined with page_id.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "landing_page",
+            "product",
+            "bundle_price_option",
+            "store_home",
+            "cart",
+            "checkout",
+            "payment_link",
+            "order_detail",
+            "order_success",
+            "order_invoice"
+          ]
+        }
+      },
+      {
+        "name": "from",
+        "in": "query",
+        "required": true,
+        "description": "Inclusive first page-view cohort date in the selected timezone. The range is limited to 180 days of retained raw events.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "description": "Leader count per side before the traffic/revenue source union. All currency rows for each selected source are returned.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      {
+        "name": "page_host",
+        "in": "query",
+        "required": false,
+        "description": "Restrict the originating page views to this host.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "page_id",
+        "in": "query",
+        "required": false,
+        "description": "Legacy alias for entity_type=landing_page and entity_id. Cannot be combined with entity_type or entity_id.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      {
+        "name": "page_path",
+        "in": "query",
+        "required": false,
+        "description": "Restrict the originating page views to this path. The root path / is a valid filter.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "store_id",
+        "in": "query",
+        "required": false,
+        "description": "Restrict the originating page views to this business-owned store.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      {
+        "name": "timezone",
+        "in": "query",
+        "required": false,
+        "description": "IANA timezone used for the date boundaries.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "to",
+        "in": "query",
+        "required": true,
+        "description": "Inclusive last page-view cohort date. Must be on or after from.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      {
+        "name": "utm_type",
+        "in": "query",
+        "required": false,
+        "description": "Acquisition dimension used on both sides of the response.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "source",
+            "medium",
+            "campaign",
+            "content",
+            "term"
+          ]
+        }
+      }
+    ]
   },
   {
     "operationId": "listWhatsappIntegrations",
