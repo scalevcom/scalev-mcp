@@ -105,6 +105,7 @@ Call `get_me` first. It returns active connected businesses only. If `connected_
 
 `search` returns `execution_tool` as `get`, `execute_safe`, or `execute_destructive`. Use that value. The Worker rejects safe/destructive mismatches.
 OAuth flow, storefront browser, OAuth billing, developer payout, and direct payment-gateway endpoints are intentionally excluded from the generated MCP catalog.
+Dashboard self-traffic exclusions and public browser event/consent collection are also excluded.
 
 Older clients may still remember a single `execute` tool from an early connector build. Refresh the connector tool list and use `execute_safe` or `execute_destructive` according to the `search.execution_tool` value.
 
@@ -118,8 +119,34 @@ Scalev OAuth consent groups scopes by the business data or action they unlock:
 - `order:create` and `order:update`: create or edit orders.
 - `order:change_status`: change order or payment status.
 - `order:statistics:read`: view aggregated order statistics (totals, revenue, breakdowns).
+- `web_analytics:read`: view Web Analytics reports and find reporting entities, stores, and payment links.
+- `business:read` and `business:update`: read or update country-based customer privacy settings.
 
 The connector never grants more access than the merchant approved in Scalev. The Scalev API enforces scopes per selected business on every call.
+
+## Web Analytics
+
+Use the existing `search`, `get_docs`, and `get` tools for all 15 Web Analytics operations. The catalog includes entity/store/payment-link selectors and traffic, pages, sources, audience, conversion, journeys, entity funnels, source revenue, ad clicks, order funnels, and engagement reports. These use `web_analytics:read`; they do not need order read or payment-action scopes.
+
+Discover operations with `search({"scope":"web_analytics:read","limit":50})`, then read the returned `docs_topic` with `get_docs`. A traffic call looks like:
+
+```json
+{
+  "operation_id": "getWebAnalyticsTraffic",
+  "business_unique_id": "BIZ123",
+  "query": {
+    "from": "2026-09-01",
+    "to": "2026-09-20",
+    "timezone": "Asia/Jakarta",
+    "entity_type": "landing_page",
+    "entity_id": "123"
+  }
+}
+```
+
+Reports require `from` and `to` dates. Use the endpoint's search metadata and guide for supported filters, retention limits, metrics, and attribution rules. Report responses are forwarded unchanged: do not sum daily visitor/session counts to invent range totals, or compare cohort outcomes with paid-date conversion counts as if they had the same date rules. Entity, store, and payment-link selectors use cursor pagination; pass the returned cursor unchanged with the same business, entity type, and search query.
+
+Customer privacy settings use `getCustomerPrivacySettings` through `get` (`business:read`) and `updateCustomerPrivacySettings` through `execute_safe` (`business:update`). Read the `customer_privacy_settings` guide and current settings first. An authorized update must send the current `revision` plus both complete `analytics_consent_countries` and `marketing_consent_countries` lists. On a revision conflict, reload and reconcile the requested changes before retrying. This changes the business's country requirements; it does not submit a visitor's consent or create analytics events.
 
 ## Reviewer Prompts
 

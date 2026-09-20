@@ -83,6 +83,8 @@ sebagai `business_unique_id` tingkat atas ke tool bisnis.
 destruktif tertukar.
 Endpoint OAuth flow, storefront browser, OAuth billing, developer payout, dan
 direct payment-gateway sengaja dikeluarkan dari katalog MCP yang dihasilkan.
+Endpoint pengecualian trafik sendiri dari dashboard serta pengiriman event dan
+persetujuan pengunjung dari browser juga tidak tersedia melalui MCP.
 
 Client lama mungkin masih mengingat tool tunggal `execute` dari build awal
 connector. Refresh daftar tool connector dan gunakan `execute_safe` atau
@@ -97,9 +99,40 @@ connector. Refresh daftar tool connector dan gunakan `execute_safe` atau
 - `order:create` dan `order:update`: membuat atau mengubah order.
 - `order:change_status`: mengubah status order atau pembayaran.
 - `order:statistics:read`: melihat statistik order (total, revenue, breakdown).
+- `web_analytics:read`: membaca laporan Web Analytics serta pilihan halaman, toko, dan payment link untuk filter laporan.
+- `business:read` dan `business:update`: membaca atau mengubah pengaturan privasi pelanggan berdasarkan negara.
 
 Connector tidak memberi akses melebihi persetujuan merchant di Scalev. Scalev API
 memeriksa scope per bisnis yang dipilih pada setiap request.
+
+## Web Analytics
+
+Semua 15 operasi Web Analytics tersedia lewat `search`, `get_docs`, dan `get`.
+Cari dengan `search({"scope":"web_analytics:read","limit":50})`, lalu baca
+`docs_topic` yang dikembalikan menggunakan `get_docs`. Laporan mencakup trafik,
+halaman, sumber kunjungan, audiens, konversi, perjalanan pengunjung, funnel,
+pendapatan per sumber, klik iklan, dan engagement. Tersedia juga pilihan entitas,
+toko, dan payment link untuk menentukan filter laporan.
+
+Untuk membaca trafik, panggil `get` dengan `operation_id: "getWebAnalyticsTraffic"`,
+`business_unique_id` bisnis yang dipilih, serta `query` berisi `from`, `to`, dan
+`timezone`. Contoh tanggal: `"from": "2026-09-01"`, `"to": "2026-09-20"`,
+`"timezone": "Asia/Jakarta"`. Gunakan metadata `search` dan panduan untuk filter,
+batas retensi, serta arti metrik. Respons laporan diteruskan apa adanya; jangan
+menjumlahkan pengunjung atau sesi harian untuk menghitung total satu periode.
+Hasil kohort dan konversi berdasarkan tanggal pembayaran memiliki aturan tanggal
+berbeda, sehingga tidak bisa dibandingkan sebagai metrik yang sama.
+Daftar entitas, toko, dan payment link menggunakan cursor; teruskan cursor tanpa
+mengubah bisnis, jenis entitas, atau pencariannya.
+
+Pengaturan privasi dibaca dengan `getCustomerPrivacySettings` melalui `get`
+dan diubah dengan `updateCustomerPrivacySettings` melalui `execute_safe`.
+Baca panduan `customer_privacy_settings` dan pengaturan terbaru terlebih dahulu.
+Kirim `revision` terbaru beserta kedua daftar negara lengkap,
+`analytics_consent_countries` dan `marketing_consent_countries`. Jika terjadi
+konflik revision, muat ulang dan sesuaikan perubahan sebelum mencoba kembali.
+Operasi ini mengubah negara yang memerlukan persetujuan; tidak mengirimkan
+persetujuan pengunjung atau membuat event analitik.
 
 ## Prompt Reviewer
 

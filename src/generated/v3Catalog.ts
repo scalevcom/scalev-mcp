@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "e21b772072f966f5848c2bac4e197dec86b487bf153ff7d1d202b42fb5863710";
+export const V3_CATALOG_SOURCE_SHA256 = "b2fc0e49c2e893a2aa83a584203d963ad803ff47b873e8485dfccc32934e1511";
 
 export const V3_ENDPOINTS = [
   {
@@ -1755,6 +1755,75 @@ export const V3_ENDPOINTS = [
       }
     ],
     "queryParams": []
+  },
+  {
+    "operationId": "getCustomerPrivacySettings",
+    "method": "GET",
+    "path": "/v3/customer-privacy",
+    "summary": "Get customer privacy settings",
+    "description": "Requires business:read. Returns the authenticated business's consent-required country lists, current revision, supported country codes and read-only compatibility metadata. Country lists independently control store statistics and marketing consent requirements. Countries absent from a list do not require consent for that category.",
+    "externalDocs": {
+      "url": "https://docs.scalev.dev/docs/customer-privacy-settings",
+      "description": "Configure consent requirements by country."
+    },
+    "tags": [
+      "Customer Privacy"
+    ],
+    "scopes": [
+      "business:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": []
+  },
+  {
+    "operationId": "updateCustomerPrivacySettings",
+    "method": "PATCH",
+    "path": "/v3/customer-privacy",
+    "summary": "Update customer privacy settings",
+    "description": "Requires business:update. Send only revision and both complete country lists. Updates are optimistic: fetch the current settings, submit that revision, and refetch on 409 before reconciling changes. Valid codes are normalized to sorted unique lists. Saving increments revision, records an administrative audit and schedules invalidation of affected cached public pages/configuration across the business's domains. Cache propagation is asynchronous; success is not a guarantee that every edge has already refreshed. Do not echo the whole GET response or send owner-acceptance metadata.",
+    "externalDocs": {
+      "url": "https://docs.scalev.dev/docs/customer-privacy-settings",
+      "description": "Configure consent requirements by country."
+    },
+    "tags": [
+      "Customer Privacy"
+    ],
+    "scopes": [
+      "business:update"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [],
+    "requestBody": {
+      "required": true,
+      "contentTypes": [
+        "application/json"
+      ],
+      "schemaRef": "CustomerPrivacySettingsUpdate",
+      "requiredFields": [
+        "analytics_consent_countries",
+        "marketing_consent_countries",
+        "revision"
+      ],
+      "properties": [
+        "analytics_consent_countries",
+        "marketing_consent_countries",
+        "revision"
+      ]
+    }
   },
   {
     "operationId": "listBusinessCustomers",
@@ -11167,6 +11236,2195 @@ export const V3_ENDPOINTS = [
       }
     ],
     "queryParams": []
+  },
+  {
+    "operationId": "getWebAnalyticsAdClicks",
+    "method": "GET",
+    "path": "/v3/web-analytics/ad-clicks",
+    "summary": "Get advertising click breakdowns",
+    "description": "Groups recorded click-ID evidence, independently from UTM tags. Requires web_analytics:read. The authenticated credential determines the business; no business_id override is accepted. Reporting and scope-option calls share a 600-request/hour limit per API key or OAuth installation, in addition to the normal burst and hourly limits. Responses contain recorded analytics, which may be lower than actual traffic because of consent choices, self-traffic exclusion, blockers, and unavailable attribution.",
+    "externalDocs": {
+      "url": "https://docs.scalev.dev/docs/web-analytics",
+      "description": "Read the Web Analytics guide."
+    },
+    "tags": [
+      "Web Analytics"
+    ],
+    "scopes": [
+      "web_analytics:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [
+      {
+        "name": "ad_click",
+        "in": "query",
+        "required": false,
+        "description": "Filter by recorded ad-click evidence or network, independent of UTM labels. organic means no captured click ID, not proof of unpaid acquisition. Unrecognized values are ignored by the server; use one of the documented values.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "paid",
+            "organic",
+            "meta",
+            "google",
+            "tiktok"
+          ]
+        }
+      },
+      {
+        "name": "ad_click_type",
+        "in": "query",
+        "required": false,
+        "description": "Click-ID dimension: paid/organic status, network, or clicked/returned evidence.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "status",
+            "network",
+            "evidence"
+          ]
+        }
+      },
+      {
+        "name": "entity_id",
+        "in": "query",
+        "required": false,
+        "description": "Requires entity_type. Positive numeric owning IDs are sent as text; store_home/cart/checkout/order_detail/order_success/order_invoice use store IDs. For payment_link use the opaque plscope_ identifier from /v3/web-analytics/payment-links. A malformed nonempty ID is an error, not an unfiltered report.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_path",
+        "in": "query",
+        "required": false,
+        "description": "Optional sanitized fallback path for records without a stored entity identity. Requires entity_type (or legacy page_id); use with entity_id. It does not replace the independent page_path filter. Payment-link scope ignores fallback paths.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_type",
+        "in": "query",
+        "required": false,
+        "description": "Optional surface filter. A type alone selects every owner of that surface. Supply entity_id to narrow to one owner; invalid types are errors.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "landing_page",
+            "product",
+            "bundle_price_option",
+            "store_home",
+            "cart",
+            "checkout",
+            "payment_link",
+            "order_detail",
+            "order_success",
+            "order_invoice"
+          ]
+        }
+      },
+      {
+        "name": "from",
+        "in": "query",
+        "required": true,
+        "description": "Inclusive start date in the requested timezone. from must be on or before to; the inclusive range cannot exceed 180 days.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "description": "Maximum ranked rows for reports that return ranked lists. Values above 100 are capped at 100; absent or invalid/non-positive values use 25. This is not cursor pagination and does not cap range totals or the fixed audience-location caps.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      {
+        "name": "page_host",
+        "in": "query",
+        "required": false,
+        "description": "Optional hostname filter. Host, path and entity compose independently; host also restricts the navigation universe for journeys.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "page_id",
+        "in": "query",
+        "required": false,
+        "description": "Legacy alias for entity_type=landing_page and entity_id. Cannot be combined with entity_type or entity_id.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      {
+        "name": "page_path",
+        "in": "query",
+        "required": false,
+        "description": "Optional exact sanitized path filter across hosts. Use / for the homepage. An explicitly empty value does not mean unfiltered. For journeys/funnels this selects the focus while retaining neighbouring pages.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "store_id",
+        "in": "query",
+        "required": false,
+        "description": "Optional store owner filter within the authenticated business. Use /v3/web-analytics/stores to obtain IDs without operational store permissions.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      {
+        "name": "timezone",
+        "in": "query",
+        "required": false,
+        "description": "Recognized IANA timezone used for date boundaries and daily buckets.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "to",
+        "in": "query",
+        "required": true,
+        "description": "Inclusive end date in the requested timezone. Raw event history is retained for 180 days; expired data is not reconstructed.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "getWebAnalyticsAudience",
+    "method": "GET",
+    "path": "/v3/web-analytics/audience",
+    "summary": "Get audience breakdowns",
+    "description": "Device and approximate location breakdowns with privacy-suppressed region, city and map data. Requires web_analytics:read. The authenticated credential determines the business; no business_id override is accepted. Reporting and scope-option calls share a 600-request/hour limit per API key or OAuth installation, in addition to the normal burst and hourly limits. Responses contain recorded analytics, which may be lower than actual traffic because of consent choices, self-traffic exclusion, blockers, and unavailable attribution.",
+    "externalDocs": {
+      "url": "https://docs.scalev.dev/docs/web-analytics",
+      "description": "Read the Web Analytics guide."
+    },
+    "tags": [
+      "Web Analytics"
+    ],
+    "scopes": [
+      "web_analytics:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [
+      {
+        "name": "ad_click",
+        "in": "query",
+        "required": false,
+        "description": "Filter by recorded ad-click evidence or network, independent of UTM labels. organic means no captured click ID, not proof of unpaid acquisition. Unrecognized values are ignored by the server; use one of the documented values.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "paid",
+            "organic",
+            "meta",
+            "google",
+            "tiktok"
+          ]
+        }
+      },
+      {
+        "name": "entity_id",
+        "in": "query",
+        "required": false,
+        "description": "Requires entity_type. Positive numeric owning IDs are sent as text; store_home/cart/checkout/order_detail/order_success/order_invoice use store IDs. For payment_link use the opaque plscope_ identifier from /v3/web-analytics/payment-links. A malformed nonempty ID is an error, not an unfiltered report.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_path",
+        "in": "query",
+        "required": false,
+        "description": "Optional sanitized fallback path for records without a stored entity identity. Requires entity_type (or legacy page_id); use with entity_id. It does not replace the independent page_path filter. Payment-link scope ignores fallback paths.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_type",
+        "in": "query",
+        "required": false,
+        "description": "Optional surface filter. A type alone selects every owner of that surface. Supply entity_id to narrow to one owner; invalid types are errors.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "landing_page",
+            "product",
+            "bundle_price_option",
+            "store_home",
+            "cart",
+            "checkout",
+            "payment_link",
+            "order_detail",
+            "order_success",
+            "order_invoice"
+          ]
+        }
+      },
+      {
+        "name": "from",
+        "in": "query",
+        "required": true,
+        "description": "Inclusive start date in the requested timezone. from must be on or before to; the inclusive range cannot exceed 180 days.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "description": "Maximum ranked rows for reports that return ranked lists. Values above 100 are capped at 100; absent or invalid/non-positive values use 25. This is not cursor pagination and does not cap range totals or the fixed audience-location caps.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      {
+        "name": "page_host",
+        "in": "query",
+        "required": false,
+        "description": "Optional hostname filter. Host, path and entity compose independently; host also restricts the navigation universe for journeys.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "page_id",
+        "in": "query",
+        "required": false,
+        "description": "Legacy alias for entity_type=landing_page and entity_id. Cannot be combined with entity_type or entity_id.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      {
+        "name": "page_path",
+        "in": "query",
+        "required": false,
+        "description": "Optional exact sanitized path filter across hosts. Use / for the homepage. An explicitly empty value does not mean unfiltered. For journeys/funnels this selects the focus while retaining neighbouring pages.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "store_id",
+        "in": "query",
+        "required": false,
+        "description": "Optional store owner filter within the authenticated business. Use /v3/web-analytics/stores to obtain IDs without operational store permissions.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      {
+        "name": "timezone",
+        "in": "query",
+        "required": false,
+        "description": "Recognized IANA timezone used for date boundaries and daily buckets.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "to",
+        "in": "query",
+        "required": true,
+        "description": "Inclusive end date in the requested timezone. Raw event history is retained for 180 days; expired data is not reconstructed.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "getWebAnalyticsConversion",
+    "method": "GET",
+    "path": "/v3/web-analytics/conversion",
+    "summary": "Get conversion summary",
+    "description": "Page-view counts and orders paid during the selected date range, split into matched and unattributed payments. This differs from the originating-page-view cohort in order-funnel. Requires web_analytics:read. The authenticated credential determines the business; no business_id override is accepted. Reporting and scope-option calls share a 600-request/hour limit per API key or OAuth installation, in addition to the normal burst and hourly limits. Responses contain recorded analytics, which may be lower than actual traffic because of consent choices, self-traffic exclusion, blockers, and unavailable attribution.",
+    "externalDocs": {
+      "url": "https://docs.scalev.dev/docs/web-analytics",
+      "description": "Read the Web Analytics guide."
+    },
+    "tags": [
+      "Web Analytics"
+    ],
+    "scopes": [
+      "web_analytics:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [
+      {
+        "name": "ad_click",
+        "in": "query",
+        "required": false,
+        "description": "Filter by recorded ad-click evidence or network, independent of UTM labels. organic means no captured click ID, not proof of unpaid acquisition. Unrecognized values are ignored by the server; use one of the documented values.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "paid",
+            "organic",
+            "meta",
+            "google",
+            "tiktok"
+          ]
+        }
+      },
+      {
+        "name": "entity_id",
+        "in": "query",
+        "required": false,
+        "description": "Requires entity_type. Positive numeric owning IDs are sent as text; store_home/cart/checkout/order_detail/order_success/order_invoice use store IDs. For payment_link use the opaque plscope_ identifier from /v3/web-analytics/payment-links. A malformed nonempty ID is an error, not an unfiltered report.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_path",
+        "in": "query",
+        "required": false,
+        "description": "Optional sanitized fallback path for records without a stored entity identity. Requires entity_type (or legacy page_id); use with entity_id. It does not replace the independent page_path filter. Payment-link scope ignores fallback paths.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_type",
+        "in": "query",
+        "required": false,
+        "description": "Optional surface filter. A type alone selects every owner of that surface. Supply entity_id to narrow to one owner; invalid types are errors.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "landing_page",
+            "product",
+            "bundle_price_option",
+            "store_home",
+            "cart",
+            "checkout",
+            "payment_link",
+            "order_detail",
+            "order_success",
+            "order_invoice"
+          ]
+        }
+      },
+      {
+        "name": "from",
+        "in": "query",
+        "required": true,
+        "description": "Inclusive start date in the requested timezone. from must be on or before to; the inclusive range cannot exceed 180 days.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "description": "Maximum ranked rows for reports that return ranked lists. Values above 100 are capped at 100; absent or invalid/non-positive values use 25. This is not cursor pagination and does not cap range totals or the fixed audience-location caps.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      {
+        "name": "page_host",
+        "in": "query",
+        "required": false,
+        "description": "Optional hostname filter. Host, path and entity compose independently; host also restricts the navigation universe for journeys.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "page_id",
+        "in": "query",
+        "required": false,
+        "description": "Legacy alias for entity_type=landing_page and entity_id. Cannot be combined with entity_type or entity_id.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      {
+        "name": "page_path",
+        "in": "query",
+        "required": false,
+        "description": "Optional exact sanitized path filter across hosts. Use / for the homepage. An explicitly empty value does not mean unfiltered. For journeys/funnels this selects the focus while retaining neighbouring pages.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "store_id",
+        "in": "query",
+        "required": false,
+        "description": "Optional store owner filter within the authenticated business. Use /v3/web-analytics/stores to obtain IDs without operational store permissions.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      {
+        "name": "timezone",
+        "in": "query",
+        "required": false,
+        "description": "Recognized IANA timezone used for date boundaries and daily buckets.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "to",
+        "in": "query",
+        "required": true,
+        "description": "Inclusive end date in the requested timezone. Raw event history is retained for 180 days; expired data is not reconstructed.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "getWebAnalyticsEngagement",
+    "method": "GET",
+    "path": "/v3/web-analytics/engagement",
+    "summary": "Get measured visit engagement",
+    "description": "Visible-time averages and measurement coverage. Missing measurements return null averages rather than implying zero time. Requires web_analytics:read. The authenticated credential determines the business; no business_id override is accepted. Reporting and scope-option calls share a 600-request/hour limit per API key or OAuth installation, in addition to the normal burst and hourly limits. Responses contain recorded analytics, which may be lower than actual traffic because of consent choices, self-traffic exclusion, blockers, and unavailable attribution.",
+    "externalDocs": {
+      "url": "https://docs.scalev.dev/docs/web-analytics",
+      "description": "Read the Web Analytics guide."
+    },
+    "tags": [
+      "Web Analytics"
+    ],
+    "scopes": [
+      "web_analytics:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [
+      {
+        "name": "ad_click",
+        "in": "query",
+        "required": false,
+        "description": "Filter by recorded ad-click evidence or network, independent of UTM labels. organic means no captured click ID, not proof of unpaid acquisition. Unrecognized values are ignored by the server; use one of the documented values.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "paid",
+            "organic",
+            "meta",
+            "google",
+            "tiktok"
+          ]
+        }
+      },
+      {
+        "name": "entity_id",
+        "in": "query",
+        "required": false,
+        "description": "Requires entity_type. Positive numeric owning IDs are sent as text; store_home/cart/checkout/order_detail/order_success/order_invoice use store IDs. For payment_link use the opaque plscope_ identifier from /v3/web-analytics/payment-links. A malformed nonempty ID is an error, not an unfiltered report.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_path",
+        "in": "query",
+        "required": false,
+        "description": "Optional sanitized fallback path for records without a stored entity identity. Requires entity_type (or legacy page_id); use with entity_id. It does not replace the independent page_path filter. Payment-link scope ignores fallback paths.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_type",
+        "in": "query",
+        "required": false,
+        "description": "Optional surface filter. A type alone selects every owner of that surface. Supply entity_id to narrow to one owner; invalid types are errors.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "landing_page",
+            "product",
+            "bundle_price_option",
+            "store_home",
+            "cart",
+            "checkout",
+            "payment_link",
+            "order_detail",
+            "order_success",
+            "order_invoice"
+          ]
+        }
+      },
+      {
+        "name": "from",
+        "in": "query",
+        "required": true,
+        "description": "Inclusive start date in the requested timezone. from must be on or before to; the inclusive range cannot exceed 180 days.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "description": "Maximum ranked rows for reports that return ranked lists. Values above 100 are capped at 100; absent or invalid/non-positive values use 25. This is not cursor pagination and does not cap range totals or the fixed audience-location caps.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      {
+        "name": "page_host",
+        "in": "query",
+        "required": false,
+        "description": "Optional hostname filter. Host, path and entity compose independently; host also restricts the navigation universe for journeys.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "page_id",
+        "in": "query",
+        "required": false,
+        "description": "Legacy alias for entity_type=landing_page and entity_id. Cannot be combined with entity_type or entity_id.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      {
+        "name": "page_path",
+        "in": "query",
+        "required": false,
+        "description": "Optional exact sanitized path filter across hosts. Use / for the homepage. An explicitly empty value does not mean unfiltered. For journeys/funnels this selects the focus while retaining neighbouring pages.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "store_id",
+        "in": "query",
+        "required": false,
+        "description": "Optional store owner filter within the authenticated business. Use /v3/web-analytics/stores to obtain IDs without operational store permissions.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      {
+        "name": "timezone",
+        "in": "query",
+        "required": false,
+        "description": "Recognized IANA timezone used for date boundaries and daily buckets.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "to",
+        "in": "query",
+        "required": true,
+        "description": "Inclusive end date in the requested timezone. Raw event history is retained for 180 days; expired data is not reconstructed.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "listWebAnalyticsEntities",
+    "method": "GET",
+    "path": "/v3/web-analytics/entities",
+    "summary": "List analytics entity scope options",
+    "description": "Lists flat IDs and names for landing pages, products or bundle price options, including inactive records with retained history. No operational page/product/bundle-list permission is required. Uses real keyset pagination, newest first, with at most 25 rows per page. Cursors bind the business, resource, type where applicable, and normalized search. Legacy page, cursor, last_id and anchor_id parameters are unsupported. Requires web_analytics:read. The authenticated credential determines the business; no business_id override is accepted. Reporting and scope-option calls share a 600-request/hour limit per API key or OAuth installation, in addition to the normal burst and hourly limits. Responses contain recorded analytics, which may be lower than actual traffic because of consent choices, self-traffic exclusion, blockers, and unavailable attribution.",
+    "externalDocs": {
+      "url": "https://docs.scalev.dev/docs/web-analytics",
+      "description": "Read the Web Analytics guide."
+    },
+    "tags": [
+      "Web Analytics"
+    ],
+    "scopes": [
+      "web_analytics:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [
+      {
+        "name": "entity_type",
+        "in": "query",
+        "required": true,
+        "description": "Owning resource type to list; repeat on all cursor requests.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "landing_page",
+            "product",
+            "bundle_price_option"
+          ]
+        }
+      },
+      {
+        "name": "next_cursor",
+        "in": "query",
+        "required": false,
+        "description": "Opaque next-page cursor returned by this endpoint. Mutually exclusive with previous_cursor; repeat the same resource/type and normalized search.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "page_size",
+        "in": "query",
+        "required": false,
+        "description": "Number of scope options per page; numeric values are clamped to 1–25.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 25
+        }
+      },
+      {
+        "name": "previous_cursor",
+        "in": "query",
+        "required": false,
+        "description": "Opaque previous-page cursor returned by this endpoint. Mutually exclusive with next_cursor; repeat the same resource/type and normalized search.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "search",
+        "in": "query",
+        "required": false,
+        "description": "Optional case-insensitive literal substring search, trimmed and whitespace-normalized. At most 200 characters (and 800 input bytes). Repeat it with cursor requests. Payment links search only their generic UTC date/time label, not protected IDs or suffixes.",
+        "schema": {
+          "type": "string",
+          "maxLength": 200
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "getWebAnalyticsEntityFunnel",
+    "method": "GET",
+    "path": "/v3/web-analytics/entity-funnel",
+    "summary": "Get a page-entry session funnel",
+    "description": "Requires entity_type, legacy page_id, or page_path; entity_id is optional. Follows sessions whose first page view matches the focus, with paid_sessions reported separately from navigation steps. Requires web_analytics:read. The authenticated credential determines the business; no business_id override is accepted. Reporting and scope-option calls share a 600-request/hour limit per API key or OAuth installation, in addition to the normal burst and hourly limits. Responses contain recorded analytics, which may be lower than actual traffic because of consent choices, self-traffic exclusion, blockers, and unavailable attribution.",
+    "externalDocs": {
+      "url": "https://docs.scalev.dev/docs/web-analytics",
+      "description": "Read the Web Analytics guide."
+    },
+    "tags": [
+      "Web Analytics"
+    ],
+    "scopes": [
+      "web_analytics:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [
+      {
+        "name": "ad_click",
+        "in": "query",
+        "required": false,
+        "description": "Filter by recorded ad-click evidence or network, independent of UTM labels. organic means no captured click ID, not proof of unpaid acquisition. Unrecognized values are ignored by the server; use one of the documented values.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "paid",
+            "organic",
+            "meta",
+            "google",
+            "tiktok"
+          ]
+        }
+      },
+      {
+        "name": "entity_id",
+        "in": "query",
+        "required": false,
+        "description": "Requires entity_type. Positive numeric owning IDs are sent as text; store_home/cart/checkout/order_detail/order_success/order_invoice use store IDs. For payment_link use the opaque plscope_ identifier from /v3/web-analytics/payment-links. A malformed nonempty ID is an error, not an unfiltered report.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_path",
+        "in": "query",
+        "required": false,
+        "description": "Optional sanitized fallback path for records without a stored entity identity. Requires entity_type (or legacy page_id); use with entity_id. It does not replace the independent page_path filter. Payment-link scope ignores fallback paths.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_type",
+        "in": "query",
+        "required": false,
+        "description": "Optional surface filter. A type alone selects every owner of that surface. Supply entity_id to narrow to one owner; invalid types are errors.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "landing_page",
+            "product",
+            "bundle_price_option",
+            "store_home",
+            "cart",
+            "checkout",
+            "payment_link",
+            "order_detail",
+            "order_success",
+            "order_invoice"
+          ]
+        }
+      },
+      {
+        "name": "from",
+        "in": "query",
+        "required": true,
+        "description": "Inclusive start date in the requested timezone. from must be on or before to; the inclusive range cannot exceed 180 days.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "description": "Maximum ranked rows for reports that return ranked lists. Values above 100 are capped at 100; absent or invalid/non-positive values use 25. This is not cursor pagination and does not cap range totals or the fixed audience-location caps.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      {
+        "name": "max_steps",
+        "in": "query",
+        "required": false,
+        "description": "Maximum entity-funnel depth. Values above 10 are capped; absent or invalid/non-positive values use 6.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        }
+      },
+      {
+        "name": "page_host",
+        "in": "query",
+        "required": false,
+        "description": "Optional hostname filter. Host, path and entity compose independently; host also restricts the navigation universe for journeys.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "page_id",
+        "in": "query",
+        "required": false,
+        "description": "Legacy alias for entity_type=landing_page and entity_id. Cannot be combined with entity_type or entity_id.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      {
+        "name": "page_path",
+        "in": "query",
+        "required": false,
+        "description": "Optional exact sanitized path filter across hosts. Use / for the homepage. An explicitly empty value does not mean unfiltered. For journeys/funnels this selects the focus while retaining neighbouring pages.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "store_id",
+        "in": "query",
+        "required": false,
+        "description": "Optional store owner filter within the authenticated business. Use /v3/web-analytics/stores to obtain IDs without operational store permissions.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      {
+        "name": "timezone",
+        "in": "query",
+        "required": false,
+        "description": "Recognized IANA timezone used for date boundaries and daily buckets.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "to",
+        "in": "query",
+        "required": true,
+        "description": "Inclusive end date in the requested timezone. Raw event history is retained for 180 days; expired data is not reconstructed.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "getWebAnalyticsEntityJourney",
+    "method": "GET",
+    "path": "/v3/web-analytics/entity-journey",
+    "summary": "Get navigation around a page surface",
+    "description": "Requires entity_type, legacy page_id, or page_path. entity_type alone is a valid focus; entity_id optionally narrows its owner. Entity and page_path focus combine. Returns immediate inbound and outbound neighbours without deleting them from the session. Requires web_analytics:read. The authenticated credential determines the business; no business_id override is accepted. Reporting and scope-option calls share a 600-request/hour limit per API key or OAuth installation, in addition to the normal burst and hourly limits. Responses contain recorded analytics, which may be lower than actual traffic because of consent choices, self-traffic exclusion, blockers, and unavailable attribution.",
+    "externalDocs": {
+      "url": "https://docs.scalev.dev/docs/web-analytics",
+      "description": "Read the Web Analytics guide."
+    },
+    "tags": [
+      "Web Analytics"
+    ],
+    "scopes": [
+      "web_analytics:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [
+      {
+        "name": "ad_click",
+        "in": "query",
+        "required": false,
+        "description": "Filter by recorded ad-click evidence or network, independent of UTM labels. organic means no captured click ID, not proof of unpaid acquisition. Unrecognized values are ignored by the server; use one of the documented values.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "paid",
+            "organic",
+            "meta",
+            "google",
+            "tiktok"
+          ]
+        }
+      },
+      {
+        "name": "entity_id",
+        "in": "query",
+        "required": false,
+        "description": "Requires entity_type. Positive numeric owning IDs are sent as text; store_home/cart/checkout/order_detail/order_success/order_invoice use store IDs. For payment_link use the opaque plscope_ identifier from /v3/web-analytics/payment-links. A malformed nonempty ID is an error, not an unfiltered report.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_path",
+        "in": "query",
+        "required": false,
+        "description": "Optional sanitized fallback path for records without a stored entity identity. Requires entity_type (or legacy page_id); use with entity_id. It does not replace the independent page_path filter. Payment-link scope ignores fallback paths.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_type",
+        "in": "query",
+        "required": false,
+        "description": "Optional surface filter. A type alone selects every owner of that surface. Supply entity_id to narrow to one owner; invalid types are errors.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "landing_page",
+            "product",
+            "bundle_price_option",
+            "store_home",
+            "cart",
+            "checkout",
+            "payment_link",
+            "order_detail",
+            "order_success",
+            "order_invoice"
+          ]
+        }
+      },
+      {
+        "name": "from",
+        "in": "query",
+        "required": true,
+        "description": "Inclusive start date in the requested timezone. from must be on or before to; the inclusive range cannot exceed 180 days.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "description": "Maximum ranked rows for reports that return ranked lists. Values above 100 are capped at 100; absent or invalid/non-positive values use 25. This is not cursor pagination and does not cap range totals or the fixed audience-location caps.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      {
+        "name": "page_host",
+        "in": "query",
+        "required": false,
+        "description": "Optional hostname filter. Host, path and entity compose independently; host also restricts the navigation universe for journeys.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "page_id",
+        "in": "query",
+        "required": false,
+        "description": "Legacy alias for entity_type=landing_page and entity_id. Cannot be combined with entity_type or entity_id.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      {
+        "name": "page_path",
+        "in": "query",
+        "required": false,
+        "description": "Optional exact sanitized path filter across hosts. Use / for the homepage. An explicitly empty value does not mean unfiltered. For journeys/funnels this selects the focus while retaining neighbouring pages.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "store_id",
+        "in": "query",
+        "required": false,
+        "description": "Optional store owner filter within the authenticated business. Use /v3/web-analytics/stores to obtain IDs without operational store permissions.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      {
+        "name": "timezone",
+        "in": "query",
+        "required": false,
+        "description": "Recognized IANA timezone used for date boundaries and daily buckets.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "to",
+        "in": "query",
+        "required": true,
+        "description": "Inclusive end date in the requested timezone. Raw event history is retained for 180 days; expired data is not reconstructed.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "getWebAnalyticsJourney",
+    "method": "GET",
+    "path": "/v3/web-analytics/journey",
+    "summary": "Get navigation transitions",
+    "description": "Page-view transition edges with distinct edge and source-node sessions. Neighbours are sequenced before entity/path focus is applied. No focus is required. Requires web_analytics:read. The authenticated credential determines the business; no business_id override is accepted. Reporting and scope-option calls share a 600-request/hour limit per API key or OAuth installation, in addition to the normal burst and hourly limits. Responses contain recorded analytics, which may be lower than actual traffic because of consent choices, self-traffic exclusion, blockers, and unavailable attribution.",
+    "externalDocs": {
+      "url": "https://docs.scalev.dev/docs/web-analytics",
+      "description": "Read the Web Analytics guide."
+    },
+    "tags": [
+      "Web Analytics"
+    ],
+    "scopes": [
+      "web_analytics:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [
+      {
+        "name": "ad_click",
+        "in": "query",
+        "required": false,
+        "description": "Filter by recorded ad-click evidence or network, independent of UTM labels. organic means no captured click ID, not proof of unpaid acquisition. Unrecognized values are ignored by the server; use one of the documented values.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "paid",
+            "organic",
+            "meta",
+            "google",
+            "tiktok"
+          ]
+        }
+      },
+      {
+        "name": "entity_id",
+        "in": "query",
+        "required": false,
+        "description": "Requires entity_type. Positive numeric owning IDs are sent as text; store_home/cart/checkout/order_detail/order_success/order_invoice use store IDs. For payment_link use the opaque plscope_ identifier from /v3/web-analytics/payment-links. A malformed nonempty ID is an error, not an unfiltered report.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_path",
+        "in": "query",
+        "required": false,
+        "description": "Optional sanitized fallback path for records without a stored entity identity. Requires entity_type (or legacy page_id); use with entity_id. It does not replace the independent page_path filter. Payment-link scope ignores fallback paths.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_type",
+        "in": "query",
+        "required": false,
+        "description": "Optional surface filter. A type alone selects every owner of that surface. Supply entity_id to narrow to one owner; invalid types are errors.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "landing_page",
+            "product",
+            "bundle_price_option",
+            "store_home",
+            "cart",
+            "checkout",
+            "payment_link",
+            "order_detail",
+            "order_success",
+            "order_invoice"
+          ]
+        }
+      },
+      {
+        "name": "from",
+        "in": "query",
+        "required": true,
+        "description": "Inclusive start date in the requested timezone. from must be on or before to; the inclusive range cannot exceed 180 days.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "description": "Maximum ranked rows for reports that return ranked lists. Values above 100 are capped at 100; absent or invalid/non-positive values use 25. This is not cursor pagination and does not cap range totals or the fixed audience-location caps.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      {
+        "name": "page_host",
+        "in": "query",
+        "required": false,
+        "description": "Optional hostname filter. Host, path and entity compose independently; host also restricts the navigation universe for journeys.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "page_id",
+        "in": "query",
+        "required": false,
+        "description": "Legacy alias for entity_type=landing_page and entity_id. Cannot be combined with entity_type or entity_id.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      {
+        "name": "page_path",
+        "in": "query",
+        "required": false,
+        "description": "Optional exact sanitized path filter across hosts. Use / for the homepage. An explicitly empty value does not mean unfiltered. For journeys/funnels this selects the focus while retaining neighbouring pages.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "store_id",
+        "in": "query",
+        "required": false,
+        "description": "Optional store owner filter within the authenticated business. Use /v3/web-analytics/stores to obtain IDs without operational store permissions.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      {
+        "name": "timezone",
+        "in": "query",
+        "required": false,
+        "description": "Recognized IANA timezone used for date boundaries and daily buckets.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "to",
+        "in": "query",
+        "required": true,
+        "description": "Inclusive end date in the requested timezone. Raw event history is retained for 180 days; expired data is not reconstructed.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "getWebAnalyticsOrderFunnel",
+    "method": "GET",
+    "path": "/v3/web-analytics/order-funnel",
+    "summary": "Get the checkout page-view order funnel",
+    "description": "Counts eligible checkout page views, views with linked orders, views with linked paid orders, and distinct linked orders. Later creation/payment can update the original view cohort. Missing links and unknown eligibility are not reconstructed from operational orders. Requires web_analytics:read. The authenticated credential determines the business; no business_id override is accepted. Reporting and scope-option calls share a 600-request/hour limit per API key or OAuth installation, in addition to the normal burst and hourly limits. Responses contain recorded analytics, which may be lower than actual traffic because of consent choices, self-traffic exclusion, blockers, and unavailable attribution.",
+    "externalDocs": {
+      "url": "https://docs.scalev.dev/docs/web-analytics",
+      "description": "Read the Web Analytics guide."
+    },
+    "tags": [
+      "Web Analytics"
+    ],
+    "scopes": [
+      "web_analytics:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [
+      {
+        "name": "ad_click",
+        "in": "query",
+        "required": false,
+        "description": "Filter by recorded ad-click evidence or network, independent of UTM labels. organic means no captured click ID, not proof of unpaid acquisition. Unrecognized values are ignored by the server; use one of the documented values.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "paid",
+            "organic",
+            "meta",
+            "google",
+            "tiktok"
+          ]
+        }
+      },
+      {
+        "name": "entity_id",
+        "in": "query",
+        "required": false,
+        "description": "Requires entity_type. Positive numeric owning IDs are sent as text; store_home/cart/checkout/order_detail/order_success/order_invoice use store IDs. For payment_link use the opaque plscope_ identifier from /v3/web-analytics/payment-links. A malformed nonempty ID is an error, not an unfiltered report.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_path",
+        "in": "query",
+        "required": false,
+        "description": "Optional sanitized fallback path for records without a stored entity identity. Requires entity_type (or legacy page_id); use with entity_id. It does not replace the independent page_path filter. Payment-link scope ignores fallback paths.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_type",
+        "in": "query",
+        "required": false,
+        "description": "Optional surface filter. A type alone selects every owner of that surface. Supply entity_id to narrow to one owner; invalid types are errors.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "landing_page",
+            "product",
+            "bundle_price_option",
+            "store_home",
+            "cart",
+            "checkout",
+            "payment_link",
+            "order_detail",
+            "order_success",
+            "order_invoice"
+          ]
+        }
+      },
+      {
+        "name": "from",
+        "in": "query",
+        "required": true,
+        "description": "Inclusive start date in the requested timezone. from must be on or before to; the inclusive range cannot exceed 180 days.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "description": "Maximum ranked rows for reports that return ranked lists. Values above 100 are capped at 100; absent or invalid/non-positive values use 25. This is not cursor pagination and does not cap range totals or the fixed audience-location caps.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      {
+        "name": "page_host",
+        "in": "query",
+        "required": false,
+        "description": "Optional hostname filter. Host, path and entity compose independently; host also restricts the navigation universe for journeys.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "page_id",
+        "in": "query",
+        "required": false,
+        "description": "Legacy alias for entity_type=landing_page and entity_id. Cannot be combined with entity_type or entity_id.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      {
+        "name": "page_path",
+        "in": "query",
+        "required": false,
+        "description": "Optional exact sanitized path filter across hosts. Use / for the homepage. An explicitly empty value does not mean unfiltered. For journeys/funnels this selects the focus while retaining neighbouring pages.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "store_id",
+        "in": "query",
+        "required": false,
+        "description": "Optional store owner filter within the authenticated business. Use /v3/web-analytics/stores to obtain IDs without operational store permissions.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      {
+        "name": "timezone",
+        "in": "query",
+        "required": false,
+        "description": "Recognized IANA timezone used for date boundaries and daily buckets.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "to",
+        "in": "query",
+        "required": true,
+        "description": "Inclusive end date in the requested timezone. Raw event history is retained for 180 days; expired data is not reconstructed.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "getWebAnalyticsPages",
+    "method": "GET",
+    "path": "/v3/web-analytics/pages",
+    "summary": "Get top pages",
+    "description": "Ranked host/path pairs within the selected scope. Requires web_analytics:read. The authenticated credential determines the business; no business_id override is accepted. Reporting and scope-option calls share a 600-request/hour limit per API key or OAuth installation, in addition to the normal burst and hourly limits. Responses contain recorded analytics, which may be lower than actual traffic because of consent choices, self-traffic exclusion, blockers, and unavailable attribution.",
+    "externalDocs": {
+      "url": "https://docs.scalev.dev/docs/web-analytics",
+      "description": "Read the Web Analytics guide."
+    },
+    "tags": [
+      "Web Analytics"
+    ],
+    "scopes": [
+      "web_analytics:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [
+      {
+        "name": "ad_click",
+        "in": "query",
+        "required": false,
+        "description": "Filter by recorded ad-click evidence or network, independent of UTM labels. organic means no captured click ID, not proof of unpaid acquisition. Unrecognized values are ignored by the server; use one of the documented values.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "paid",
+            "organic",
+            "meta",
+            "google",
+            "tiktok"
+          ]
+        }
+      },
+      {
+        "name": "entity_id",
+        "in": "query",
+        "required": false,
+        "description": "Requires entity_type. Positive numeric owning IDs are sent as text; store_home/cart/checkout/order_detail/order_success/order_invoice use store IDs. For payment_link use the opaque plscope_ identifier from /v3/web-analytics/payment-links. A malformed nonempty ID is an error, not an unfiltered report.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_path",
+        "in": "query",
+        "required": false,
+        "description": "Optional sanitized fallback path for records without a stored entity identity. Requires entity_type (or legacy page_id); use with entity_id. It does not replace the independent page_path filter. Payment-link scope ignores fallback paths.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_type",
+        "in": "query",
+        "required": false,
+        "description": "Optional surface filter. A type alone selects every owner of that surface. Supply entity_id to narrow to one owner; invalid types are errors.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "landing_page",
+            "product",
+            "bundle_price_option",
+            "store_home",
+            "cart",
+            "checkout",
+            "payment_link",
+            "order_detail",
+            "order_success",
+            "order_invoice"
+          ]
+        }
+      },
+      {
+        "name": "from",
+        "in": "query",
+        "required": true,
+        "description": "Inclusive start date in the requested timezone. from must be on or before to; the inclusive range cannot exceed 180 days.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "description": "Maximum ranked rows for reports that return ranked lists. Values above 100 are capped at 100; absent or invalid/non-positive values use 25. This is not cursor pagination and does not cap range totals or the fixed audience-location caps.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      {
+        "name": "page_host",
+        "in": "query",
+        "required": false,
+        "description": "Optional hostname filter. Host, path and entity compose independently; host also restricts the navigation universe for journeys.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "page_id",
+        "in": "query",
+        "required": false,
+        "description": "Legacy alias for entity_type=landing_page and entity_id. Cannot be combined with entity_type or entity_id.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      {
+        "name": "page_path",
+        "in": "query",
+        "required": false,
+        "description": "Optional exact sanitized path filter across hosts. Use / for the homepage. An explicitly empty value does not mean unfiltered. For journeys/funnels this selects the focus while retaining neighbouring pages.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "store_id",
+        "in": "query",
+        "required": false,
+        "description": "Optional store owner filter within the authenticated business. Use /v3/web-analytics/stores to obtain IDs without operational store permissions.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      {
+        "name": "timezone",
+        "in": "query",
+        "required": false,
+        "description": "Recognized IANA timezone used for date boundaries and daily buckets.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "to",
+        "in": "query",
+        "required": true,
+        "description": "Inclusive end date in the requested timezone. Raw event history is retained for 180 days; expired data is not reconstructed.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "listWebAnalyticsPaymentLinks",
+    "method": "GET",
+    "path": "/v3/web-analytics/payment-links",
+    "summary": "List analytics payment-link scope options",
+    "description": "Lists protected payment-link scope identifiers, owning store IDs, creation times and generic labels. Never returns raw payment-link UUIDs, public capabilities, order/customer data, amounts or payment status. Options cover up to five years of operational history. Uses real keyset pagination, newest first, with at most 25 rows per page. Cursors bind the business, resource, type where applicable, and normalized search. Legacy page, cursor, last_id and anchor_id parameters are unsupported. Requires web_analytics:read. The authenticated credential determines the business; no business_id override is accepted. Reporting and scope-option calls share a 600-request/hour limit per API key or OAuth installation, in addition to the normal burst and hourly limits. Responses contain recorded analytics, which may be lower than actual traffic because of consent choices, self-traffic exclusion, blockers, and unavailable attribution.",
+    "externalDocs": {
+      "url": "https://docs.scalev.dev/docs/web-analytics",
+      "description": "Read the Web Analytics guide."
+    },
+    "tags": [
+      "Web Analytics"
+    ],
+    "scopes": [
+      "web_analytics:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [
+      {
+        "name": "next_cursor",
+        "in": "query",
+        "required": false,
+        "description": "Opaque next-page cursor returned by this endpoint. Mutually exclusive with previous_cursor; repeat the same resource/type and normalized search.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "page_size",
+        "in": "query",
+        "required": false,
+        "description": "Number of scope options per page; numeric values are clamped to 1–25.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 25
+        }
+      },
+      {
+        "name": "previous_cursor",
+        "in": "query",
+        "required": false,
+        "description": "Opaque previous-page cursor returned by this endpoint. Mutually exclusive with next_cursor; repeat the same resource/type and normalized search.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "search",
+        "in": "query",
+        "required": false,
+        "description": "Optional case-insensitive literal substring search, trimmed and whitespace-normalized. At most 200 characters (and 800 input bytes). Repeat it with cursor requests. Payment links search only their generic UTC date/time label, not protected IDs or suffixes.",
+        "schema": {
+          "type": "string",
+          "maxLength": 200
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "getWebAnalyticsSourceRevenue",
+    "method": "GET",
+    "path": "/v3/web-analytics/source-revenue",
+    "summary": "Get visits and revenue by source",
+    "description": "Dates and filters select an originating page-view cohort. Visit attribution is first_touch; checkout attribution and linked paid-order earnings are last_touch, including later payments within retained history. Amounts use payment snapshots with historical current-order fallback, are grouped by currency, and can be unavailable. More than 100,000 linked paid orders returns 400; narrow the date range. Requires web_analytics:read. The authenticated credential determines the business; no business_id override is accepted. Reporting and scope-option calls share a 600-request/hour limit per API key or OAuth installation, in addition to the normal burst and hourly limits. Responses contain recorded analytics, which may be lower than actual traffic because of consent choices, self-traffic exclusion, blockers, and unavailable attribution.",
+    "externalDocs": {
+      "url": "https://docs.scalev.dev/docs/web-analytics",
+      "description": "Read the Web Analytics guide."
+    },
+    "tags": [
+      "Web Analytics"
+    ],
+    "scopes": [
+      "web_analytics:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [
+      {
+        "name": "ad_click",
+        "in": "query",
+        "required": false,
+        "description": "Filter by recorded ad-click evidence or network, independent of UTM labels. organic means no captured click ID, not proof of unpaid acquisition. Unrecognized values are ignored by the server; use one of the documented values.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "paid",
+            "organic",
+            "meta",
+            "google",
+            "tiktok"
+          ]
+        }
+      },
+      {
+        "name": "entity_id",
+        "in": "query",
+        "required": false,
+        "description": "Requires entity_type. Positive numeric owning IDs are sent as text; store_home/cart/checkout/order_detail/order_success/order_invoice use store IDs. For payment_link use the opaque plscope_ identifier from /v3/web-analytics/payment-links. A malformed nonempty ID is an error, not an unfiltered report.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_path",
+        "in": "query",
+        "required": false,
+        "description": "Optional sanitized fallback path for records without a stored entity identity. Requires entity_type (or legacy page_id); use with entity_id. It does not replace the independent page_path filter. Payment-link scope ignores fallback paths.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_type",
+        "in": "query",
+        "required": false,
+        "description": "Optional surface filter. A type alone selects every owner of that surface. Supply entity_id to narrow to one owner; invalid types are errors.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "landing_page",
+            "product",
+            "bundle_price_option",
+            "store_home",
+            "cart",
+            "checkout",
+            "payment_link",
+            "order_detail",
+            "order_success",
+            "order_invoice"
+          ]
+        }
+      },
+      {
+        "name": "from",
+        "in": "query",
+        "required": true,
+        "description": "Inclusive start date in the requested timezone. from must be on or before to; the inclusive range cannot exceed 180 days.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "description": "Maximum ranked rows for reports that return ranked lists. Values above 100 are capped at 100; absent or invalid/non-positive values use 25. This is not cursor pagination and does not cap range totals or the fixed audience-location caps.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      {
+        "name": "page_host",
+        "in": "query",
+        "required": false,
+        "description": "Optional hostname filter. Host, path and entity compose independently; host also restricts the navigation universe for journeys.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "page_id",
+        "in": "query",
+        "required": false,
+        "description": "Legacy alias for entity_type=landing_page and entity_id. Cannot be combined with entity_type or entity_id.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      {
+        "name": "page_path",
+        "in": "query",
+        "required": false,
+        "description": "Optional exact sanitized path filter across hosts. Use / for the homepage. An explicitly empty value does not mean unfiltered. For journeys/funnels this selects the focus while retaining neighbouring pages.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "store_id",
+        "in": "query",
+        "required": false,
+        "description": "Optional store owner filter within the authenticated business. Use /v3/web-analytics/stores to obtain IDs without operational store permissions.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      {
+        "name": "timezone",
+        "in": "query",
+        "required": false,
+        "description": "Recognized IANA timezone used for date boundaries and daily buckets.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "to",
+        "in": "query",
+        "required": true,
+        "description": "Inclusive end date in the requested timezone. Raw event history is retained for 180 days; expired data is not reconstructed.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      {
+        "name": "utm_type",
+        "in": "query",
+        "required": false,
+        "description": "UTM dimension to group by.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "source",
+            "medium",
+            "campaign",
+            "content",
+            "term"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "getWebAnalyticsSources",
+    "method": "GET",
+    "path": "/v3/web-analytics/sources",
+    "summary": "Get traffic sources",
+    "description": "Visit attribution grouped by the selected UTM dimension. Preserve special bucket kinds and null unavailable metrics. Requires web_analytics:read. The authenticated credential determines the business; no business_id override is accepted. Reporting and scope-option calls share a 600-request/hour limit per API key or OAuth installation, in addition to the normal burst and hourly limits. Responses contain recorded analytics, which may be lower than actual traffic because of consent choices, self-traffic exclusion, blockers, and unavailable attribution.",
+    "externalDocs": {
+      "url": "https://docs.scalev.dev/docs/web-analytics",
+      "description": "Read the Web Analytics guide."
+    },
+    "tags": [
+      "Web Analytics"
+    ],
+    "scopes": [
+      "web_analytics:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [
+      {
+        "name": "ad_click",
+        "in": "query",
+        "required": false,
+        "description": "Filter by recorded ad-click evidence or network, independent of UTM labels. organic means no captured click ID, not proof of unpaid acquisition. Unrecognized values are ignored by the server; use one of the documented values.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "paid",
+            "organic",
+            "meta",
+            "google",
+            "tiktok"
+          ]
+        }
+      },
+      {
+        "name": "entity_id",
+        "in": "query",
+        "required": false,
+        "description": "Requires entity_type. Positive numeric owning IDs are sent as text; store_home/cart/checkout/order_detail/order_success/order_invoice use store IDs. For payment_link use the opaque plscope_ identifier from /v3/web-analytics/payment-links. A malformed nonempty ID is an error, not an unfiltered report.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_path",
+        "in": "query",
+        "required": false,
+        "description": "Optional sanitized fallback path for records without a stored entity identity. Requires entity_type (or legacy page_id); use with entity_id. It does not replace the independent page_path filter. Payment-link scope ignores fallback paths.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_type",
+        "in": "query",
+        "required": false,
+        "description": "Optional surface filter. A type alone selects every owner of that surface. Supply entity_id to narrow to one owner; invalid types are errors.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "landing_page",
+            "product",
+            "bundle_price_option",
+            "store_home",
+            "cart",
+            "checkout",
+            "payment_link",
+            "order_detail",
+            "order_success",
+            "order_invoice"
+          ]
+        }
+      },
+      {
+        "name": "from",
+        "in": "query",
+        "required": true,
+        "description": "Inclusive start date in the requested timezone. from must be on or before to; the inclusive range cannot exceed 180 days.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "description": "Maximum ranked rows for reports that return ranked lists. Values above 100 are capped at 100; absent or invalid/non-positive values use 25. This is not cursor pagination and does not cap range totals or the fixed audience-location caps.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      {
+        "name": "page_host",
+        "in": "query",
+        "required": false,
+        "description": "Optional hostname filter. Host, path and entity compose independently; host also restricts the navigation universe for journeys.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "page_id",
+        "in": "query",
+        "required": false,
+        "description": "Legacy alias for entity_type=landing_page and entity_id. Cannot be combined with entity_type or entity_id.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      {
+        "name": "page_path",
+        "in": "query",
+        "required": false,
+        "description": "Optional exact sanitized path filter across hosts. Use / for the homepage. An explicitly empty value does not mean unfiltered. For journeys/funnels this selects the focus while retaining neighbouring pages.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "store_id",
+        "in": "query",
+        "required": false,
+        "description": "Optional store owner filter within the authenticated business. Use /v3/web-analytics/stores to obtain IDs without operational store permissions.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      {
+        "name": "timezone",
+        "in": "query",
+        "required": false,
+        "description": "Recognized IANA timezone used for date boundaries and daily buckets.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "to",
+        "in": "query",
+        "required": true,
+        "description": "Inclusive end date in the requested timezone. Raw event history is retained for 180 days; expired data is not reconstructed.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      {
+        "name": "utm_type",
+        "in": "query",
+        "required": false,
+        "description": "UTM dimension to group by.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "source",
+            "medium",
+            "campaign",
+            "content",
+            "term"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "listWebAnalyticsStores",
+    "method": "GET",
+    "path": "/v3/web-analytics/stores",
+    "summary": "List analytics store scope options",
+    "description": "Lists store IDs and names, including inactive stores, without requiring store:list. Use store identities for store_home, cart, checkout, order_detail, order_success and order_invoice surfaces. Uses real keyset pagination, newest first, with at most 25 rows per page. Cursors bind the business, resource, type where applicable, and normalized search. Legacy page, cursor, last_id and anchor_id parameters are unsupported. Requires web_analytics:read. The authenticated credential determines the business; no business_id override is accepted. Reporting and scope-option calls share a 600-request/hour limit per API key or OAuth installation, in addition to the normal burst and hourly limits. Responses contain recorded analytics, which may be lower than actual traffic because of consent choices, self-traffic exclusion, blockers, and unavailable attribution.",
+    "externalDocs": {
+      "url": "https://docs.scalev.dev/docs/web-analytics",
+      "description": "Read the Web Analytics guide."
+    },
+    "tags": [
+      "Web Analytics"
+    ],
+    "scopes": [
+      "web_analytics:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [
+      {
+        "name": "next_cursor",
+        "in": "query",
+        "required": false,
+        "description": "Opaque next-page cursor returned by this endpoint. Mutually exclusive with previous_cursor; repeat the same resource/type and normalized search.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "page_size",
+        "in": "query",
+        "required": false,
+        "description": "Number of scope options per page; numeric values are clamped to 1–25.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 25
+        }
+      },
+      {
+        "name": "previous_cursor",
+        "in": "query",
+        "required": false,
+        "description": "Opaque previous-page cursor returned by this endpoint. Mutually exclusive with next_cursor; repeat the same resource/type and normalized search.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "search",
+        "in": "query",
+        "required": false,
+        "description": "Optional case-insensitive literal substring search, trimmed and whitespace-normalized. At most 200 characters (and 800 input bytes). Repeat it with cursor requests. Payment links search only their generic UTC date/time label, not protected IDs or suffixes.",
+        "schema": {
+          "type": "string",
+          "maxLength": 200
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "getWebAnalyticsTraffic",
+    "method": "GET",
+    "path": "/v3/web-analytics/traffic",
+    "summary": "Get web traffic over time",
+    "description": "Daily page views, identified visitors and sessions with independent range totals. Daily identity counts are not additive. Requires web_analytics:read. The authenticated credential determines the business; no business_id override is accepted. Reporting and scope-option calls share a 600-request/hour limit per API key or OAuth installation, in addition to the normal burst and hourly limits. Responses contain recorded analytics, which may be lower than actual traffic because of consent choices, self-traffic exclusion, blockers, and unavailable attribution.",
+    "externalDocs": {
+      "url": "https://docs.scalev.dev/docs/web-analytics",
+      "description": "Read the Web Analytics guide."
+    },
+    "tags": [
+      "Web Analytics"
+    ],
+    "scopes": [
+      "web_analytics:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [
+      {
+        "name": "ad_click",
+        "in": "query",
+        "required": false,
+        "description": "Filter by recorded ad-click evidence or network, independent of UTM labels. organic means no captured click ID, not proof of unpaid acquisition. Unrecognized values are ignored by the server; use one of the documented values.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "paid",
+            "organic",
+            "meta",
+            "google",
+            "tiktok"
+          ]
+        }
+      },
+      {
+        "name": "entity_id",
+        "in": "query",
+        "required": false,
+        "description": "Requires entity_type. Positive numeric owning IDs are sent as text; store_home/cart/checkout/order_detail/order_success/order_invoice use store IDs. For payment_link use the opaque plscope_ identifier from /v3/web-analytics/payment-links. A malformed nonempty ID is an error, not an unfiltered report.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_path",
+        "in": "query",
+        "required": false,
+        "description": "Optional sanitized fallback path for records without a stored entity identity. Requires entity_type (or legacy page_id); use with entity_id. It does not replace the independent page_path filter. Payment-link scope ignores fallback paths.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "entity_type",
+        "in": "query",
+        "required": false,
+        "description": "Optional surface filter. A type alone selects every owner of that surface. Supply entity_id to narrow to one owner; invalid types are errors.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "landing_page",
+            "product",
+            "bundle_price_option",
+            "store_home",
+            "cart",
+            "checkout",
+            "payment_link",
+            "order_detail",
+            "order_success",
+            "order_invoice"
+          ]
+        }
+      },
+      {
+        "name": "from",
+        "in": "query",
+        "required": true,
+        "description": "Inclusive start date in the requested timezone. from must be on or before to; the inclusive range cannot exceed 180 days.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "description": "Maximum ranked rows for reports that return ranked lists. Values above 100 are capped at 100; absent or invalid/non-positive values use 25. This is not cursor pagination and does not cap range totals or the fixed audience-location caps.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      {
+        "name": "page_host",
+        "in": "query",
+        "required": false,
+        "description": "Optional hostname filter. Host, path and entity compose independently; host also restricts the navigation universe for journeys.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "page_id",
+        "in": "query",
+        "required": false,
+        "description": "Legacy alias for entity_type=landing_page and entity_id. Cannot be combined with entity_type or entity_id.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      {
+        "name": "page_path",
+        "in": "query",
+        "required": false,
+        "description": "Optional exact sanitized path filter across hosts. Use / for the homepage. An explicitly empty value does not mean unfiltered. For journeys/funnels this selects the focus while retaining neighbouring pages.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "store_id",
+        "in": "query",
+        "required": false,
+        "description": "Optional store owner filter within the authenticated business. Use /v3/web-analytics/stores to obtain IDs without operational store permissions.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      {
+        "name": "timezone",
+        "in": "query",
+        "required": false,
+        "description": "Recognized IANA timezone used for date boundaries and daily buckets.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "to",
+        "in": "query",
+        "required": true,
+        "description": "Inclusive end date in the requested timezone. Raw event history is retained for 180 days; expired data is not reconstructed.",
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    ]
   },
   {
     "operationId": "listWhatsappIntegrations",

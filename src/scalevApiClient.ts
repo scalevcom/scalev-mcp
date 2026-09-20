@@ -63,6 +63,10 @@ export function scalevApiBusinessUrl(env: Pick<Env, "SCALEV_API_BASE_URL">, path
     throw new Error(`Storefront public and customer routes are not business-authenticated v3 routes: ${pathname}`);
   }
 
+  if (pathname === "/v3/web-analytics/self-traffic" || pathname.startsWith("/v3/public/")) {
+    throw new Error(`Dashboard self-traffic and public browser routes are not exposed through MCP: ${pathname}`);
+  }
+
   return url;
 }
 

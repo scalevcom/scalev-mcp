@@ -9,13 +9,32 @@ const BLOCKED_PATH_PATTERNS = [
   /^\/v3\/stores\/\{[^}]+\}\/(?:public|customers)(?:\/|$)/u,
   /^\/v3\/orders\/\{[^}]+\}\/(?:check-payment|check-settlement|payment)$/u,
   /^\/v3\/orders\/pg-reference-id(?:s|\/|$)/u,
-  /^\/v3\/stores\/\{[^}]+\}\/payment-(?:accounts|methods)$/u
+  /^\/v3\/stores\/\{[^}]+\}\/payment-(?:accounts|methods)$/u,
+  /^\/v3\/web-analytics\/self-traffic$/u,
+  /^\/v3\/public\//u
 ];
 
 const FINANCIAL_TEXT_PATTERN =
   /refund|withdraw|billing|payout|transfer|payment|charge|balance|settlement|reservation|wallet|invoice|bank|financial/iu;
 
 const FINANCIAL_TEXT_ALLOWLIST = new Set(["searchCourierServices"]);
+const WEB_ANALYTICS_REPORTS = new Map([
+  ["listWebAnalyticsEntities", "entities"],
+  ["listWebAnalyticsStores", "stores"],
+  ["listWebAnalyticsPaymentLinks", "payment-links"],
+  ["getWebAnalyticsTraffic", "traffic"],
+  ["getWebAnalyticsPages", "pages"],
+  ["getWebAnalyticsSources", "sources"],
+  ["getWebAnalyticsAudience", "audience"],
+  ["getWebAnalyticsConversion", "conversion"],
+  ["getWebAnalyticsJourney", "journey"],
+  ["getWebAnalyticsEntityJourney", "entity-journey"],
+  ["getWebAnalyticsEntityFunnel", "entity-funnel"],
+  ["getWebAnalyticsSourceRevenue", "source-revenue"],
+  ["getWebAnalyticsAdClicks", "ad-clicks"],
+  ["getWebAnalyticsOrderFunnel", "order-funnel"],
+  ["getWebAnalyticsEngagement", "engagement"]
+]);
 
 const endpoints = readGeneratedEndpoints();
 const errors = [];
@@ -45,10 +64,21 @@ for (const endpoint of endpoints) {
     endpoint.scopes.length === 1 &&
     endpoint.scopes[0] === "discount_code:update";
 
+  // Reports can mention payments and revenue, but never initiate a financial action.
+  // Verify the complete identity and scope instead of exempting a whole tag or path prefix.
+  const isWebAnalyticsReport =
+    WEB_ANALYTICS_REPORTS.has(endpoint.operationId) &&
+    endpoint.method === "GET" &&
+    endpoint.path === `/v3/web-analytics/${WEB_ANALYTICS_REPORTS.get(endpoint.operationId)}` &&
+    Array.isArray(endpoint.scopes) &&
+    endpoint.scopes.length === 1 &&
+    endpoint.scopes[0] === "web_analytics:read";
+
   if (
     FINANCIAL_TEXT_PATTERN.test(searchableText) &&
     !FINANCIAL_TEXT_ALLOWLIST.has(endpoint.operationId) &&
-    !isDiscountEligibilityUpdate
+    !isDiscountEligibilityUpdate &&
+    !isWebAnalyticsReport
   ) {
     errors.push(`${endpoint.operationId} matches financial-risk text at ${endpoint.method} ${endpoint.path}`);
   }

@@ -84,6 +84,8 @@ function isAllowedPath(openApiPath) {
   if (openApiPath.startsWith("/v3/oauth/billing/")) return false;
   if (openApiPath.startsWith("/v3/developer/oauth-billing/")) return false;
   if (isPaymentSurfacePath(openApiPath)) return false;
+  if (openApiPath === "/v3/web-analytics/self-traffic") return false;
+  if (openApiPath.startsWith("/v3/public/")) return false;
   if (/^\/v3\/stores\/\{[^}]+\}\/(?:public|customers)(?:\/|$)/.test(openApiPath)) return false;
   return true;
 }
