@@ -2,10 +2,10 @@
 
 Generated from `src/generated/v3Catalog.ts`.
 
-- Source OpenAPI SHA-256: `e21b772072f966f5848c2bac4e197dec86b487bf153ff7d1d202b42fb5863710`
-- Total catalog endpoints: 243
-- Read-only GET endpoints: 104
-- Non-destructive write/action endpoints: 105
+- Source OpenAPI SHA-256: `b2fc0e49c2e893a2aa83a584203d963ad803ff47b873e8485dfccc32934e1511`
+- Total catalog endpoints: 260
+- Read-only GET endpoints: 120
+- Non-destructive write/action endpoints: 106
 - Destructive write/action endpoints: 34
 
 ## Submission Posture
@@ -15,6 +15,7 @@ Generated from `src/generated/v3Catalog.ts`.
 - `search` returns `execution_tool`, so write calls are split between `execute_safe` and `execute_destructive`.
 - Destructive operations require the destructive tool annotation and are rejected by `execute_safe`.
 - OAuth flow, storefront browser, OAuth billing, developer payout, and direct payment-gateway routes are excluded by generation and runtime checks.
+- Web Analytics reporting uses `get` with `web_analytics:read`; customer privacy settings use `get` or `execute_safe` with the corresponding business scope. Dashboard self-traffic and public browser collection routes are excluded.
 - Scalev API remains the authority for OAuth token validation, selected-business authorization, scopes, audit logs, and rate limits.
 
 ## Write Endpoints By Tag
@@ -35,6 +36,7 @@ Generated from `src/generated/v3Catalog.ts`.
 | Discounts | 3 |
 | Shipping | 3 |
 | Checkout Intents | 1 |
+| Customer Privacy | 1 |
 
 ## Destructive Endpoints
 

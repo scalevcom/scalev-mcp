@@ -25,6 +25,20 @@ describe("scalevApiUrl", () => {
     ).toThrow(/must use \/v3/);
   });
 
+  it.each([
+    "/v3/web-analytics/self-traffic",
+    "/v3/public/e",
+    "/v3/public/privacy/choice",
+    "/v3/public/self-traffic"
+  ])("rejects dashboard and public browser analytics paths before network access: %s", async (path) => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+    expect(() => scalevApiBusinessUrl(env, path)).toThrow(/not exposed through MCP/);
+    await expect(scalevApiBusinessRequest(env, { token: "test-token" }, { method: "POST", path }))
+      .rejects.toThrow(/not exposed through MCP/);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
   it("rejects base URLs that smuggle /v2", () => {
     expect(() =>
       scalevApiUrl({ SCALEV_API_BASE_URL: "https://api.scalev.test/v2" }, "/v3/oauth/introspect")

@@ -66,6 +66,7 @@ function renderReport(sourceHash, endpoints) {
     "- `search` returns `execution_tool`, so write calls are split between `execute_safe` and `execute_destructive`.",
     "- Destructive operations require the destructive tool annotation and are rejected by `execute_safe`.",
     "- OAuth flow, storefront browser, OAuth billing, developer payout, and direct payment-gateway routes are excluded by generation and runtime checks.",
+    "- Web Analytics reporting uses `get` with `web_analytics:read`; customer privacy settings use `get` or `execute_safe` with the corresponding business scope. Dashboard self-traffic and public browser collection routes are excluded.",
     "- Scalev API remains the authority for OAuth token validation, selected-business authorization, scopes, audit logs, and rate limits.",
     "",
     "## Write Endpoints By Tag",

@@ -24,6 +24,24 @@ const env: Env = {
   MCP_RESOURCE_URI: "https://mcp.scalev.test/mcp"
 };
 
+const webAnalyticsOperations = [
+  ["listWebAnalyticsEntities", "entities"],
+  ["listWebAnalyticsStores", "stores"],
+  ["listWebAnalyticsPaymentLinks", "payment-links"],
+  ["getWebAnalyticsTraffic", "traffic"],
+  ["getWebAnalyticsPages", "pages"],
+  ["getWebAnalyticsSources", "sources"],
+  ["getWebAnalyticsAudience", "audience"],
+  ["getWebAnalyticsConversion", "conversion"],
+  ["getWebAnalyticsJourney", "journey"],
+  ["getWebAnalyticsEntityJourney", "entity-journey"],
+  ["getWebAnalyticsEntityFunnel", "entity-funnel"],
+  ["getWebAnalyticsSourceRevenue", "source-revenue"],
+  ["getWebAnalyticsAdClicks", "ad-clicks"],
+  ["getWebAnalyticsOrderFunnel", "order-funnel"],
+  ["getWebAnalyticsEngagement", "engagement"]
+] as const;
+
 describe("Scalev MCP tools", () => {
   it("exposes the expected MCP tools", () => {
     expect([...SCALEV_TOOL_NAMES]).toEqual([
@@ -110,6 +128,136 @@ describe("Scalev MCP tools", () => {
 
   it("generates a broad business-authenticated v3 endpoint catalog", () => {
     expect(catalogEndpointCount()).toBeGreaterThan(200);
+  });
+
+  it("discovers all Web Analytics reports with read scope and bundled guide links", () => {
+    const result = searchEndpoints({ scope: "web_analytics:read", limit: 50 });
+    expect(result.total_matches).toBe(15);
+    expect(result.data.map((endpoint) => endpoint.operation_id).sort()).toEqual(
+      webAnalyticsOperations.map(([operation]) => operation).sort()
+    );
+
+    for (const endpoint of result.data) {
+      expect(endpoint).toMatchObject({
+        method: "GET", execution_tool: "get", read_only: true, is_destructive: false,
+        scopes: ["web_analytics:read"]
+      });
+      expect(endpoint.docs_url).toMatch(/^https:\/\/docs\.scalev\.dev\/docs\/web-analytics/);
+      expect(getDocs({ topic: endpoint.docs_topic }).data[0].url).toBe(endpoint.docs_url);
+    }
+
+    const traffic = result.data.find((endpoint) => endpoint.operation_id === "getWebAnalyticsTraffic")!;
+    expect(traffic.query_params.filter((param) => param.required).map((param) => param.name)).toEqual(["from", "to"]);
+    expect(traffic.query_params.map((param) => param.name)).toEqual(expect.arrayContaining([
+      "timezone", "page_host", "page_path", "entity_type", "entity_id", "entity_path", "store_id", "ad_click"
+    ]));
+    expect(() => buildGetRequest({ operation_id: "getWebAnalyticsTraffic", query: { from: "2026-09-01" } }))
+      .toThrow(/Missing required query parameter.*to/);
+    expect(() => buildGetRequest({ operation_id: "listWebAnalyticsEntities" }))
+      .toThrow(/Missing required query parameter.*entity_type/);
+    expect(buildGetRequest({
+      operation_id: "listWebAnalyticsEntities", business_unique_id: "BIZ123",
+      query: { entity_type: "landing_page", search: "Fall sale", page_size: 10, next_cursor: "opaque+/=" }
+    }).request).toEqual({
+      method: "GET", businessUniqueId: "BIZ123",
+      path: "/v3/web-analytics/entities?entity_type=landing_page&search=Fall+sale&page_size=10&next_cursor=opaque%2B%2F%3D"
+    });
+  });
+
+  it("discovers revision-guarded customer privacy reads and updates", () => {
+    const operations = searchEndpoints({ query: "customer privacy", limit: 50 }).data;
+    const read = operations.find((endpoint) => endpoint.operation_id === "getCustomerPrivacySettings");
+    const update = operations.find((endpoint) => endpoint.operation_id === "updateCustomerPrivacySettings");
+    expect(read).toMatchObject({ method: "GET", execution_tool: "get", scopes: ["business:read"] });
+    expect(update).toMatchObject({
+      method: "PATCH", execution_tool: "execute_safe", scopes: ["business:update"],
+      docs_topic: "customer_privacy_settings",
+      request_body: {
+        required: true,
+        requiredFields: ["analytics_consent_countries", "marketing_consent_countries", "revision"]
+      }
+    });
+    expect(getDocs({ topic: "customer_privacy_settings" }).data[0].content).toContain("revision");
+    const body = { revision: 3, analytics_consent_countries: ["ID", "AU"], marketing_consent_countries: ["AU"] };
+    expect(buildExecuteSafeRequest({
+      operation_id: "updateCustomerPrivacySettings", business_unique_id: "BIZ123", body
+    }).request).toEqual({ method: "PATCH", path: "/v3/customer-privacy", businessUniqueId: "BIZ123", body });
+  });
+
+  it("dispatches every analytics report through get without changing business scope or response envelopes", async () => {
+    const response = { buckets: [], totals: { views: 0, visitors: 0, sessions: 0 }, from: "2026-09-01", to: "2026-09-20", timezone: "Asia/Jakarta" };
+    const fetchMock = vi.fn(async () => new Response(JSON.stringify(response)));
+    const consoleLog = vi.spyOn(console, "log").mockImplementation(() => undefined);
+    vi.stubGlobal("fetch", fetchMock);
+    try {
+      const server = createScalevMcpServer(env) as unknown as {
+        _registeredTools: Record<string, { handler: (input: Record<string, unknown>) => Promise<{
+          structuredContent?: { operation_id?: string; response?: unknown }; isError?: boolean;
+        }> }>;
+      };
+      for (const [operation, path] of webAnalyticsOperations) {
+        fetchMock.mockClear();
+        const query = operation.startsWith("list")
+          ? { ...(path === "entities" ? { entity_type: "landing_page" } : {}), page_size: 10 }
+          : { from: "2026-09-01", to: "2026-09-20", timezone: "Asia/Jakarta", page_host: "shop.example", page_path: "", entity_type: "landing_page", entity_id: "123" };
+        const result = await server._registeredTools.get.handler({ operation_id: operation, business_unique_id: "BIZ123", query });
+        expect(result.isError, operation).not.toBe(true);
+        expect(result.structuredContent?.response, operation).toEqual(response);
+        expect(result.structuredContent?.operation_id).toBe(operation);
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+        const [url, init] = fetchMock.mock.calls[0] as unknown as [URL, RequestInit];
+        expect(url.pathname).toBe(`/v3/web-analytics/${path}`);
+        expect(Object.fromEntries(url.searchParams)).toEqual({
+          ...Object.fromEntries(Object.entries(query).map(([key, value]) => [key, String(value)])), b_uid: "BIZ123"
+        });
+        expect(init).toMatchObject({ method: "GET", headers: { authorization: "Bearer test-token" } });
+        expect(init.body).toBeUndefined();
+      }
+    } finally {
+      consoleLog.mockRestore();
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it("forwards customer privacy revisions and country lists and leaves conflicts for the caller to reconcile", async () => {
+    const settings = { revision: 3, analytics_consent_countries: ["ID", "AU"], marketing_consent_countries: ["AU"] };
+    const fetchMock = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => new Response(JSON.stringify(settings)));
+    const consoleLog = vi.spyOn(console, "log").mockImplementation(() => undefined);
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    vi.stubGlobal("fetch", fetchMock);
+    try {
+      const server = createScalevMcpServer(env) as unknown as {
+        _registeredTools: Record<string, { handler: (input: Record<string, unknown>) => Promise<{
+          structuredContent?: { response?: unknown }; isError?: boolean; content?: { text?: string }[];
+        }> }>;
+      };
+      const read = await server._registeredTools.get.handler({
+        operation_id: "getCustomerPrivacySettings", business_unique_id: "BIZ123"
+      });
+      expect(read.structuredContent?.response).toEqual(settings);
+      expect(String(fetchMock.mock.calls[0]?.[0])).toBe("https://api.scalev.test/v3/customer-privacy?b_uid=BIZ123");
+
+      fetchMock.mockClear();
+      const update = await server._registeredTools.execute_safe.handler({
+        operation_id: "updateCustomerPrivacySettings", business_unique_id: "BIZ123", body: settings
+      });
+      expect(update.isError).not.toBe(true);
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      const [url, init] = fetchMock.mock.calls[0] as unknown as [URL, RequestInit];
+      expect(String(url)).toBe("https://api.scalev.test/v3/customer-privacy?b_uid=BIZ123");
+      expect(init).toMatchObject({ method: "PATCH", body: JSON.stringify(settings) });
+
+      fetchMock.mockClear();
+      fetchMock.mockImplementationOnce(async () => new Response(JSON.stringify({ error_code: "customer_privacy_conflict" }), { status: 409 }));
+      await expect(server._registeredTools.execute_safe.handler({
+        operation_id: "updateCustomerPrivacySettings", business_unique_id: "BIZ123", body: settings
+      })).rejects.toMatchObject({ status: 409, errorCode: "customer_privacy_conflict" });
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+    } finally {
+      consoleLog.mockRestore();
+      consoleError.mockRestore();
+      vi.unstubAllGlobals();
+    }
   });
 
   it("searches business v3 endpoints by keyword, tag, method, and scope", () => {
@@ -250,6 +398,11 @@ describe("Scalev MCP tools", () => {
     expect(paths).not.toContain("/v3/me/connected_businesses");
     expect(paths).not.toContain("/v3/stores/{store_id}/public/items");
     expect(paths).not.toContain("/v3/stores/{store_id}/customers/me");
+    for (const path of ["/v3/web-analytics/self-traffic", "/v3/public/e", "/v3/public/privacy/choice", "/v3/public/self-traffic"]) {
+      expect(paths).not.toContain(path);
+      expect(() => buildGetRequest({ path })).toThrow(/No get-compatible/);
+      expect(() => buildExecuteSafeRequest({ path })).toThrow(/No execute_safe-compatible/);
+    }
   });
 
   it("keeps OAuth billing and developer payout routes out of search", () => {
