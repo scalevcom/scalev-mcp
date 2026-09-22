@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "b2fc0e49c2e893a2aa83a584203d963ad803ff47b873e8485dfccc32934e1511";
+export const V3_CATALOG_SOURCE_SHA256 = "1145cf2eb1d74c8d931d1a154309b6d9e82c841bca71bea1e67f6a3daa6f24ec";
 
 export const V3_ENDPOINTS = [
   {
@@ -6238,7 +6238,7 @@ export const V3_ENDPOINTS = [
     "method": "POST",
     "path": "/v3/products",
     "summary": "Create a product",
-    "description": "Requires the `product:create` scope. Creates a new product with the provided data.",
+    "description": "Requires the `product:create` scope. Creates a new product with the provided data. Active variants must have unique combinations of configured option values; surrounding whitespace is ignored and unused option dimensions do not distinguish variants. Price, SKU, and weight do not make a combination unique.",
     "tags": [
       "Business Products"
     ],
@@ -6405,7 +6405,7 @@ export const V3_ENDPOINTS = [
     "method": "POST",
     "path": "/v3/products/{id}/duplicate",
     "summary": "Duplicate a business product",
-    "description": "Requires the `product:create` scope. Creates a copy of an existing product including all variants, digital files, course structure (for courses), labels, follow-up chats, and email automation settings. The new product name will be suffixed with '(Copy)'. Partnership settings and store associations are NOT copied.",
+    "description": "Requires the `product:create` scope. Creates a copy of an existing product including all variants, digital files, course structure (for courses), labels, follow-up chats, and email automation settings. The new product name will be suffixed with '(Copy)'. Partnership settings and store associations are NOT copied. Returns 400 if active variants have duplicate configured option combinations; the operation is atomic and does not create a partial copy.",
     "tags": [
       "Business Products"
     ],
@@ -7344,7 +7344,7 @@ export const V3_ENDPOINTS = [
     "method": "POST",
     "path": "/v3/products/{product_id}/variants",
     "summary": "Create one product variant",
-    "description": "Requires the `product:update` scope. Creates a single variant for an existing product. The request must provide values for all configured product option dimensions.",
+    "description": "Requires the `product:update` scope. Creates a single variant for an existing product. The request must provide values for all configured product option dimensions. The new variant must not duplicate an existing active option combination, ignoring surrounding whitespace and unused dimensions.",
     "tags": [
       "Business Products"
     ],
@@ -7384,7 +7384,7 @@ export const V3_ENDPOINTS = [
     "method": "PATCH",
     "path": "/v3/products/{product_id}/variants/bulk",
     "summary": "Bulk update active variant prices or physical weights",
-    "description": "Requires the `product:update` scope. Updates the price of every active variant on the product, or the weight of every active variant when the product is physical. This endpoint only accepts the `price` field for all product types and the `weight` field for physical products. It does not create, delete, hide, or update option values on variants.",
+    "description": "Requires the `product:update` scope. Updates the price of every active variant on the product, or the weight of every active variant when the product is physical. This endpoint only accepts the `price` field for all product types and the `weight` field for physical products. It does not create, delete, hide, or update option values on variants. Existing duplicate option combinations do not block price or weight edits; all pricing and business validations still apply.",
     "tags": [
       "Business Products"
     ],
@@ -9360,7 +9360,7 @@ export const V3_ENDPOINTS = [
     "method": "PATCH",
     "path": "/v3/variants/{id}",
     "summary": "Update one product variant",
-    "description": "Requires the `product:update` scope. Updates a single variant. Product update does not accept bulk variant changes.",
+    "description": "Requires the `product:update` scope. Updates a single variant. Product update does not accept bulk variant changes. Legacy duplicate combinations may be edited without changing their option identity or repaired one variant at a time. An update must not introduce or add a variant to a duplicate option combination.",
     "tags": [
       "Business Products"
     ],
