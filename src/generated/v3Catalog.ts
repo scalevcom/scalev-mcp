@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "2f88028979d35cba5f0088077b9ffaeb04c1e817e33b1d634229adaece5cbba2";
+export const V3_CATALOG_SOURCE_SHA256 = "42d493b62954b2b587274ea0dfddb0a7003c9490e61927b9421cb618f552027c";
 
 export const V3_ENDPOINTS = [
   {
@@ -5331,7 +5331,7 @@ export const V3_ENDPOINTS = [
     "method": "POST",
     "path": "/v3/pages",
     "summary": "Create a landing page",
-    "description": "Creates a business-scoped landing page using the same page creation behavior as Landing Page Studio. The request body below documents the HTML Mode payload. To create and publish an HTML Mode page in one call, include `is_published: true` with `page_display`. If `is_published` is omitted or false, the nested `page_display` is saved as an unpublished draft and is not returned as the page's current display; create or pick a page display, then call `PATCH /v3/pages/{id}` with `is_published: true` and `current_page_display_id` to publish it.",
+    "description": "Creates a business-scoped landing page using the same page creation behavior as Landing Page Studio. The request body below documents the HTML Mode payload. To create and publish an HTML Mode page in one call, include `is_published: true` with `page_display`. If `is_published` is omitted or false, the nested `page_display` is saved as an unpublished draft and is not returned as the page's current display; create or pick a page display, then call `PATCH /v3/pages/{id}` with `is_published: true` and `current_page_display_id` to publish it. A saved checkout form initializes an unbound page's `store_id` from `page_display.form_display.store_id`, including unpublished drafts. The store must belong to the same business.",
     "externalDocs": {
       "url": "https://docs.scalev.dev/docs/landing-pages-api",
       "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
@@ -5413,7 +5413,7 @@ export const V3_ENDPOINTS = [
     "method": "PATCH",
     "path": "/v3/pages/{id}",
     "summary": "Update a landing page",
-    "description": "Updates business-scoped landing page metadata and publishing state using the same page update behavior as Landing Page Studio. Send `is_published: true` with `current_page_display_id` to publish a page display, or `is_published: false` with `current_page_display_id: null` to unpublish the page.",
+    "description": "Updates business-scoped landing page metadata and publishing state using the same page update behavior as Landing Page Studio. Send `is_published: true` with `current_page_display_id` to publish a page display, or `is_published: false` with `current_page_display_id: null` to unpublish the page. Once assigned, the page's `store_id` cannot be changed or cleared, including by unpublishing or selecting a display without a checkout form.",
     "externalDocs": {
       "url": "https://docs.scalev.dev/docs/landing-pages-api",
       "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
@@ -5656,7 +5656,7 @@ export const V3_ENDPOINTS = [
     "method": "POST",
     "path": "/v3/pages/{page_id}/page-displays",
     "summary": "Create a landing page display",
-    "description": "Creates a new display for an existing landing page. The request body below documents the HTML Mode page display payload.",
+    "description": "Creates a new display for an existing landing page. The request body below documents the HTML Mode page display payload. Saving the first checkout form initializes an unbound page's `store_id` from `form_display.store_id` immediately, before publication. The store must belong to the same business. An existing page store association is retained and cannot be changed or cleared by later display saves.",
     "externalDocs": {
       "url": "https://docs.scalev.dev/docs/landing-pages-api",
       "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
