@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "46037336478fb51e5629cce3bfe0b8b1e843dd635355dfbd7761438cd2dfad13";
+export const V3_CATALOG_SOURCE_SHA256 = "086e5137aed508b12f93d985e63f69648d6698cea5cce14390d2546e4a4e8fee";
 
 export const V3_ENDPOINTS = [
   {
@@ -5688,23 +5688,12 @@ export const V3_ENDPOINTS = [
     "queryParams": [],
     "requestBody": {
       "required": true,
-      "description": "Landing page display data to create. HTML Mode payload is documented here.",
+      "description": "A new version for an existing landing page. Omitted HTML source, metadata, CSP policy and checkout configuration retain the preceding version's values. A supplied legacy code snapshot is converted on content save.",
       "contentTypes": [
         "application/json"
       ],
-      "schemaRef": "LandingPageDisplayRequest",
-      "requiredFields": [
-        "fb_events_onload_parameters",
-        "kwai_client_events_onload_parameters",
-        "kwai_server_events_onload_parameters",
-        "meta",
-        "onload_fb_events",
-        "onload_kwai_client_events",
-        "onload_kwai_server_events",
-        "onload_tiktok_events",
-        "render_mode",
-        "tiktok_events_onload_parameters"
-      ],
+      "schemaRef": "LandingPageDisplayVersionRequest",
+      "requiredFields": [],
       "properties": [
         "additional_head_code",
         "csp_policy",
@@ -5713,6 +5702,7 @@ export const V3_ENDPOINTS = [
         "fb_pixel_ids",
         "form_display",
         "html_code",
+        "html_document",
         "js_code",
         "kwai_client_events_onload_parameters",
         "kwai_client_pixel_ids",
@@ -5856,23 +5846,12 @@ export const V3_ENDPOINTS = [
     "queryParams": [],
     "requestBody": {
       "required": true,
-      "description": "Landing page display data to create. HTML Mode payload is documented here.",
+      "description": "A new version for an existing landing page. Omitted HTML source, metadata, CSP policy and checkout configuration retain the preceding version's values. A supplied legacy code snapshot is converted on content save.",
       "contentTypes": [
         "application/json"
       ],
-      "schemaRef": "LandingPageDisplayRequest",
-      "requiredFields": [
-        "fb_events_onload_parameters",
-        "kwai_client_events_onload_parameters",
-        "kwai_server_events_onload_parameters",
-        "meta",
-        "onload_fb_events",
-        "onload_kwai_client_events",
-        "onload_kwai_server_events",
-        "onload_tiktok_events",
-        "render_mode",
-        "tiktok_events_onload_parameters"
-      ],
+      "schemaRef": "LandingPageDisplayVersionRequest",
+      "requiredFields": [],
       "properties": [
         "additional_head_code",
         "csp_policy",
@@ -5881,6 +5860,7 @@ export const V3_ENDPOINTS = [
         "fb_pixel_ids",
         "form_display",
         "html_code",
+        "html_document",
         "js_code",
         "kwai_client_events_onload_parameters",
         "kwai_client_pixel_ids",
