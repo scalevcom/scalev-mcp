@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "0342d04d8c4ce29a25288e59257bf5f7b2e1faae2f2c4551425ac8218d126efe";
+export const V3_CATALOG_SOURCE_SHA256 = "b500fdf88f959aadc7bd5e47458ce30e79dd34d15706e1e29eacd1f30c2d86b0";
 
 export const V3_ENDPOINTS = [
   {
@@ -2756,6 +2756,301 @@ export const V3_ENDPOINTS = [
         }
       }
     ]
+  },
+  {
+    "operationId": "listGoogleAdsDestinations",
+    "method": "GET",
+    "path": "/v3/google-ads/destinations",
+    "summary": "List Google Ads destinations",
+    "description": "Requires the `google_ads:list` scope.",
+    "tags": [
+      "Analytics Setup"
+    ],
+    "scopes": [
+      "google_ads:list"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": []
+  },
+  {
+    "operationId": "createGoogleAdsDestination",
+    "method": "POST",
+    "path": "/v3/google-ads/destinations",
+    "summary": "Create a Google Ads destination",
+    "description": "Requires the `google_ads:create` scope. An existing business-owned Google connection is required. The selected enabled website Purchase conversion is verified with Google. OAuth connection and account discovery are dashboard-only.",
+    "tags": [
+      "Analytics Setup"
+    ],
+    "scopes": [
+      "google_ads:create"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [],
+    "requestBody": {
+      "required": true,
+      "contentTypes": [
+        "application/json"
+      ],
+      "schemaRef": "GoogleAdsDestinationCreate",
+      "requiredFields": [
+        "connection_id",
+        "conversion_action_id",
+        "customer_id",
+        "name"
+      ],
+      "properties": [
+        "connection_id",
+        "conversion_action_id",
+        "customer_id",
+        "login_customer_id",
+        "name"
+      ]
+    }
+  },
+  {
+    "operationId": "getGoogleAdsDestination",
+    "method": "GET",
+    "path": "/v3/google-ads/destinations/{id}",
+    "summary": "Get a Google Ads destination",
+    "description": "Requires the `google_ads:read` scope.",
+    "tags": [
+      "Analytics Setup"
+    ],
+    "scopes": [
+      "google_ads:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Scalev Google Ads destination ID.",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    ],
+    "queryParams": []
+  },
+  {
+    "operationId": "updateGoogleAdsDestination",
+    "method": "PATCH",
+    "path": "/v3/google-ads/destinations/{id}",
+    "summary": "Update a Google Ads destination",
+    "description": "Requires the `google_ads:update` scope. Only name and enabled may change. Account and conversion identity are immutable.",
+    "tags": [
+      "Analytics Setup"
+    ],
+    "scopes": [
+      "google_ads:update"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Scalev Google Ads destination ID.",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    ],
+    "queryParams": [],
+    "requestBody": {
+      "required": true,
+      "contentTypes": [
+        "application/json"
+      ],
+      "requiredFields": [],
+      "properties": [
+        "enabled",
+        "name"
+      ]
+    }
+  },
+  {
+    "operationId": "disableGoogleAdsDestination",
+    "method": "DELETE",
+    "path": "/v3/google-ads/destinations/{id}",
+    "summary": "Disable a Google Ads destination",
+    "description": "Requires the `google_ads:delete` scope. Disables delivery and the managed browser tag; keeps historical diagnostics.",
+    "tags": [
+      "Analytics Setup"
+    ],
+    "scopes": [
+      "google_ads:delete"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": true,
+    "pathParams": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Scalev Google Ads destination ID.",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    ],
+    "queryParams": []
+  },
+  {
+    "operationId": "getGoogleAdsPurchaseDeliveries",
+    "method": "GET",
+    "path": "/v3/google-ads/destinations/{id}/deliveries",
+    "summary": "Read Google Ads ingestion diagnostics for an order",
+    "description": "Requires the `google_ads:read` scope. Order must belong to the current business. Submitted means Google accepted a request for processing. Success and partial_success are batch ingestion results, not attribution evidence.",
+    "tags": [
+      "Analytics Setup"
+    ],
+    "scopes": [
+      "google_ads:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Scalev Google Ads destination ID.",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    ],
+    "queryParams": [
+      {
+        "name": "order_id",
+        "in": "query",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "retryGoogleAdsPurchase",
+    "method": "POST",
+    "path": "/v3/google-ads/destinations/{id}/retry",
+    "summary": "Retry a failed Google Ads purchase",
+    "description": "Requires the `google_ads:update` scope. Queues an existing failed, reconnect_required, or partial_success obligation with its original payload and transaction ID. Does not backfill orders or change trigger eligibility.",
+    "tags": [
+      "Analytics Setup"
+    ],
+    "scopes": [
+      "google_ads:update"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Scalev Google Ads destination ID.",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    ],
+    "queryParams": [],
+    "requestBody": {
+      "required": true,
+      "contentTypes": [
+        "application/json"
+      ],
+      "requiredFields": [
+        "order_id"
+      ],
+      "properties": [
+        "order_id"
+      ]
+    }
+  },
+  {
+    "operationId": "validateGoogleAdsDestination",
+    "method": "POST",
+    "path": "/v3/google-ads/destinations/{id}/validate",
+    "summary": "Validate Google Ads integration",
+    "description": "Requires the `google_ads:update` scope. Sends a synthetic request using Google Data Manager validateOnly. Records no conversion, changes no delivery state, and does not prove attribution.",
+    "tags": [
+      "Analytics Setup"
+    ],
+    "scopes": [
+      "google_ads:update"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Scalev Google Ads destination ID.",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    ],
+    "queryParams": []
   },
   {
     "operationId": "listGtmContainers",
@@ -5701,6 +5996,7 @@ export const V3_ENDPOINTS = [
         "fb_events_onload_parameters",
         "fb_pixel_ids",
         "form_display",
+        "google_ads_destination_ids",
         "html_code",
         "html_document",
         "js_code",
@@ -5859,6 +6155,7 @@ export const V3_ENDPOINTS = [
         "fb_events_onload_parameters",
         "fb_pixel_ids",
         "form_display",
+        "google_ads_destination_ids",
         "html_code",
         "html_document",
         "js_code",
