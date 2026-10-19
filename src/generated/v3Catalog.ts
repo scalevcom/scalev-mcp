@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "d6a86948d08a36e753971d395370d8d4770defd7fcd1c1391ddf5d87b6535e52";
+export const V3_CATALOG_SOURCE_SHA256 = "9907e5dd38bbdef8db92ca30aaf6216a5c1e3819226f7f9b719f4312738d2aec";
 
 export const V3_ENDPOINTS = [
   {
@@ -51,6 +51,18 @@ export const V3_ENDPOINTS = [
         "description": "Opaque cursor for the next page.",
         "schema": {
           "type": "string"
+        }
+      },
+      {
+        "name": "owner_filter",
+        "in": "query",
+        "required": false,
+        "description": "Set to self to include only bundles owned by the authenticated business, excluding shared bundles before pagination.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "self"
+          ]
         }
       },
       {
@@ -8363,6 +8375,18 @@ export const V3_ENDPOINTS = [
         "description": "Opaque cursor for the next page.",
         "schema": {
           "type": "string"
+        }
+      },
+      {
+        "name": "owner_filter",
+        "in": "query",
+        "required": false,
+        "description": "Set to self to include only bundles owned by the authenticated business, excluding shared bundles before pagination.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "self"
+          ]
         }
       },
       {
