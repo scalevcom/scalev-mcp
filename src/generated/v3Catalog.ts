@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "276bfe5956eff6b37b9c87a013fc31dcf38cb073ca543bc42aa12f67f1dc5b01";
+export const V3_CATALOG_SOURCE_SHA256 = "d18fa5d111251482750790e4c3b8adc585606f604b86a99ef1b5e7bdac6e44a4";
 
 export const V3_ENDPOINTS = [
   {
@@ -2956,6 +2956,590 @@ export const V3_ENDPOINTS = [
       }
     ],
     "queryParams": []
+  },
+  {
+    "operationId": "listHostedApps",
+    "method": "GET",
+    "path": "/v3/hosted-apps",
+    "summary": "List external hosted apps",
+    "description": "Requires the `hosted_app:list` scope, the AI_BUILDER invitation, and current business-owner authorization. List external hosted apps. The pilot permits at most three active projects across both sources.",
+    "tags": [
+      "Hosted Apps"
+    ],
+    "scopes": [
+      "hosted_app:list"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [
+      {
+        "name": "b_uid",
+        "in": "query",
+        "required": false,
+        "description": "Selected business unique id. Required when credentials connect multiple businesses.",
+        "schema": {
+          "type": "string"
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "createHostedApp",
+    "method": "POST",
+    "path": "/v3/hosted-apps",
+    "summary": "Create an external hosted app",
+    "description": "Requires the `hosted_app:create` scope, the AI_BUILDER invitation, and current business-owner authorization. Create an external hosted app. This never starts AI generation or debits Volt.",
+    "tags": [
+      "Hosted Apps"
+    ],
+    "scopes": [
+      "hosted_app:create"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [
+      {
+        "name": "b_uid",
+        "in": "query",
+        "required": false,
+        "description": "Selected business unique id. Required when credentials connect multiple businesses.",
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "requestBody": {
+      "required": true,
+      "contentTypes": [
+        "application/json"
+      ],
+      "requiredFields": [
+        "name"
+      ],
+      "properties": [
+        "name"
+      ]
+    }
+  },
+  {
+    "operationId": "getHostedApp",
+    "method": "GET",
+    "path": "/v3/hosted-apps/{id}",
+    "summary": "Read a hosted app and its twenty most recent deployments",
+    "description": "Requires the `hosted_app:read` scope, the AI_BUILDER invitation, and current business-owner authorization. Read a hosted app and its twenty most recent deployments. Code stays in the merchant’s local tools.",
+    "tags": [
+      "Hosted Apps"
+    ],
+    "scopes": [
+      "hosted_app:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    ],
+    "queryParams": [
+      {
+        "name": "b_uid",
+        "in": "query",
+        "required": false,
+        "description": "Selected business unique id. Required when credentials connect multiple businesses.",
+        "schema": {
+          "type": "string"
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "updateHostedApp",
+    "method": "PATCH",
+    "path": "/v3/hosted-apps/{id}",
+    "summary": "Rename a hosted app without changing its URL or database identity",
+    "description": "Requires the `hosted_app:update` scope, the AI_BUILDER invitation, and current business-owner authorization. Rename a hosted app without changing its URL or database identity.",
+    "tags": [
+      "Hosted Apps"
+    ],
+    "scopes": [
+      "hosted_app:update"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    ],
+    "queryParams": [
+      {
+        "name": "b_uid",
+        "in": "query",
+        "required": false,
+        "description": "Selected business unique id. Required when credentials connect multiple businesses.",
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "requestBody": {
+      "required": true,
+      "contentTypes": [
+        "application/json"
+      ],
+      "requiredFields": [
+        "name"
+      ],
+      "properties": [
+        "name"
+      ]
+    }
+  },
+  {
+    "operationId": "archiveHostedApp",
+    "method": "DELETE",
+    "path": "/v3/hosted-apps/{id}",
+    "summary": "Archive an unpublished app asynchronously, disabling its preview while retaining history and data",
+    "description": "Requires the `hosted_app:delete` scope, the AI_BUILDER invitation, and current business-owner authorization. Archive an unpublished app asynchronously, disabling its preview while retaining history and data.",
+    "tags": [
+      "Hosted Apps"
+    ],
+    "scopes": [
+      "hosted_app:delete"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": true,
+    "pathParams": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    ],
+    "queryParams": [
+      {
+        "name": "b_uid",
+        "in": "query",
+        "required": false,
+        "description": "Selected business unique id. Required when credentials connect multiple businesses.",
+        "schema": {
+          "type": "string"
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "uploadHostedAppArtifact",
+    "method": "POST",
+    "path": "/v3/hosted-apps/{id}/artifacts",
+    "summary": "Upload a canonical ZIP STORE artifact from the Scalev CLI",
+    "description": "Requires the `hosted_app:deploy` scope, the AI_BUILDER invitation, and current business-owner authorization. Upload a canonical ZIP STORE artifact from the Scalev CLI. Both uploaded and expanded content are limited to 20 MiB. The server verifies SHA-256, manifest, paths, compiled modules and byte-safe assets. This endpoint cannot be called through JSON-only MCP tools; use the CLI or multipart HTTP.",
+    "tags": [
+      "Hosted Apps"
+    ],
+    "scopes": [
+      "hosted_app:deploy"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    ],
+    "queryParams": [
+      {
+        "name": "b_uid",
+        "in": "query",
+        "required": false,
+        "description": "Selected business unique id. Required when credentials connect multiple businesses.",
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "requestBody": {
+      "required": true,
+      "contentTypes": [
+        "multipart/form-data"
+      ],
+      "requiredFields": [],
+      "properties": []
+    }
+  },
+  {
+    "operationId": "deployHostedAppPreview",
+    "method": "POST",
+    "path": "/v3/hosted-apps/{id}/deployments",
+    "summary": "Deploy an uploaded immutable artifact to the stable, unlisted public preview URL",
+    "description": "Requires the `hosted_app:deploy` scope, the AI_BUILDER invitation, and current business-owner authorization. Deploy an uploaded immutable artifact to the stable, unlisted public preview URL. Failed attempts retain the previous serving revision. No merchant build commands execute on Scalev servers.",
+    "tags": [
+      "Hosted Apps"
+    ],
+    "scopes": [
+      "hosted_app:deploy"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    ],
+    "queryParams": [
+      {
+        "name": "b_uid",
+        "in": "query",
+        "required": false,
+        "description": "Selected business unique id. Required when credentials connect multiple businesses.",
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "requestBody": {
+      "required": true,
+      "contentTypes": [
+        "application/json"
+      ],
+      "requiredFields": [
+        "artifact_id",
+        "expected_revision",
+        "idempotency_key"
+      ],
+      "properties": [
+        "artifact_id",
+        "expected_revision",
+        "idempotency_key"
+      ]
+    }
+  },
+  {
+    "operationId": "getHostedAppDeployment",
+    "method": "GET",
+    "path": "/v3/hosted-apps/{id}/deployments/{deployment_id}",
+    "summary": "Read deployment status",
+    "description": "Requires the `hosted_app:read` scope, the AI_BUILDER invitation, and current business-owner authorization. Read deployment status. Pending operations are processed by Oban and retries reconcile the same artifact.",
+    "tags": [
+      "Hosted Apps"
+    ],
+    "scopes": [
+      "hosted_app:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "deployment_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    ],
+    "queryParams": [
+      {
+        "name": "b_uid",
+        "in": "query",
+        "required": false,
+        "description": "Selected business unique id. Required when credentials connect multiple businesses.",
+        "schema": {
+          "type": "string"
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "getHostedAppDiagnostics",
+    "method": "GET",
+    "path": "/v3/hosted-apps/{id}/deployments/{deployment_id}/diagnostics",
+    "summary": "Read bounded deployment diagnostics",
+    "description": "Requires the `hosted_app:read` scope, the AI_BUILDER invitation, and current business-owner authorization. Read bounded deployment diagnostics. Artifact contents and credentials are never returned.",
+    "tags": [
+      "Hosted Apps"
+    ],
+    "scopes": [
+      "hosted_app:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "deployment_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    ],
+    "queryParams": [
+      {
+        "name": "b_uid",
+        "in": "query",
+        "required": false,
+        "description": "Selected business unique id. Required when credentials connect multiple businesses.",
+        "schema": {
+          "type": "string"
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "retryHostedAppDeployment",
+    "method": "POST",
+    "path": "/v3/hosted-apps/{id}/deployments/{deployment_id}/retry",
+    "summary": "Retry a failed deployment using the same deployment identity and immutable artifact",
+    "description": "Requires the `hosted_app:deploy` scope, the AI_BUILDER invitation, and current business-owner authorization. Retry a failed deployment using the same deployment identity and immutable artifact.",
+    "tags": [
+      "Hosted Apps"
+    ],
+    "scopes": [
+      "hosted_app:deploy"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "deployment_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    ],
+    "queryParams": [
+      {
+        "name": "b_uid",
+        "in": "query",
+        "required": false,
+        "description": "Selected business unique id. Required when credentials connect multiple businesses.",
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "requestBody": {
+      "required": true,
+      "contentTypes": [
+        "application/json"
+      ],
+      "requiredFields": [],
+      "properties": []
+    }
+  },
+  {
+    "operationId": "getHostedAppPreview",
+    "method": "GET",
+    "path": "/v3/hosted-apps/{id}/preview",
+    "summary": "Get the current preview URL without building",
+    "description": "Requires the `hosted_app:read` scope, the AI_BUILDER invitation, and current business-owner authorization. Get the current preview URL without building. Anyone with the link can open it. Agents should include an [Open preview](URL) Markdown link in their reply. serving identifies the working revision; latest may describe a failed newer attempt.",
+    "tags": [
+      "Hosted Apps"
+    ],
+    "scopes": [
+      "hosted_app:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    ],
+    "queryParams": [
+      {
+        "name": "b_uid",
+        "in": "query",
+        "required": false,
+        "description": "Selected business unique id. Required when credentials connect multiple businesses.",
+        "schema": {
+          "type": "string"
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "releaseHostedApp",
+    "method": "POST",
+    "path": "/v3/hosted-apps/{id}/releases",
+    "summary": "Explicitly publish a selected successful deployment, roll back code while retaining production data, or unpublish production while leaving the preview available",
+    "description": "Requires the `hosted_app:deploy` scope, the AI_BUILDER invitation, and current business-owner authorization. Explicitly publish a selected successful deployment, roll back code while retaining production data, or unpublish production while leaving the preview available. No rebuild is performed. deployment_id is mandatory for publish and rollback.",
+    "tags": [
+      "Hosted Apps"
+    ],
+    "scopes": [
+      "hosted_app:deploy"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    ],
+    "queryParams": [
+      {
+        "name": "b_uid",
+        "in": "query",
+        "required": false,
+        "description": "Selected business unique id. Required when credentials connect multiple businesses.",
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "requestBody": {
+      "required": true,
+      "contentTypes": [
+        "application/json"
+      ],
+      "requiredFields": [
+        "action",
+        "expected_revision",
+        "idempotency_key"
+      ],
+      "properties": [
+        "action",
+        "deployment_id",
+        "expected_revision",
+        "idempotency_key"
+      ]
+    }
   },
   {
     "operationId": "listKwaiPixels",

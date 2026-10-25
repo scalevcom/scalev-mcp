@@ -13,6 +13,7 @@ import { V3_ENDPOINTS } from "../src/generated/v3Catalog";
 import { createScalevMcpServer } from "../src/tools";
 import { SCALEV_TOOL_NAMES } from "../src/toolNames";
 import type { Env } from "../src/types";
+import { hostedPreviewResult } from '../src/hostedAppTools';
 
 vi.mock("agents/mcp", () => ({
   getMcpAuthContext: () => ({ props: { auth: { token: "test-token", requestId: "req_test" } } })
@@ -43,6 +44,13 @@ const webAnalyticsOperations = [
 ] as const;
 
 describe("Scalev MCP tools", () => {
+  it('returns a clickable preview link and refuses binary upload through JSON tools', () => {
+    const response={url:'http://preview-019a1234-1234-7123-8123-123456789012.localhost:8788',serving:{revision:1},latest:{status:'failed',revision:2}};
+    const result=hostedPreviewResult(response);
+    expect(result.structuredContent).toEqual(response);
+    expect(result.content.some(item=>item.text.includes('[Open preview]('))).toBe(true);
+    expect(()=>buildExecuteSafeRequest({operation_id:'uploadHostedAppArtifact',path_params:{id:'019a1234-1234-7123-8123-123456789012'},body:{artifact:'/local/path'}})).toThrow(/Scalev CLI/);
+  });
   it("exposes the expected MCP tools", () => {
     expect([...SCALEV_TOOL_NAMES]).toEqual([
       "get_me",
@@ -69,7 +77,11 @@ describe("Scalev MCP tools", () => {
       "create_order",
       "update_order",
       "change_order_status",
-      "get_order_statistics"
+      "get_order_statistics",
+      "get_hosted_app_preview",
+      "get_hosted_app_deployment",
+      "get_hosted_app_diagnostics",
+      "get_hosted_app_cli_instructions"
     ]);
   });
 

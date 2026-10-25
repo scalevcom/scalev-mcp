@@ -2,11 +2,11 @@
 
 Generated from `src/generated/v3Catalog.ts`.
 
-- Source OpenAPI SHA-256: `276bfe5956eff6b37b9c87a013fc31dcf38cb073ca543bc42aa12f67f1dc5b01`
-- Total catalog endpoints: 260
-- Read-only GET endpoints: 120
-- Non-destructive write/action endpoints: 106
-- Destructive write/action endpoints: 34
+- Source OpenAPI SHA-256: `d18fa5d111251482750790e4c3b8adc585606f604b86a99ef1b5e7bdac6e44a4`
+- Total catalog endpoints: 272
+- Read-only GET endpoints: 125
+- Non-destructive write/action endpoints: 112
+- Destructive write/action endpoints: 35
 
 ## Submission Posture
 
@@ -28,6 +28,7 @@ Generated from `src/generated/v3Catalog.ts`.
 | Business Bundles | 13 |
 | Analytics Setup | 12 |
 | Business Customers | 7 |
+| Hosted Apps | 7 |
 | Landing Pages | 7 |
 | Business Stores | 5 |
 | Storefront Setup | 4 |
@@ -52,6 +53,7 @@ Generated from `src/generated/v3Catalog.ts`.
 | DELETE | `/v3/discount-codes/{id}` | `deleteDiscountCode` | Delete a discount code |
 | DELETE | `/v3/fb-pixels/{id}` | `deleteFacebookPixel` | Delete a Facebook pixel |
 | DELETE | `/v3/gtm/{id}` | `deleteGtmContainer` | Delete a Google Tag Manager container |
+| DELETE | `/v3/hosted-apps/{id}` | `archiveHostedApp` | Archive an unpublished app asynchronously, disabling its preview while retaining history and data |
 | DELETE | `/v3/kwai-pixels/{id}` | `deleteKwaiPixel` | Delete a SnackVideo pixel |
 | POST | `/v3/orders/{id}/duplicate` | `duplicateOrder` | Duplicate and cancel an order |
 | POST | `/v3/orders/cancel-awb` | `cancelOrderAwb` | Cancel airway bills for orders |
