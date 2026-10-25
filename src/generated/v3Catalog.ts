@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "276bfe5956eff6b37b9c87a013fc31dcf38cb073ca543bc42aa12f67f1dc5b01";
+export const V3_CATALOG_SOURCE_SHA256 = "308358e68a8d55a2beafef6a49e7877379d12bbdebc716bf0557b53267f08b2b";
 
 export const V3_ENDPOINTS = [
   {
