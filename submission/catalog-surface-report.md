@@ -2,11 +2,11 @@
 
 Generated from `src/generated/v3Catalog.ts`.
 
-- Source OpenAPI SHA-256: `308358e68a8d55a2beafef6a49e7877379d12bbdebc716bf0557b53267f08b2b`
-- Total catalog endpoints: 260
-- Read-only GET endpoints: 120
-- Non-destructive write/action endpoints: 106
-- Destructive write/action endpoints: 34
+- Source OpenAPI SHA-256: `3bba2eed6b7a9d1cde4ebfc35c96261c396bd610a702b4630bfd934c141e8a45`
+- Total catalog endpoints: 268
+- Read-only GET endpoints: 123
+- Non-destructive write/action endpoints: 110
+- Destructive write/action endpoints: 35
 
 ## Submission Posture
 
@@ -25,8 +25,8 @@ Generated from `src/generated/v3Catalog.ts`.
 | Business Products | 36 |
 | WABA | 21 |
 | Orders | 20 |
+| Analytics Setup | 17 |
 | Business Bundles | 13 |
-| Analytics Setup | 12 |
 | Business Customers | 7 |
 | Landing Pages | 7 |
 | Business Stores | 5 |
@@ -51,6 +51,7 @@ Generated from `src/generated/v3Catalog.ts`.
 | DELETE | `/v3/customers/{customer_id}/addresses/{id}` | `deleteBusinessCustomerAddress` | Delete a business customer address |
 | DELETE | `/v3/discount-codes/{id}` | `deleteDiscountCode` | Delete a discount code |
 | DELETE | `/v3/fb-pixels/{id}` | `deleteFacebookPixel` | Delete a Facebook pixel |
+| DELETE | `/v3/google-ads/destinations/{id}` | `disableGoogleAdsDestination` | Disable a Google Ads destination |
 | DELETE | `/v3/gtm/{id}` | `deleteGtmContainer` | Delete a Google Tag Manager container |
 | DELETE | `/v3/kwai-pixels/{id}` | `deleteKwaiPixel` | Delete a SnackVideo pixel |
 | POST | `/v3/orders/{id}/duplicate` | `duplicateOrder` | Duplicate and cancel an order |
