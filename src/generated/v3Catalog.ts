@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "b500fdf88f959aadc7bd5e47458ce30e79dd34d15706e1e29eacd1f30c2d86b0";
+export const V3_CATALOG_SOURCE_SHA256 = "be91561d8d58270a638e77c8685bc43bac5e92c72bbb998aafb197a852ba1897";
 
 export const V3_ENDPOINTS = [
   {
@@ -2859,7 +2859,7 @@ export const V3_ENDPOINTS = [
     "method": "PATCH",
     "path": "/v3/google-ads/destinations/{id}",
     "summary": "Update a Google Ads destination",
-    "description": "Requires the `google_ads:update` scope. Only name and enabled may change. Account and conversion identity are immutable.",
+    "description": "Requires the `google_ads:update` scope. Name, enabled, event mappings and remarketing may change. Purchase account and conversion identity are immutable. New mappings require compatible non-Purchase website actions. Existing destinations remain Purchase-only until mappings are explicitly enabled.",
     "tags": [
       "Analytics Setup"
     ],
@@ -2894,7 +2894,9 @@ export const V3_ENDPOINTS = [
       "requiredFields": [],
       "properties": [
         "enabled",
-        "name"
+        "event_mappings",
+        "name",
+        "remarketing"
       ]
     }
   },
@@ -2935,8 +2937,8 @@ export const V3_ENDPOINTS = [
     "operationId": "getGoogleAdsPurchaseDeliveries",
     "method": "GET",
     "path": "/v3/google-ads/destinations/{id}/deliveries",
-    "summary": "Read Google Ads ingestion diagnostics for an order",
-    "description": "Requires the `google_ads:read` scope. Order must belong to the current business. Submitted means Google accepted a request for processing. Success and partial_success are batch ingestion results, not attribution evidence.",
+    "summary": "Read Google Ads ingestion diagnostics for an order or funnel interaction",
+    "description": "Requires the `google_ads:read` scope. Supply exactly one of order_id or event_id, belonging to the current business. Submitted means Google accepted a request for processing. Success and partial_success are batch ingestion results, not attribution evidence.",
     "tags": [
       "Analytics Setup"
     ],
@@ -2964,9 +2966,18 @@ export const V3_ENDPOINTS = [
     ],
     "queryParams": [
       {
+        "name": "event_id",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      {
         "name": "order_id",
         "in": "query",
-        "required": true,
+        "required": false,
         "schema": {
           "type": "string",
           "format": "uuid"
@@ -2978,8 +2989,8 @@ export const V3_ENDPOINTS = [
     "operationId": "retryGoogleAdsPurchase",
     "method": "POST",
     "path": "/v3/google-ads/destinations/{id}/retry",
-    "summary": "Retry a failed Google Ads purchase",
-    "description": "Requires the `google_ads:update` scope. Queues an existing failed, reconnect_required, or partial_success obligation with its original payload and transaction ID. Does not backfill orders or change trigger eligibility.",
+    "summary": "Retry a failed Google Ads conversion",
+    "description": "Requires the `google_ads:update` scope. Supply exactly one of order_id or event_id. Queues an existing failed or reconnect_required obligation with its original payload and transaction ID. Does not backfill orders or change trigger eligibility.",
     "tags": [
       "Analytics Setup"
     ],
@@ -3011,10 +3022,9 @@ export const V3_ENDPOINTS = [
       "contentTypes": [
         "application/json"
       ],
-      "requiredFields": [
-        "order_id"
-      ],
+      "requiredFields": [],
       "properties": [
+        "event_id",
         "order_id"
       ]
     }
@@ -3044,6 +3054,48 @@ export const V3_ENDPOINTS = [
         "in": "path",
         "required": true,
         "description": "Scalev Google Ads destination ID.",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    ],
+    "queryParams": [],
+    "requestBody": {
+      "required": false,
+      "contentTypes": [
+        "application/json"
+      ],
+      "requiredFields": [],
+      "properties": [
+        "event_name"
+      ]
+    }
+  },
+  {
+    "operationId": "getGoogleAdsOrderDeliveries",
+    "method": "GET",
+    "path": "/v3/google-ads/orders/{order_id}/deliveries",
+    "summary": "Read all Google purchase destinations and history for an order",
+    "description": "Requires the `order:read` scope. Uses the order's frozen destination snapshots. Success confirms ingestion, not attribution or bidding use. No configured destinations returns an empty collection.",
+    "tags": [
+      "Analytics Setup"
+    ],
+    "scopes": [
+      "order:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "order_id",
+        "in": "path",
+        "required": true,
         "schema": {
           "type": "string",
           "format": "uuid"
