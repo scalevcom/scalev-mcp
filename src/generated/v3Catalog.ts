@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "a5c9325bc60df8906fced3ab0a9e67363d241d1e843f6a31bbd4e10ef8c5629a";
+export const V3_CATALOG_SOURCE_SHA256 = "d7c9efe5550d0a8ee0481547c214e625afbb5920addfaaa4eb7c89367dd3f8dd";
 
 export const V3_ENDPOINTS = [
   {
@@ -2990,7 +2990,7 @@ export const V3_ENDPOINTS = [
     "method": "POST",
     "path": "/v3/google-ads/destinations/{id}/retry",
     "summary": "Retry a failed Google Ads conversion",
-    "description": "Requires the `google_ads:update` scope. Supply exactly one of order_id or event_id. Queues an existing failed or reconnect_required obligation with its original payload and transaction ID. Does not backfill orders or change trigger eligibility.",
+    "description": "Requires the `google_ads:update` scope. Supply exactly one of order_id or event_id. Queues an existing failed or reconnect_required obligation with its original payload and transaction ID. Does not backfill orders or change trigger eligibility. Removed integrations return 404; their delivery history remains readable.",
     "tags": [
       "Analytics Setup"
     ],
