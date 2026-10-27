@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "239a19b7730e67f1aea1b688c1fa223cee85bcce8f46f9a6cc95a1f658ee5b25";
+export const V3_CATALOG_SOURCE_SHA256 = "a5c9325bc60df8906fced3ab0a9e67363d241d1e843f6a31bbd4e10ef8c5629a";
 
 export const V3_ENDPOINTS = [
   {
@@ -2762,7 +2762,7 @@ export const V3_ENDPOINTS = [
     "method": "GET",
     "path": "/v3/google-ads/destinations",
     "summary": "List Google Ads destinations",
-    "description": "Requires the `google_ads:list` scope.",
+    "description": "Requires the `google_ads:list` scope. Includes paused destinations; excludes integrations removed by a dashboard user.",
     "tags": [
       "Analytics Setup"
     ],
@@ -2826,7 +2826,7 @@ export const V3_ENDPOINTS = [
     "method": "GET",
     "path": "/v3/google-ads/destinations/{id}",
     "summary": "Get a Google Ads destination",
-    "description": "Requires the `google_ads:read` scope.",
+    "description": "Requires the `google_ads:read` scope. Removed integrations return 404; their delivery history remains readable through the deliveries endpoint.",
     "tags": [
       "Analytics Setup"
     ],
@@ -2938,7 +2938,7 @@ export const V3_ENDPOINTS = [
     "method": "GET",
     "path": "/v3/google-ads/destinations/{id}/deliveries",
     "summary": "Read Google Ads ingestion diagnostics for an order or funnel interaction",
-    "description": "Requires the `google_ads:read` scope. Supply exactly one of order_id or event_id, belonging to the current business. Submitted means Google accepted a request for processing. Success and partial_success are batch ingestion results, not attribution evidence.",
+    "description": "Requires the `google_ads:read` scope. Supply exactly one of order_id or event_id, belonging to the current business. Submitted means Google accepted a request for processing. Success and partial_success are batch ingestion results, not attribution evidence. Historical diagnostics remain readable after the integration is removed.",
     "tags": [
       "Analytics Setup"
     ],
