@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "4240a4ef2c912f38950f22fa876c5875b344228058187e1015d1e6259774b807";
+export const V3_CATALOG_SOURCE_SHA256 = "239a19b7730e67f1aea1b688c1fa223cee85bcce8f46f9a6cc95a1f658ee5b25";
 
 export const V3_ENDPOINTS = [
   {
@@ -6063,7 +6063,9 @@ export const V3_ENDPOINTS = [
         "onload_tiktok_events",
         "render_mode",
         "tiktok_events_onload_parameters",
-        "tiktok_pixel_ids"
+        "tiktok_pixel_ids",
+        "tracking_config",
+        "tracking_config_revision"
       ]
     }
   },
@@ -6222,7 +6224,9 @@ export const V3_ENDPOINTS = [
         "onload_tiktok_events",
         "render_mode",
         "tiktok_events_onload_parameters",
-        "tiktok_pixel_ids"
+        "tiktok_pixel_ids",
+        "tracking_config",
+        "tracking_config_revision"
       ]
     }
   },
