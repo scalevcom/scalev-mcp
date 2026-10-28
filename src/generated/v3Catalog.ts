@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "ebd291e7713142a70702ef40e57a06c53b8d3c4c3ea8bd04031ccab8f1f73fd8";
+export const V3_CATALOG_SOURCE_SHA256 = "24e276de1f3067279ba43fa6ea7fce4a4bb8f2774e03ec13d5fc4bd7179a00cf";
 
 export const V3_ENDPOINTS = [
   {
@@ -2784,7 +2784,7 @@ export const V3_ENDPOINTS = [
     "method": "POST",
     "path": "/v3/google-ads/destinations",
     "summary": "Create a Google Ads destination",
-    "description": "Requires the `google_ads:create` scope. An existing business-owned Google connection is required. The selected enabled website Purchase conversion is verified with Google. OAuth connection and account discovery are dashboard-only.",
+    "description": "Requires the `google_ads:create` scope and an existing business-owned Google connection. Creates an account asset without selecting a Purchase conversion. Select the receiving Purchase action independently for each store through its `purchase_tracking.google_ads` settings, using the revision from the latest store detail response. An account-only asset sends no Purchase conversions until selected in that store and assigned to the relevant page or storefront. Clearing the store selection stops Google Purchase tracking for new orders; existing order snapshots remain unchanged. The optional `conversion_action_id` remains supported for legacy clients and is verified with Google when supplied. OAuth connection and account discovery are dashboard-only.",
     "tags": [
       "Analytics Setup"
     ],
@@ -2808,7 +2808,6 @@ export const V3_ENDPOINTS = [
       "schemaRef": "GoogleAdsDestinationCreate",
       "requiredFields": [
         "connection_id",
-        "conversion_action_id",
         "customer_id",
         "name"
       ],
@@ -8472,6 +8471,8 @@ export const V3_ENDPOINTS = [
         "non_cod_purchase_triggers",
         "other_income_name",
         "postal_code_requirement",
+        "purchase_tracking",
+        "purchase_tracking_revision",
         "store_courier_other_incomes",
         "store_custom_audiences",
         "store_method_other_incomes",
