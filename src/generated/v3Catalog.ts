@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "2d49465a1630866c2658fce7ea6f0c5e376b8b58104d8485614cc0c9ce120094";
+export const V3_CATALOG_SOURCE_SHA256 = "9db8aa1707705940738f1361eaa86fa667be17a6edcec6363d350264f1ecf928";
 
 export const V3_ENDPOINTS = [
   {
@@ -2756,6 +2756,352 @@ export const V3_ENDPOINTS = [
         }
       }
     ]
+  },
+  {
+    "operationId": "listGoogleAdsDestinations",
+    "method": "GET",
+    "path": "/v3/google-ads/destinations",
+    "summary": "List Google Ads destinations",
+    "description": "Requires the `google_ads:list` scope. Includes paused destinations; excludes integrations removed by a dashboard user.",
+    "tags": [
+      "Analytics Setup"
+    ],
+    "scopes": [
+      "google_ads:list"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": []
+  },
+  {
+    "operationId": "createGoogleAdsDestination",
+    "method": "POST",
+    "path": "/v3/google-ads/destinations",
+    "summary": "Create a Google Ads destination",
+    "description": "Requires the `google_ads:create` scope and an existing business-owned Google connection. Creates an account asset without selecting a Purchase conversion. Select the receiving Purchase action independently for each store through its `purchase_tracking.google_ads` settings, using the revision from the latest store detail response. An account-only asset sends no Purchase conversions until selected in that store and assigned to the relevant page or storefront. Clearing the store selection stops Google Purchase tracking for new orders; existing order snapshots remain unchanged. The optional `conversion_action_id` remains supported for legacy clients and is verified with Google when supplied. OAuth connection and account discovery are dashboard-only.",
+    "tags": [
+      "Analytics Setup"
+    ],
+    "scopes": [
+      "google_ads:create"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [],
+    "requestBody": {
+      "required": true,
+      "contentTypes": [
+        "application/json"
+      ],
+      "schemaRef": "GoogleAdsDestinationCreate",
+      "requiredFields": [
+        "connection_id",
+        "customer_id",
+        "name"
+      ],
+      "properties": [
+        "connection_id",
+        "conversion_action_id",
+        "customer_id",
+        "login_customer_id",
+        "name"
+      ]
+    }
+  },
+  {
+    "operationId": "getGoogleAdsDestination",
+    "method": "GET",
+    "path": "/v3/google-ads/destinations/{id}",
+    "summary": "Get a Google Ads destination",
+    "description": "Requires the `google_ads:read` scope. Removed integrations return 404; their delivery history remains readable through the deliveries endpoint.",
+    "tags": [
+      "Analytics Setup"
+    ],
+    "scopes": [
+      "google_ads:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Scalev Google Ads destination ID.",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    ],
+    "queryParams": []
+  },
+  {
+    "operationId": "updateGoogleAdsDestination",
+    "method": "PATCH",
+    "path": "/v3/google-ads/destinations/{id}",
+    "summary": "Update a Google Ads destination",
+    "description": "Requires the `google_ads:update` scope. Name, enabled, event mappings and remarketing may change. Purchase account and conversion identity are immutable. New mappings require compatible non-Purchase website actions. Existing destinations remain Purchase-only until mappings are explicitly enabled.",
+    "tags": [
+      "Analytics Setup"
+    ],
+    "scopes": [
+      "google_ads:update"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Scalev Google Ads destination ID.",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    ],
+    "queryParams": [],
+    "requestBody": {
+      "required": true,
+      "contentTypes": [
+        "application/json"
+      ],
+      "requiredFields": [],
+      "properties": [
+        "enabled",
+        "event_mappings",
+        "name",
+        "remarketing"
+      ]
+    }
+  },
+  {
+    "operationId": "disableGoogleAdsDestination",
+    "method": "DELETE",
+    "path": "/v3/google-ads/destinations/{id}",
+    "summary": "Disable a Google Ads destination",
+    "description": "Requires the `google_ads:delete` scope. Disables delivery and the managed browser tag; keeps historical diagnostics.",
+    "tags": [
+      "Analytics Setup"
+    ],
+    "scopes": [
+      "google_ads:delete"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": true,
+    "pathParams": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Scalev Google Ads destination ID.",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    ],
+    "queryParams": []
+  },
+  {
+    "operationId": "getGoogleAdsPurchaseDeliveries",
+    "method": "GET",
+    "path": "/v3/google-ads/destinations/{id}/deliveries",
+    "summary": "Read Google Ads ingestion diagnostics for an order or funnel interaction",
+    "description": "Requires the `google_ads:read` scope. Supply exactly one of order_id or event_id, belonging to the current business. Submitted means Google accepted a request for processing. Success and partial_success are batch ingestion results, not attribution evidence. Historical diagnostics remain readable after the integration is removed.",
+    "tags": [
+      "Analytics Setup"
+    ],
+    "scopes": [
+      "google_ads:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Scalev Google Ads destination ID.",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    ],
+    "queryParams": [
+      {
+        "name": "event_id",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      {
+        "name": "order_id",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "retryGoogleAdsPurchase",
+    "method": "POST",
+    "path": "/v3/google-ads/destinations/{id}/retry",
+    "summary": "Retry a failed Google Ads conversion",
+    "description": "Requires the `google_ads:update` scope. Supply exactly one of order_id or event_id. Queues an existing failed or reconnect_required obligation with its original payload and transaction ID. Does not backfill orders or change trigger eligibility. Removed integrations return 404; their delivery history remains readable.",
+    "tags": [
+      "Analytics Setup"
+    ],
+    "scopes": [
+      "google_ads:update"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Scalev Google Ads destination ID.",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    ],
+    "queryParams": [],
+    "requestBody": {
+      "required": true,
+      "contentTypes": [
+        "application/json"
+      ],
+      "requiredFields": [],
+      "properties": [
+        "event_id",
+        "order_id"
+      ]
+    }
+  },
+  {
+    "operationId": "validateGoogleAdsDestination",
+    "method": "POST",
+    "path": "/v3/google-ads/destinations/{id}/validate",
+    "summary": "Validate Google Ads integration",
+    "description": "Requires the `google_ads:update` scope. Sends a synthetic request using Google Data Manager validateOnly. Records no conversion, changes no delivery state, and does not prove attribution.",
+    "tags": [
+      "Analytics Setup"
+    ],
+    "scopes": [
+      "google_ads:update"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": false,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Scalev Google Ads destination ID.",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    ],
+    "queryParams": [],
+    "requestBody": {
+      "required": false,
+      "contentTypes": [
+        "application/json"
+      ],
+      "requiredFields": [],
+      "properties": [
+        "event_name"
+      ]
+    }
+  },
+  {
+    "operationId": "getGoogleAdsOrderDeliveries",
+    "method": "GET",
+    "path": "/v3/google-ads/orders/{order_id}/deliveries",
+    "summary": "Read all Google purchase destinations and history for an order",
+    "description": "Requires the `order:read` scope. Uses the order's frozen destination snapshots. Success confirms ingestion, not attribution or bidding use. No configured destinations returns an empty collection.",
+    "tags": [
+      "Analytics Setup"
+    ],
+    "scopes": [
+      "order:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth",
+      "scalevOAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [
+      {
+        "name": "order_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    ],
+    "queryParams": []
   },
   {
     "operationId": "listGtmContainers",
@@ -5701,6 +6047,7 @@ export const V3_ENDPOINTS = [
         "fb_events_onload_parameters",
         "fb_pixel_ids",
         "form_display",
+        "google_ads_destination_ids",
         "html_code",
         "html_document",
         "js_code",
@@ -5715,7 +6062,9 @@ export const V3_ENDPOINTS = [
         "onload_tiktok_events",
         "render_mode",
         "tiktok_events_onload_parameters",
-        "tiktok_pixel_ids"
+        "tiktok_pixel_ids",
+        "tracking_config",
+        "tracking_config_revision"
       ]
     }
   },
@@ -5859,6 +6208,7 @@ export const V3_ENDPOINTS = [
         "fb_events_onload_parameters",
         "fb_pixel_ids",
         "form_display",
+        "google_ads_destination_ids",
         "html_code",
         "html_document",
         "js_code",
@@ -5873,7 +6223,9 @@ export const V3_ENDPOINTS = [
         "onload_tiktok_events",
         "render_mode",
         "tiktok_events_onload_parameters",
-        "tiktok_pixel_ids"
+        "tiktok_pixel_ids",
+        "tracking_config",
+        "tracking_config_revision"
       ]
     }
   },
@@ -8119,6 +8471,8 @@ export const V3_ENDPOINTS = [
         "non_cod_purchase_triggers",
         "other_income_name",
         "postal_code_requirement",
+        "purchase_tracking",
+        "purchase_tracking_revision",
         "store_courier_other_incomes",
         "store_custom_audiences",
         "store_method_other_incomes",
