@@ -5,7 +5,8 @@ import {
   buildExecuteSafeRequest,
   buildGetRequest,
   catalogEndpointCount,
-  searchEndpoints
+  searchEndpoints,
+  type V3Endpoint
 } from "../src/catalog";
 import { getDocs } from "../src/docs";
 import { normalizeExecuteInput } from "../src/executeInput";
@@ -278,6 +279,10 @@ describe("Scalev MCP tools", () => {
     expect(createLandingPage?.docs_url).toBe("https://docs.scalev.dev/docs/landing-pages-api");
     expect(createLandingPage?.docs_topic).toBe("landing_pages_api");
     expect(createLandingPage?.docs_hint).toMatch(/Landing Pages API/);
+    for (const operationId of ["createLandingPageDisplay", "validateLandingPageDisplay"]) {
+      const endpoint: V3Endpoint | undefined = V3_ENDPOINTS.find((entry) => entry.operationId === operationId);
+      expect(endpoint?.requestBody?.properties).toContain("tracking_config_write_version");
+    }
 
     const landingPageOperations = searchEndpoints({ tag: "Landing Pages", limit: 50 }).data.map(
       (endpoint) => endpoint.operation_id
@@ -320,6 +325,8 @@ describe("Scalev MCP tools", () => {
       source: "../dev-docs/docs/Landing pages/landing-pages-api.md"
     });
     expect(byTopic.data[0].content).toContain("## HTML Mode display payload");
+    expect(byTopic.data[0].content).toContain("tracking_config_write_version: 1");
+    expect(byTopic.data[0].content).toContain("Do not simply add the capability to an older");
     expect(byTopic.catalog.source).toBe("../dev-docs");
     expect(byTopic.catalog.available_languages).toEqual(["en"]);
     expect(byTopic.catalog.available_nav_groups).toContain("Storefront");
