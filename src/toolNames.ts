@@ -23,5 +23,9 @@ export const SCALEV_TOOL_NAMES = [
   "create_order",
   "update_order",
   "change_order_status",
-  "get_order_statistics"
+  "get_order_statistics",
+  "get_hosted_app_preview",
+  "get_hosted_app_deployment",
+  "get_hosted_app_diagnostics",
+  "get_hosted_app_cli_instructions"
 ] as const;

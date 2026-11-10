@@ -191,6 +191,9 @@ function buildExecuteRequest(
 ): ResolvedEndpointRequest {
   input = normalizeBusinessSelectorInput(input);
   const resolved = resolveEndpoint(input, ["POST", "PUT", "PATCH", "DELETE"], toolName);
+  if (resolved.endpoint.requestBody?.contentTypes?.length && !resolved.endpoint.requestBody.contentTypes.includes('application/json')) {
+    throw new Error('This operation uploads binary artifacts. Use the Scalev CLI or multipart HTTP; MCP cannot read local directory paths.');
+  }
 
   if (resolved.endpoint.isDestructive !== destructive) {
     const expectedTool = resolved.endpoint.isDestructive ? "execute_destructive" : "execute_safe";

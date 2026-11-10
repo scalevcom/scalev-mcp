@@ -5,6 +5,7 @@ import { getDocs } from "./docs";
 import { normalizeExecuteInput } from "./executeInput";
 import { scalevApiBusinessRequest } from "./scalevApiClient";
 import { registerSemanticTools } from "./semanticTools";
+import { registerHostedAppTools } from "./hostedAppTools";
 import { toolAnnotations } from "./toolAnnotations";
 import { SCALEV_TOOL_NAMES } from "./toolNames";
 import { currentAuth, runLoggedTool, toolResult } from "./toolRuntime";
@@ -228,6 +229,7 @@ export function createScalevMcpServer(env: Env): McpServer {
   );
 
   registerSemanticTools(server, env);
+  registerHostedAppTools(server, env);
 
   return server;
 }
