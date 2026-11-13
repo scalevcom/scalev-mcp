@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "0d050a5a880133f59bed9542b104b017f74bda5ad4d4516a1e35deb0a8703e28";
+export const V3_CATALOG_SOURCE_SHA256 = "60c05b6efcf5ed68ff11a98bfa78911b00b02a16351d9a50dea7e7069a58cb00";
 
 export const V3_ENDPOINTS = [
   {
@@ -2784,7 +2784,7 @@ export const V3_ENDPOINTS = [
     "method": "POST",
     "path": "/v3/google-ads/destinations",
     "summary": "Create a Google Ads destination",
-    "description": "Requires the `google_ads:create` scope and an existing business-owned Google connection. Creates an account asset without selecting a Purchase conversion. Select the receiving Purchase action independently for each store through its `purchase_tracking.google_ads` settings, using the revision from the latest store detail response. An account-only asset sends no Purchase conversions until selected in that store and assigned to the relevant page or storefront. Clearing the store selection stops Google Purchase tracking for new orders; existing order snapshots remain unchanged. The optional `conversion_action_id` remains supported for legacy clients and is verified with Google when supplied. OAuth connection and account discovery are dashboard-only.",
+    "description": "Requires the `google_ads:create` scope and an existing business-owned Google connection. Creates an account asset without selecting a Purchase conversion. Select the receiving Purchase action independently for each store through its `purchase_tracking.google_ads` settings, using the revision from the latest store detail response. An account-only asset sends no Purchase conversions until selected in that store and assigned to the relevant page or storefront. Clearing the store selection stops Google Purchase tracking for new orders; existing order snapshots remain unchanged. The optional `conversion_action_id` remains supported for legacy clients and is verified with Google when supplied. Enabled PURCHASE actions may use UPLOAD_CLICKS for server-only imports or WEBPAGE for existing website tracking. Action type and tag metadata are derived from Google. OAuth connection and account discovery are dashboard-only.",
     "tags": [
       "Analytics Setup"
     ],
@@ -2858,7 +2858,7 @@ export const V3_ENDPOINTS = [
     "method": "PATCH",
     "path": "/v3/google-ads/destinations/{id}",
     "summary": "Update a Google Ads destination",
-    "description": "Requires the `google_ads:update` scope. Name, enabled, event mappings and remarketing may change. Purchase account and conversion identity are immutable. New mappings require compatible non-Purchase website actions. Existing destinations remain Purchase-only until mappings are explicitly enabled.",
+    "description": "Requires the `google_ads:update` scope. Name, enabled, event mappings and remarketing may change. Purchase account and conversion identity and type are immutable. New mappings require compatible WEBPAGE actions; UPLOAD_CLICKS Purchase actions cannot be used for browser interactions. Existing destinations remain Purchase-only until mappings are explicitly enabled.",
     "tags": [
       "Analytics Setup"
     ],
