@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "40e1f8c627c3d9ff92f6885461a2ad34b91371546366d2d77c74d4b0b4368b90";
+export const V3_CATALOG_SOURCE_SHA256 = "4d4a424ea1690d99c4c257247015f566d1f584179507ef16adf84f000469c5b4";
 
 export const V3_ENDPOINTS = [
   {
@@ -3033,7 +3033,7 @@ export const V3_ENDPOINTS = [
     "method": "POST",
     "path": "/v3/google-ads/destinations/{id}/validate",
     "summary": "Validate Google Ads integration",
-    "description": "Requires the `google_ads:update` scope. Sends a synthetic request using Google Data Manager validateOnly. Records no conversion, changes no delivery state, and does not prove attribution.",
+    "description": "Requires the `google_ads:update` scope. Sends a synthetic request using Google Data Manager validateOnly. Records no conversion, changes no delivery state, and does not prove attribution. Google account prerequisites produce HTTP 409 with error_code customer_data_terms_not_accepted (review and accept customer data terms in Google Ads), enhanced_conversions_not_enabled (enable enhanced conversions for leads), or enhanced_conversions_policy_restricted (resolve the data-policy restriction with Google Ads support). Complete setup in the conversion-owning account under Goals > Conversions > Settings before retrying.",
     "tags": [
       "Analytics Setup"
     ],
