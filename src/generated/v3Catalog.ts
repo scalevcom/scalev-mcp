@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "40e1f8c627c3d9ff92f6885461a2ad34b91371546366d2d77c74d4b0b4368b90";
+export const V3_CATALOG_SOURCE_SHA256 = "6df17ab8a76afde7c4389d736e3833d6400a76653b9c381a12b2311cfd4baa03";
 
 export const V3_ENDPOINTS = [
   {
@@ -5677,7 +5677,7 @@ export const V3_ENDPOINTS = [
     "method": "POST",
     "path": "/v3/pages",
     "summary": "Create a landing page",
-    "description": "Creates a business-scoped landing page using the same page creation behavior as Landing Page Studio. The request body below documents the HTML Mode payload. To create and publish an HTML Mode page in one call, include `is_published: true` with `page_display`. If `is_published` is omitted or false, the nested `page_display` is saved as an unpublished draft and is not returned as the page's current display; create or pick a page display, then call `PATCH /v3/pages/{id}` with `is_published: true` and `current_page_display_id` to publish it. A saved checkout form initializes an unbound page's `store_id` from `page_display.form_display.store_id`, including unpublished drafts. The store must belong to the same business.",
+    "description": "Creates a business-scoped landing page using the same page creation behavior as Landing Page Studio. The request body below documents the HTML Mode payload. To create and publish an HTML Mode page in one call, include `is_published: true` with `page_display`. If `is_published` is omitted or false, the nested `page_display` is saved as an unpublished draft and is not returned as the page's current display; create or pick a page display, then call `PATCH /v3/pages/{id}` with `is_published: true` and `current_page_display_id` to publish it. A saved checkout form initializes an unbound page's `store_id` from `page_display.form_display.store_id`, including unpublished drafts. The store must belong to the same business. An unpublished HTML Checkout draft may be saved before it has a product; creating it published requires at least one `variant_id` or `bundle_price_option_id`.",
     "externalDocs": {
       "url": "https://docs.scalev.dev/docs/landing-pages-api",
       "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
@@ -5759,7 +5759,7 @@ export const V3_ENDPOINTS = [
     "method": "PATCH",
     "path": "/v3/pages/{id}",
     "summary": "Update a landing page",
-    "description": "Updates business-scoped landing page metadata and publishing state using the same page update behavior as Landing Page Studio. Send `is_published: true` with `current_page_display_id` to publish a page display, or `is_published: false` with `current_page_display_id: null` to unpublish the page. Once assigned, the page's `store_id` cannot be changed or cleared, including by unpublishing or selecting a display without a checkout form.",
+    "description": "Updates business-scoped landing page metadata and publishing state using the same page update behavior as Landing Page Studio. Send `is_published: true` with `current_page_display_id` to publish a page display, or `is_published: false` with `current_page_display_id: null` to unpublish the page. Once assigned, the page's `store_id` cannot be changed or cleared, including by unpublishing or selecting a display without a checkout form. Publishing an HTML Checkout display whose form has no `variant_id` or `bundle_price_option_id` is rejected with 400.",
     "externalDocs": {
       "url": "https://docs.scalev.dev/docs/landing-pages-api",
       "description": "Read the Landing Pages API guide before creating or publishing HTML Mode pages."
