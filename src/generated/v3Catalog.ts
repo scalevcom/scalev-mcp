@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "6df17ab8a76afde7c4389d736e3833d6400a76653b9c381a12b2311cfd4baa03";
+export const V3_CATALOG_SOURCE_SHA256 = "675d950fbcbaf2794869b948375a8345b8ec4f358040eb3c863df3efed8127b9";
 
 export const V3_ENDPOINTS = [
   {
@@ -2681,7 +2681,7 @@ export const V3_ENDPOINTS = [
     "method": "DELETE",
     "path": "/v3/fb-pixels/{id}",
     "summary": "Delete a Facebook pixel",
-    "description": "Requires the `fb_pixel:delete` scope.",
+    "description": "Requires the `fb_pixel:delete` scope. Deletes the pixel and removes its assignments from the business's stores and all saved page versions, including checkout flows and event recipients.",
     "tags": [
       "Analytics Setup"
     ],
