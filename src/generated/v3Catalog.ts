@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "6df17ab8a76afde7c4389d736e3833d6400a76653b9c381a12b2311cfd4baa03";
+export const V3_CATALOG_SOURCE_SHA256 = "85756e864edba9254266a02a5301dd451eddb12e8721c1ada2dc70f3e33f8711";
 
 export const V3_ENDPOINTS = [
   {
@@ -2681,7 +2681,7 @@ export const V3_ENDPOINTS = [
     "method": "DELETE",
     "path": "/v3/fb-pixels/{id}",
     "summary": "Delete a Facebook pixel",
-    "description": "Requires the `fb_pixel:delete` scope.",
+    "description": "Requires the `fb_pixel:delete` scope. Deletes the pixel and removes its assignments from the business's stores and all saved page versions, including checkout flows and event recipients.",
     "tags": [
       "Analytics Setup"
     ],
@@ -3277,7 +3277,7 @@ export const V3_ENDPOINTS = [
     "method": "DELETE",
     "path": "/v3/gtm/{id}",
     "summary": "Delete a Google Tag Manager container",
-    "description": "Requires the `gtm:delete` scope.",
+    "description": "Requires the `gtm:delete` scope. Deletes the container and removes its assignments from the business's stores and all saved page versions, including checkout flows and event recipients. Also clears the container from legacy forms.",
     "tags": [
       "Analytics Setup"
     ],
@@ -3487,7 +3487,7 @@ export const V3_ENDPOINTS = [
     "method": "DELETE",
     "path": "/v3/kwai-pixels/{id}",
     "summary": "Delete a SnackVideo pixel",
-    "description": "Requires the `kwai_pixel:delete` scope.",
+    "description": "Requires the `kwai_pixel:delete` scope. Deletes the pixel and removes its assignments from the business's stores and all saved page versions, including checkout flows and event recipients.",
     "tags": [
       "Analytics Setup"
     ],
@@ -9582,7 +9582,7 @@ export const V3_ENDPOINTS = [
     "method": "DELETE",
     "path": "/v3/tiktok-pixels/{id}",
     "summary": "Delete a TikTok pixel",
-    "description": "Requires the `tiktok_pixel:delete` scope.",
+    "description": "Requires the `tiktok_pixel:delete` scope. Deletes the pixel and removes its assignments from the business's stores and all saved page versions, including checkout flows and event recipients.",
     "tags": [
       "Analytics Setup"
     ],
