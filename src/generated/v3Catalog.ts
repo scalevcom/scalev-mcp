@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "6df17ab8a76afde7c4389d736e3833d6400a76653b9c381a12b2311cfd4baa03";
+export const V3_CATALOG_SOURCE_SHA256 = "6c95e64a43baf559a94dbe4fa8ff7c8e4b3e84c87a0fa0c7f9489e83c0f7b8b3";
 
 export const V3_ENDPOINTS = [
   {
@@ -3581,7 +3581,7 @@ export const V3_ENDPOINTS = [
     "method": "GET",
     "path": "/v3/locations",
     "summary": "List locations for authenticated business flows",
-    "description": "Requires the `order:create` scope. Retrieve a cursor-paginated list of locations with optional search.",
+    "description": "Requires the `order:create` scope. Returns up to 25 matches. Use a more specific search term to narrow the results. Pagination is unsupported. On HTTP 503, retry the same request after Retry-After seconds.",
     "tags": [
       "Locations"
     ],
@@ -3597,32 +3597,14 @@ export const V3_ENDPOINTS = [
     "pathParams": [],
     "queryParams": [
       {
-        "name": "next_cursor",
-        "in": "query",
-        "required": false,
-        "description": "Opaque cursor for the next page.",
-        "schema": {
-          "type": "string"
-        }
-      },
-      {
         "name": "page_size",
         "in": "query",
         "required": false,
-        "description": "Number of items per page.",
+        "description": "Maximum number of matches to return.",
         "schema": {
           "type": "integer",
           "minimum": 1,
           "maximum": 25
-        }
-      },
-      {
-        "name": "previous_cursor",
-        "in": "query",
-        "required": false,
-        "description": "Opaque cursor for the previous page.",
-        "schema": {
-          "type": "string"
         }
       },
       {
