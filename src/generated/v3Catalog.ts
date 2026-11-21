@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "6df17ab8a76afde7c4389d736e3833d6400a76653b9c381a12b2311cfd4baa03";
+export const V3_CATALOG_SOURCE_SHA256 = "5199782f1b37a8478ff21cfe7213870c4fe1c85f7913d3380b4d290333439fe5";
 
 export const V3_ENDPOINTS = [
   {
@@ -5335,6 +5335,97 @@ export const V3_ENDPOINTS = [
         "in": "query",
         "required": false,
         "description": "Timezone for datetime adjustment (defaults to 'Asia/Jakarta')",
+        "schema": {
+          "type": "string"
+        }
+      }
+    ]
+  },
+  {
+    "operationId": "getOrderStatisticsByProduct",
+    "method": "GET",
+    "path": "/v3/orders/statistics/by-product",
+    "summary": "Get order counts and gross revenue by product",
+    "description": "Requires the `order:statistics:read` scope. Send up to 300 comma-separated product IDs that share a draft-time window. Each distinct product appears once in input order. Each matching order contributes its full gross revenue once per product, even when it has multiple matching lines or variants. An order with two requested products contributes to both. With status grouping, products without matching orders return an empty results array. Without grouping they return one row with zero count and revenue. Uses the same order visibility and default non-spam filter as order statistics. Additional filter names are rejected.",
+    "tags": [
+      "Orders"
+    ],
+    "scopes": [
+      "order:statistics:read"
+    ],
+    "auth": [
+      "apiKeyAuth",
+      "bearerAuth"
+    ],
+    "readOnly": true,
+    "isDestructive": false,
+    "pathParams": [],
+    "queryParams": [
+      {
+        "name": "breakdown_date",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "off"
+          ]
+        }
+      },
+      {
+        "name": "datetime_type",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "draft_time"
+          ]
+        }
+      },
+      {
+        "name": "draft_time_since",
+        "in": "query",
+        "required": false,
+        "description": "Inclusive lower timestamp. Defaults to 31 days before the upper timestamp.",
+        "schema": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      {
+        "name": "draft_time_until",
+        "in": "query",
+        "required": false,
+        "description": "Upper timestamp uses the existing statistics convention of adding one day and excluding that instant. Defaults to local midnight today. The supplied timestamps may be at most 62 days apart.",
+        "schema": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      {
+        "name": "is_breakdown_status",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "boolean"
+        }
+      },
+      {
+        "name": "product_ids",
+        "in": "query",
+        "required": true,
+        "description": "Comma-separated positive integer IDs, at most 300 entries before deduplication.",
+        "schema": {
+          "type": "string",
+          "maxLength": 6000
+        }
+      },
+      {
+        "name": "tz",
+        "in": "query",
+        "required": false,
+        "description": "IANA time zone for the default date window.",
         "schema": {
           "type": "string"
         }
