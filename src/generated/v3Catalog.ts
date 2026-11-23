@@ -3,7 +3,7 @@
 
 import type { V3Endpoint } from "../catalog";
 
-export const V3_CATALOG_SOURCE_SHA256 = "5199782f1b37a8478ff21cfe7213870c4fe1c85f7913d3380b4d290333439fe5";
+export const V3_CATALOG_SOURCE_SHA256 = "d16c32c700bb8505b8f2d1ad658639d25bc5bfadc4af8a15eefab2a51a85af3c";
 
 export const V3_ENDPOINTS = [
   {
@@ -10849,7 +10849,7 @@ export const V3_ENDPOINTS = [
     "method": "GET",
     "path": "/v3/waba-accounts/{unique_id}/customers",
     "summary": "List WABA customers",
-    "description": "Requires the `waba_account:operate` scope.",
+    "description": "Requires the `waba_account:operate` scope. Each item is a WABA conversation; `whatsapp_customer.wa_user_id` is the `wa_user_id` path parameter used by the customer message endpoints, such as `GET /v3/waba-accounts/{waba_unique_id}/customers/{wa_user_id}/messages`.",
     "tags": [
       "WABA"
     ],
@@ -11145,6 +11145,7 @@ export const V3_ENDPOINTS = [
         "name": "wa_user_id",
         "in": "path",
         "required": true,
+        "description": "Scalev's internal WhatsApp customer ID, prefixed with `wa_user_`. It is not the customer's phone number, `wa_id`, or Meta user ID; passing a phone number returns `404`. Get it from `data[].whatsapp_customer.wa_user_id` in `GET /v3/waba-accounts/{unique_id}/customers`.",
         "schema": {
           "type": "string"
         }
@@ -11191,6 +11192,7 @@ export const V3_ENDPOINTS = [
         "name": "wa_user_id",
         "in": "path",
         "required": true,
+        "description": "Scalev's internal WhatsApp customer ID, prefixed with `wa_user_`. It is not the customer's phone number, `wa_id`, or Meta user ID; passing a phone number returns `404`. Get it from `data[].whatsapp_customer.wa_user_id` in `GET /v3/waba-accounts/{unique_id}/customers`.",
         "schema": {
           "type": "string"
         }
@@ -11267,6 +11269,7 @@ export const V3_ENDPOINTS = [
         "name": "wa_user_id",
         "in": "path",
         "required": true,
+        "description": "Scalev's internal WhatsApp customer ID, prefixed with `wa_user_`. It is not the customer's phone number, `wa_id`, or Meta user ID; passing a phone number returns `404`. Get it from `data[].whatsapp_customer.wa_user_id` in `GET /v3/waba-accounts/{unique_id}/customers`.",
         "schema": {
           "type": "string"
         }
@@ -11314,6 +11317,7 @@ export const V3_ENDPOINTS = [
         "name": "wa_user_id",
         "in": "path",
         "required": true,
+        "description": "Scalev's internal WhatsApp customer ID, prefixed with `wa_user_`. It is not the customer's phone number, `wa_id`, or Meta user ID; passing a phone number returns `404`. Get it from `data[].whatsapp_customer.wa_user_id` in `GET /v3/waba-accounts/{unique_id}/customers`.",
         "schema": {
           "type": "string"
         }
@@ -11360,6 +11364,7 @@ export const V3_ENDPOINTS = [
         "name": "wa_user_id",
         "in": "path",
         "required": true,
+        "description": "Scalev's internal WhatsApp customer ID, prefixed with `wa_user_`. It is not the customer's phone number, `wa_id`, or Meta user ID; passing a phone number returns `404`. Get it from `data[].whatsapp_customer.wa_user_id` in `GET /v3/waba-accounts/{unique_id}/customers`.",
         "schema": {
           "type": "string"
         }
@@ -11415,6 +11420,7 @@ export const V3_ENDPOINTS = [
         "name": "wa_user_id",
         "in": "path",
         "required": true,
+        "description": "Scalev's internal WhatsApp customer ID, prefixed with `wa_user_`. It is not the customer's phone number, `wa_id`, or Meta user ID; passing a phone number returns `404`. Get it from `data[].whatsapp_customer.wa_user_id` in `GET /v3/waba-accounts/{unique_id}/customers`.",
         "schema": {
           "type": "string"
         }
@@ -11461,6 +11467,7 @@ export const V3_ENDPOINTS = [
         "name": "wa_user_id",
         "in": "path",
         "required": true,
+        "description": "Scalev's internal WhatsApp customer ID, prefixed with `wa_user_`. It is not the customer's phone number, `wa_id`, or Meta user ID; passing a phone number returns `404`. Get it from `data[].whatsapp_customer.wa_user_id` in `GET /v3/waba-accounts/{unique_id}/customers`.",
         "schema": {
           "type": "string"
         }
